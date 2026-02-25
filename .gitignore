@@ -7,7 +7,8 @@ codegen/
 *.slxc
 
 # Outputs
-outputs/
+outputs/*
+!outputs/.gitkeep
 
 # Data (don’t commit large data)
 data/raw/
