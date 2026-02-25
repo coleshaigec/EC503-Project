@@ -1,0 +1,4 @@
+*.asv
+*.autosave
+*.m~
+.DS_Store
