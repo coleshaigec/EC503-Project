@@ -1,4 +1,28 @@
+# MATLAB
 *.asv
-*.autosave
 *.m~
+*.autosave
+slprj/
+codegen/
+*.slxc
+
+# Outputs
+outputs/
+
+# Data (don’t commit large data)
+data/raw/
+data/interim/
+data/processed/
+
+# OS/editor
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python (if used)
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
