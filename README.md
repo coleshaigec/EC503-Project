@@ -61,7 +61,7 @@ If this runs without errors, your environment is correctly configured.
 ## Workflow Guidelines
 To keep development organized and reproducible, the repository separates reusable implementation co- Reusable functions generally live in `src/`
 - Experiment runners and analysis scripts live in `experiments/`
-This separation helps ensure experiments remain easy to reproduce and extend throughout the project---
+This separation helps ensure experiments remain easy to reproduce and extend throughout the project.
 ## Adding Models
 New model implementations can be added under:
 ```
@@ -102,7 +102,8 @@ Generated figures, tables, and intermediate results are written to:
 ```
 outputs/
 ```
-The `outputs` directory exists in the repository structure, but its contents are ignored by Git to ---
+The `outputs` directory exists in the repository structure, but its contents are ignored by Git to avoid loading large datasets and exceeding GitHub's storage limits.
+
 ## Configuration
 Experiment parameters are controlled through configuration files located in:
 ```
@@ -125,3 +126,4 @@ experiments.smoke_test
 ---
 ## Project Status
 ■ Initial project architecture under development
+
