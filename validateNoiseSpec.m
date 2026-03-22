@@ -23,7 +23,7 @@ function validateNoiseSpec(noiseSpec)
     if noiseSpec.enabled
         if ~isfield(noiseSpec, 'noiseType')
             error('validateNoiseSpec:MissingField', ...
-                'noiseSpec must have a ''noiseType'' field.');
+                'noiseSpec must have a ''noiseType'' field when noise is enabled.');
         end
 
         if ~(ischar(noiseSpec.noiseType) || ...

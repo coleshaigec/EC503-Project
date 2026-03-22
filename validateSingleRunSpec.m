@@ -62,7 +62,6 @@ function validateSingleRunSpec(spec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     POSITIVE_INTEGER_ATTRIBUTES = {'scalar', 'finite', 'positive', 'integer'};
     
-    
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %  Validate metadata fields  %
@@ -75,9 +74,13 @@ function validateSingleRunSpec(spec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     validateattributes(spec.warningHorizon, {'numeric'}, POSITIVE_INTEGER_ATTRIBUTES, mfilename, 'spec.warningHorizon');
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%
-    %  Validate noise spec  %
-    %%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %  Validate pipeline specification structs  %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    validateNoiseSpec(spec.noiseSpec);
+    validateMissingnessSpec(spec.missingnessSpec);
+    
+
     
 
 
