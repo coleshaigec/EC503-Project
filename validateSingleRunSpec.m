@@ -80,11 +80,7 @@ function validateSingleRunSpec(spec)
     validateNoiseSpec(spec.noiseSpec);
     validateMissingnessSpec(spec.missingnessSpec);
     validatePCASpec(spec.pcaSpec);
-
-    
-
-
-
-
-
+    validateImbalanceSpec(spec.imbalanceSpec);
+    validateModelSpec(spec.modelSpec);
+    validateDatasetSpec(spec.datasetSpec);
 end

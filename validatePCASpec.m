@@ -23,7 +23,7 @@ function validatePCASpec(pcaSpec)
         error('validatePCASpec:MissingField', ...
             'pcaSpec must have a ''varianceThreshold'' field when PCA is enabled.');
         end
-        varianceThresholdAttributes = {'scalar', 'finite', '>=', 0, '<=', 1};
+        varianceThresholdAttributes = {'scalar', 'finite', '>', 0, '<=', 1};
         validateattributes(pcaSpec.varianceThreshold, {'numeric'}, varianceThresholdAttributes, mfilename, 'pcaSpec.varianceThreshold');
     elseif numel(fieldnames(pcaSpec)) ~= 1
             error('validatePCASpec:InvalidStruct', ...
