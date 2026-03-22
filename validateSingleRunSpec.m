@@ -61,7 +61,6 @@ function validateSingleRunSpec(spec)
     %  Define attributes for modular validation  %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     POSITIVE_INTEGER_ATTRIBUTES = {'scalar', 'finite', 'positive', 'integer'};
-    
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %  Validate metadata fields  %
