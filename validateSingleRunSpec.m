@@ -79,7 +79,7 @@ function validateSingleRunSpec(spec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     validateNoiseSpec(spec.noiseSpec);
     validateMissingnessSpec(spec.missingnessSpec);
-    
+    validatePCASpec(spec.pcaSpec);
 
     
 
