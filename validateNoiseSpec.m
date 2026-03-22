@@ -3,10 +3,8 @@ function validateNoiseSpec(noiseSpec)
     %   VALIDATENOISESPEC(NOISESPEC) throws an error if NOISESPEC is not a legal,
     %   fully resolved noise configuration for single-run pipeline execution.
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  Validate high-level structure  %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+    allowableNoiseTypes = ["gaussian", "impulse", "hybrid"];
+
     if ~isstruct(noiseSpec)
         error('validateNoiseSpec:InvalidType', ...
             'noiseSpec must be a struct.');
@@ -19,13 +17,8 @@ function validateNoiseSpec(noiseSpec)
 
     if ~(islogical(noiseSpec.enabled) && isscalar(noiseSpec.enabled))
         error('validateNoiseSpec:InvalidFieldType', ...
-            '''enabled'' field in noiseSpec must be a logical scalar.');
+            'noiseSpec.enabled must be a logical scalar.');
     end
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  Validate field values based on specified noise type  %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    ALLOWABLE_NOISE_TYPES = {'gaussian', 'impulse', 'hybrid'};
 
     if noiseSpec.enabled
         if ~isfield(noiseSpec, 'noiseType')
@@ -33,27 +26,59 @@ function validateNoiseSpec(noiseSpec)
                 'noiseSpec must have a ''noiseType'' field.');
         end
 
-        if ~ismember(noiseSpec.noiseType, ALLOWABLE_NOISE_TYPES)
-            error('validateNoiseSpec:InvalidFieldValue', ...
-            '''noiseType'' field in noiseSpec must be in {''gaussian'', ''impulse'', ''hybrid''}.');
+        if ~(ischar(noiseSpec.noiseType) || ...
+                (isstring(noiseSpec.noiseType) && isscalar(noiseSpec.noiseType)))
+            error('validateNoiseSpec:InvalidFieldType', ...
+                'noiseSpec.noiseType must be a character vector or string scalar.');
         end
 
-        % Validate parameters for Gaussian noise, if selected
-        if noiseSpec.noiseType == "gaussian"
+        noiseType = lower(string(noiseSpec.noiseType));
+
+        if ~ismember(noiseType, allowableNoiseTypes)
+            error('validateNoiseSpec:InvalidFieldValue', ...
+                ['noiseSpec.noiseType must be one of ', ...
+                 '{''gaussian'', ''impulse'', ''hybrid''}.']);
+        end
+
+        if noiseType == "gaussian"
             if ~isfield(noiseSpec, 'gaussianParameters')
                 error('validateNoiseSpec:MissingField', ...
-                     'If noiseSpec.noiseType is ''gaussian'', noiseSpec must have a ''gaussianParameters'' field.');
+                    ['If noiseSpec.noiseType is ''gaussian'', noiseSpec must ', ...
+                     'have a ''gaussianParameters'' field.']);
+            end
+            validateGaussianNoiseParameters(noiseSpec.gaussianParameters);
+        end
+
+        if noiseType == "impulse"
+            if ~isfield(noiseSpec, 'impulseParameters')
+                error('validateNoiseSpec:MissingField', ...
+                    ['If noiseSpec.noiseType is ''impulse'', noiseSpec must ', ...
+                     'have an ''impulseParameters'' field.']);
+            end
+            validateImpulseNoiseParameters(noiseSpec.impulseParameters);
+        end
+
+        if noiseType == "hybrid"
+            if ~isfield(noiseSpec, 'gaussianParameters')
+                error('validateNoiseSpec:MissingField', ...
+                    ['If noiseSpec.noiseType is ''hybrid'', noiseSpec must ', ...
+                     'have a ''gaussianParameters'' field.']);
             end
 
-            
+            if ~isfield(noiseSpec, 'impulseParameters')
+                error('validateNoiseSpec:MissingField', ...
+                    ['If noiseSpec.noiseType is ''hybrid'', noiseSpec must ', ...
+                     'have an ''impulseParameters'' field.']);
+            end
+
+            validateGaussianNoiseParameters(noiseSpec.gaussianParameters);
+            validateImpulseNoiseParameters(noiseSpec.impulseParameters);
         end
     else
-        % If noise is not enabled, no other fields may be in noiseSpec
         if numel(fieldnames(noiseSpec)) ~= 1
-            error('validateNoiseSpec:InvalidFieldType', ...
-                'When noise is disabled, noiseSpec may only have an ''enabled'' field.');
+            error('validateNoiseSpec:InvalidStruct', ...
+                ['When noiseSpec.enabled is false, noiseSpec may contain ', ...
+                 'only the ''enabled'' field.']);
         end
     end
-
-    
 end
