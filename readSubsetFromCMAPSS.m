@@ -17,7 +17,9 @@ function cmapssSubset = readSubsetFromCMAPSS(cmapssDataFolderPath, subsetName)
     cmapssSubset.train = struct();
     cmapssSubset.test = struct();
     cmapssSubset.train.engines = struct();
+    cmapssSubset.train.numEngines = numTrainEngines;
     cmapssSubset.test.engines = struct();
+    cmapssSubset.test.numEngines = numTestEngines;
     cmapssSubset.name = subsetName;
 
     % Build template structs to preallocate struct arrays
@@ -50,6 +52,7 @@ function cmapssSubset = readSubsetFromCMAPSS(cmapssDataFolderPath, subsetName)
         trainEngineInfo = templateTrainEngineStruct;
         trainEngineInfo.unitNumber = unitNumber;
         trainEngineInfo.timestamps = timestampsSelectedEngine;
+        trainEngineInfo.maxTimestamp = max(timestampsSelectedEngine);
         trainEngineInfo.operatingConditions = operatingConditionsSelectedEngine;
         trainEngineInfo.sensorReadings = sensorReadingsSelectedEngine;
         trainEngineInfo.RUL = trainRULSelectedEngine;
@@ -77,6 +80,7 @@ function cmapssSubset = readSubsetFromCMAPSS(cmapssDataFolderPath, subsetName)
         testEngineInfo = templateTestEngineStruct;
         testEngineInfo.unitNumber = unitNumber;
         testEngineInfo.timestamps = timestampsSelectedEngine;
+        testEngineInfo.maxTimestamp = max(timestampsSelectedEngine);
         testEngineInfo.operatingConditions = operatingConditionsSelectedEngine;
         testEngineInfo.sensorReadings = sensorReadingsSelectedEngine;
         testEngineInfo.RULFinal = yTestRaw(i);
