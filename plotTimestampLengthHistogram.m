@@ -58,4 +58,4 @@ function plotTimestampLengthHistogram(cmapssData)
         legend({'Train (full)', 'Test (truncated)'}, 'Location', 'best');
 
     end
-    endg
+end

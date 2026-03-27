@@ -12,7 +12,6 @@ function cmapssSubset = readSubsetFromCMAPSS(cmapssDataFolderPath, subsetName)
     % Decompose at engine level
     numTrainEngines = numel(trainEngineIDs);
     numTestEngines = numel(testEngineIDs);
-
     cmapssSubset = struct();
     cmapssSubset.train = struct();
     cmapssSubset.test = struct();
@@ -21,6 +20,8 @@ function cmapssSubset = readSubsetFromCMAPSS(cmapssDataFolderPath, subsetName)
     cmapssSubset.test.engines = struct();
     cmapssSubset.test.numEngines = numTestEngines;
     cmapssSubset.name = subsetName;
+    cmapssSubset.train.numRecords = size(XtrainRaw, 1);
+    cmapssSubset.test.numRecords = size(XtestRaw, 1);
 
     % Build template structs to preallocate struct arrays
     templateTrainEngineStruct = buildTemplateTrainEngineStruct();
@@ -37,7 +38,7 @@ function cmapssSubset = readSubsetFromCMAPSS(cmapssDataFolderPath, subsetName)
         trainingDataSelectedEngine = XtrainRaw(idxTrainSelectedEngine, :);
 
         % Trim off engine ID
-        trainingDataSelectedEngine = trainingDataSelectedEngine(:,2:end);
+        trainingDataSelectedEngine = trainingDataSelectedEngine(:, 2:end);
 
         % Separate operating conditions metadata from sensor readings
         timestampsSelectedEngine = trainingDataSelectedEngine(:, 1);
