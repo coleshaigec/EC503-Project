@@ -1,7 +1,7 @@
 function rankingResult = rankSensors(cmapssData)
     cmapssSubsets = {'FD001', 'FD002', 'FD003', 'FD004'};
     shouldPlotSensorInfo = false;
-    scoreWeights = [1; 3; 2; 1];
+    scoreWeights = [1; 3; 2; 1]; % NOT optimally tuned -- a heuristic guess
     epsilon = 1e-8;
 
     rankingResult = struct();
@@ -13,7 +13,6 @@ function rankingResult = rankSensors(cmapssData)
         % Extract current CMAPSS subset and relevant info on it
         currentSubsetName = cmapssSubsets{i};
         currentSubset = cmapssData.(currentSubsetName);
-        numSensors = size(currentSubset.train.engines(1).sensorReadings, 2);
 
         % Step 1: Obtain training sensor variances for current subset
         sensorVariancesCurrentSubset = varianceResult.(currentSubsetName).train;
@@ -27,8 +26,9 @@ function rankingResult = rankSensors(cmapssData)
         % Step 4: Check sensors violating explicit drop conditions
         sensorsWithZeroValidCorrelations = find(correlationResult.validFraction == 0);
         sensorsWithZeroGlobalVariance = find(sensorVariancesCurrentSubset == 0);
+        sensorsWithZeroValidSlopes = find(slopeResult.validFraction == 0);
 
-        sensorsToDrop = union(sensorsWithZeroGlobalVariance, sensorsWithZeroValidCorrelations);
+        sensorsToDrop = union(sensorsWithZeroGlobalVariance, sensorsWithZeroValidCorrelations, sensorsWithZeroValidSlopes);
 
 
         % Step 5: Compute sensor scores
@@ -51,10 +51,6 @@ function rankingResult = rankSensors(cmapssData)
         overallScores(sensorsToDrop) = -Inf;
         [sortedScores, rankings] = sort(overallScores, 'descend');
         
-       
-
-       
-
         rankingResult.(currentSubsetName) = struct();
         rankingResult.(currentSubsetName).sortedScores = sortedScores;
         rankingResult.(currentSubsetName).rankings = rankings;
