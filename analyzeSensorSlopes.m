@@ -10,6 +10,7 @@ function slopeResult = analyzeSensorSlopes(cmapssSubsetTrainingData, shouldPlot,
     for i = 1:numEngines
         engine = cmapssSubsetTrainingData.engines(i);
         t = engine.timestamps;
+        t = t ./ max(t);
 
         for k = 1:numSensors
             x = engine.sensorReadings(:, k);
@@ -26,7 +27,7 @@ function slopeResult = analyzeSensorSlopes(cmapssSubsetTrainingData, shouldPlot,
     end
 
     % Aggregate
-    meanAbsSlope = mean(abs(slopes), 1, 'omitnan');
+    meanAbsoluteSlopes = mean(abs(slopes), 1, 'omitnan');
 
     % Consistency: fraction of engines with same sign
     slopeSigns = sign(slopes);
@@ -35,10 +36,28 @@ function slopeResult = analyzeSensorSlopes(cmapssSubsetTrainingData, shouldPlot,
         mean(slopeSigns < 0, 1, 'omitnan') ...
     );
 
-    validFraction = 1/numEngines * sum(~isnan(slopes));
+    validFraction = sum(~isnan(slopes), 1) / numEngines;
 
     slopeResult = struct();
-    slopeResult.meanAbsSlope = meanAbsSlope;
+    slopeResult.meanAbsoluteSlopes = meanAbsoluteSlopes;
     slopeResult.slopeConsistency = slopeConsistency;
     slopeResult.validFraction = validFraction;
+
+    if shouldPlot
+        % Plot sensor slopes
+        figure; grid on;
+        scatter(1:numSensors,meanAbsoluteSlopes);
+        title(sprintf('Mean absolute sensor slope for CMAPSS subset %s', subsetName));
+        xlabel('Sensor');
+        ylabel('Mean absolute slope');
+        xticks(1:numSensors);
+
+        % Plot slope consistency
+        figure; grid on;
+        scatter(1:numSensors, slopeConsistency);
+        title(sprintf('Sensor slope consistency across engines for CMAPSS subset %s', subsetName));
+        xlabel('Sensor');
+        ylabel('Slope consistency score');
+        xticks(1:numSensors);
+    end
 end

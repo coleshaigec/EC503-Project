@@ -1,5 +1,10 @@
-function rankings = rankSensors(cmapssData)
+function rankingResult = rankSensors(cmapssData)
     cmapssSubsets = {'FD001', 'FD002', 'FD003', 'FD004'};
+    shouldPlotSensorInfo = false;
+    scoreWeights = [1; 3; 2; 1];
+    epsilon = 1e-8;
+
+    rankingResult = struct();
 
     % Compute global sensor variances
     varianceResult = computeAndPlotGlobalSensorVariances(cmapssData, false);
@@ -14,14 +19,45 @@ function rankings = rankSensors(cmapssData)
         sensorVariancesCurrentSubset = varianceResult.(currentSubsetName).train;
 
         % Step 2: Compute sensor/RUL correlations on training rows
-        correlationResult = computeRULSensorCorrelations(currentSubset.train, false, currentSubsetName);
+        correlationResult = computeRULSensorCorrelations(currentSubset.train, shouldPlotSensorInfo, currentSubsetName);
 
         % Step 3: Fit mean slope lines at engine level
+        slopeResult = analyzeSensorSlopes(currentSubset.train, shouldPlotSensorInfo, currentSubsetName);
+
+        % Step 4: Check sensors violating explicit drop conditions
+        sensorsWithZeroValidCorrelations = find(correlationResult.validFraction == 0);
+        sensorsWithZeroGlobalVariance = find(sensorVariancesCurrentSubset == 0);
+
+        sensorsToDrop = union(sensorsWithZeroGlobalVariance, sensorsWithZeroValidCorrelations);
+
+
+        % Step 5: Compute sensor scores
+        sensorVariances = sensorVariancesCurrentSubset + epsilon;
+
+        zScoresSensorVariances = zscore(log(sensorVariances));
         
+        zScoresAbsoluteCorrelations = zscore(correlationResult.medianAbsoluteCorrelations);
+        
+        zScoresMeanAbsoluteSlopes = zscore(slopeResult.meanAbsoluteSlopes);
 
+        zScoresSlopeConsistency = zscore(slopeResult.slopeConsistency);
 
-        % NEED TO ENFORCE HARD DROP CONDITIONS (E.G. ZERO
-        % VALIDFRACTION) AS WELL AS RECOMMENDING SOFT ONES
+        overallScores = scoreWeights(1) * zScoresSensorVariances + ...
+                        scoreWeights(2) * zScoresAbsoluteCorrelations + ...
+                        scoreWeights(3) * zScoresMeanAbsoluteSlopes + ...
+                        scoreWeights(4) * zScoresSlopeConsistency;
 
+        % Ensure sensors to drop are pushed to bottom of rankings
+        overallScores(sensorsToDrop) = -Inf;
+        [sortedScores, rankings] = sort(overallScores, 'descend');
+        
+       
+
+       
+
+        rankingResult.(currentSubsetName) = struct();
+        rankingResult.(currentSubsetName).sortedScores = sortedScores;
+        rankingResult.(currentSubsetName).rankings = rankings;
+        rankingResult.(currentSubsetName).sensorsToDrop = sensorsToDrop;
     end
 end
