@@ -1,5 +1,6 @@
-function computeAndPlotGlobalSensorVariances(cmapssData)
+function variances = computeAndPlotGlobalSensorVariances(cmapssData, shouldPlot)
     cmapssSubsets = {'FD001', 'FD002', 'FD003', 'FD004'};
+    variances = struct();
 
     for i = 1:numel(cmapssSubsets)
         
@@ -26,14 +27,19 @@ function computeAndPlotGlobalSensorVariances(cmapssData)
         trainVariances = var(trainRecords, 1);
         testVariances = var(testRecords, 1);
 
-        figure(); hold on; grid on;
-        scatter(1:numSensors, trainVariances, 's', 'MarkerFaceColor','b', 'MarkerEdgeColor','none');
-        scatter(1:numSensors, testVariances, '^', 'MarkerFaceColor','r', 'MarkerEdgeColor','none');
+        if shouldPlot 
+            figure; hold on; grid on;
+            scatter(1:numSensors, trainVariances, 's', 'MarkerFaceColor','b', 'MarkerEdgeColor','none');
+            scatter(1:numSensors, testVariances, '^', 'MarkerFaceColor','r', 'MarkerEdgeColor','none');
+    
+            title(sprintf('Plot of sensor variances for CMAPSS subset %s', cmapssSubsets{i}));
+            xlabel('Sensor number');
+            ylabel('Variance');
+            xticks(1:21);
+        end
 
-        title(sprintf('Plot of sensor variances for CMAPSS subset %s', cmapssSubsets{i}));
-        xlabel('Sensor number');
-        ylabel('Variance');
-        xticks(1:21);
+        variances.(cmapssSubsets{i}).train = trainVariances;
+        variances.(cmapssSubsets{i}).test = testVariances;
 
     end
 end
