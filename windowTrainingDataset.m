@@ -1,0 +1,48 @@
+function [Xtrain, ytrain] = windowTrainingDataset(trainSubset, windowSize)
+    % WINDOWTRAININGDATASET Applies rectangular history windowing to the
+    % training data in a CMAPSS subset.
+    
+    numEngines = numel(trainSubset.engines);
+    Xcells = cell(numEngines, 1);
+    Ycells = cell(numEngines, 1);
+
+    for i = 1:numEngines
+        currentEngine = trainSubset.engines(i);
+        sensorReadingsCurrentEngine = currentEngine.sensorReadings;
+        operatingConditionsCurrentEngine = currentEngine.operatingConditions;
+        RULCurrentEngine = currentEngine.RUL;
+
+        [numReadings, numSensors] = size(sensorReadingsCurrentEngine);
+        numOperatingConditions = size(operatingConditionsCurrentEngine, 2);
+
+        numWindowedSamples = numReadings - windowSize + 1;
+        assert(numWindowedSamples > 0, 'Window size exceeds engine trajectory length.');
+
+        idxWindows = (1:windowSize) + (0:(numWindowedSamples - 1)).';
+
+        % Build windowed sensor block: N x (W*S)
+        XengineSensors = zeros(numWindowedSamples, windowSize * numSensors);
+        for s = 1:numSensors
+            sensorWindows = sensorReadingsCurrentEngine(idxWindows, s); % N x W
+            colStart = (s - 1) * windowSize + 1;
+            colEnd = s * windowSize;
+            XengineSensors(:, colStart:colEnd) = sensorWindows;
+        end
+
+        % Append current operating conditions only
+        XengineOperatingConditions = operatingConditionsCurrentEngine(windowSize:end, :);
+
+        Xengine = [XengineSensors, XengineOperatingConditions];
+        yengine = RULCurrentEngine(windowSize:end);
+
+        assert(size(Xengine, 1) == numWindowedSamples);
+        assert(size(yengine, 1) == numWindowedSamples);
+        assert(size(XengineOperatingConditions, 2) == numOperatingConditions);
+
+        Xcells{i} = Xengine;
+        Ycells{i} = yengine;
+    end
+
+    Xtrain = vertcat(Xcells{:});
+    ytrain = vertcat(Ycells{:});
+end
