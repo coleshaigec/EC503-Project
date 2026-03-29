@@ -28,8 +28,8 @@ function rankingResult = rankSensors(cmapssData)
         sensorsWithZeroGlobalVariance = find(sensorVariancesCurrentSubset == 0);
         sensorsWithZeroValidSlopes = find(slopeResult.validFraction == 0);
 
-        sensorsToDrop = union(sensorsWithZeroGlobalVariance, sensorsWithZeroValidCorrelations, sensorsWithZeroValidSlopes);
-
+        badSensors1 = union(sensorsWithZeroGlobalVariance, sensorsWithZeroValidCorrelations);
+        sensorsToDrop = union(badSensors1, sensorsWithZeroValidSlopes);
 
         % Step 5: Compute sensor scores
         sensorVariances = sensorVariancesCurrentSubset + epsilon;

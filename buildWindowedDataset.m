@@ -19,19 +19,17 @@ function windowedDataset = buildWindowedDataset(cmapssData, windowSize)
         [Xtrain, ytrain] = windowTrainingDataset(currentSubset.train, windowSize);
         [Xtest, ytest] = windowTestDataset(currentSubset.test, windowSize);
 
-        % Window training data for current subset
-        % trainSensorReadings = vertcat(currentSubset.train.engines);
+        [ntrain, d1] = size(Xtrain);
+        [ntest, d2] = size(Xtest);
+        assert(d1 == d2, 'Windowed train and test sets have different dimensions.');
 
-        
-
-        % trainSensorReadings      = vertcat(currentSubset.train.engines.sensorReadings);
-        % trainOperatingConditions = vertcat(currentSubset.train.engines.operatingConditions);
-        % trainRUL                 = vertcat(currentSubset.train.engines.RUL);
-
-
-        testSensorReadings = vertcat(currentSubset.test.engines.sensorReadings);
-
-
+        windowedDataset.(currentSubsetName).Xtrain = Xtrain;
+        windowedDataset.(currentSubsetName).ytrain = ytrain;
+        windowedDataset.(currentSubsetName).Xtest = Xtest;
+        windowedDataset.(currentSubsetName).ytest = ytest;
+        windowedDataset.(currentSubsetName).ntrain = ntrain;
+        windowedDataset.(currentSubsetName).ntest = ntest;
+        windowedDataset.(currentSubsetName).d = d1;
     end
 
 end

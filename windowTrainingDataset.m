@@ -23,7 +23,9 @@ function [XTrain, yTrain] = windowTrainingDataset(trainSubset, windowSize)
         % Build windowed sensor block: N x (W*S)
         XengineSensors = zeros(numWindowedSamples, windowSize * numSensors);
         for s = 1:numSensors
-            sensorWindows = sensorReadingsCurrentEngine(idxWindows, s); % N x W
+            currentSensor = sensorReadingsCurrentEngine(:, s);
+            sensorWindows = currentSensor(idxWindows); % N x W
+        
             colStart = (s - 1) * windowSize + 1;
             colEnd = s * windowSize;
             XengineSensors(:, colStart:colEnd) = sensorWindows;
