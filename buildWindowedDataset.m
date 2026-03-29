@@ -17,7 +17,7 @@ function windowedDataset = buildWindowedDataset(cmapssData, windowSize)
         currentSubset = cmapssData.(currentSubsetName);
 
         [Xtrain, ytrain] = windowTrainingDataset(currentSubset.train, windowSize);
-        
+        [Xtest, ytest] = windowTestDataset(currentSubset.test, windowSize);
 
         % Window training data for current subset
         % trainSensorReadings = vertcat(currentSubset.train.engines);

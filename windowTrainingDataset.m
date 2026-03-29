@@ -1,4 +1,4 @@
-function [Xtrain, ytrain] = windowTrainingDataset(trainSubset, windowSize)
+function [XTrain, yTrain] = windowTrainingDataset(trainSubset, windowSize)
     % WINDOWTRAININGDATASET Applies rectangular history windowing to the
     % training data in a CMAPSS subset.
     
@@ -32,7 +32,7 @@ function [Xtrain, ytrain] = windowTrainingDataset(trainSubset, windowSize)
         % Append current operating conditions only
         XengineOperatingConditions = operatingConditionsCurrentEngine(windowSize:end, :);
 
-        Xengine = [XengineSensors, XengineOperatingConditions];
+        Xengine = [XengineOperatingConditions, XengineSensors];
         yengine = RULCurrentEngine(windowSize:end);
 
         assert(size(Xengine, 1) == numWindowedSamples);
@@ -43,6 +43,6 @@ function [Xtrain, ytrain] = windowTrainingDataset(trainSubset, windowSize)
         Ycells{i} = yengine;
     end
 
-    Xtrain = vertcat(Xcells{:});
-    ytrain = vertcat(Ycells{:});
+    XTrain = vertcat(Xcells{:});
+    yTrain = vertcat(Ycells{:});
 end
