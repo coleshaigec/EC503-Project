@@ -27,10 +27,10 @@ function validateExperimentSpec(spec)
             'experimentSpec must have a ''warningHorizons'' field.');
     end
 
-    if ~isfield(spec, 'noiseOptions')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have a ''noiseOptions'' field.');
-    end
+    % if ~isfield(spec, 'noiseOptions')
+    %     error('validateExperimentSpec:MissingField', ...
+    %         'experimentSpec must have a ''noiseOptions'' field.');
+    % end
 
     if ~isfield(spec, 'missingnessOptions')
         error('validateExperimentSpec:MissingField', ...
@@ -87,10 +87,10 @@ function validateExperimentSpec(spec)
     %  Validate options structs  %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    if ~(isvector(spec.noiseOptions) && numel(spec.noiseOptions) > 0 && isstruct(spec.noiseOptions))
-        error('validateExperimentSpec:InvalidFieldValue', ...
-            'experimentSpec.noiseOptions must be a non-empty struct array.');
-    end
+    % if ~(isvector(spec.noiseOptions) && numel(spec.noiseOptions) > 0 && isstruct(spec.noiseOptions))
+    %     error('validateExperimentSpec:InvalidFieldValue', ...
+    %         'experimentSpec.noiseOptions must be a non-empty struct array.');
+    % end
 
     if ~(isvector(spec.missingnessOptions) && numel(spec.missingnessOptions) > 0 && isstruct(spec.missingnessOptions))
         error('validateExperimentSpec:InvalidFieldValue', ...
@@ -118,9 +118,9 @@ function validateExperimentSpec(spec)
     end
 
     % Ensure that all spec objects are valid
-    for i = 1 : numel(spec.noiseOptions)
-        validateNoiseSpec(spec.noiseOptions(i));
-    end
+    % for i = 1 : numel(spec.noiseOptions)
+    %     validateNoiseSpec(spec.noiseOptions(i));
+    % end
 
     for i = 1 : numel(spec.missingnessOptions)
         validateMissingnessSpec(spec.missingnessOptions(i));

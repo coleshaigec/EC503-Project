@@ -27,10 +27,10 @@ function validateSingleRunSpec(spec)
             'singleRunSpec must have a ''warningHorizon'' field.');
     end
 
-    if ~isfield(spec, 'noiseSpec')
-        error('validateSingleRunSpec:MissingField', ...
-            'singleRunSpec must have a ''noiseSpec'' field.');
-    end
+    % if ~isfield(spec, 'noiseSpec')
+    %     error('validateSingleRunSpec:MissingField', ...
+    %         'singleRunSpec must have a ''noiseSpec'' field.');
+    % end
 
     if ~isfield(spec, 'missingnessSpec')
         error('validateSingleRunSpec:MissingField', ...
@@ -76,7 +76,7 @@ function validateSingleRunSpec(spec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %  Validate pipeline specification structs  %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    validateNoiseSpec(spec.noiseSpec);
+    % validateNoiseSpec(spec.noiseSpec);
     validateMissingnessSpec(spec.missingnessSpec);
     validatePCASpec(spec.pcaSpec);
     validateImbalanceSpec(spec.imbalanceSpec);

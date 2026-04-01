@@ -9,7 +9,6 @@ function windowedDataset = buildWindowedDataset(cmapssData, windowSize)
     cmapssSubsets = fieldnames(cmapssData);
     windowedDataset = struct();
     
-
     % Window each CMAPSS subset individually
     for i = 1 : numel(cmapssSubsets)
         currentSubsetName = cmapssSubsets{i};
@@ -31,5 +30,4 @@ function windowedDataset = buildWindowedDataset(cmapssData, windowSize)
         windowedDataset.(currentSubsetName).ntest = ntest;
         windowedDataset.(currentSubsetName).d = d1;
     end
-
 end
