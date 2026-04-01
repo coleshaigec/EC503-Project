@@ -19,18 +19,19 @@ function pcaTransform = fitPCATransform(Xtrain, pcaSpec)
     %      .projectedDimension (int) - projected dimension after PCA
     %      .eigenvalues (1 x k) - eigenvalues associated with PCA transform
 
-    
+
     % Implementation requirements and notes:
+    % 0. Please don't delete the docstring above these notes
     % 1. You can ignore the enabled field - this function doesn't get called
     % without it
     % 2. The behavior of this function depends on the selection mode. If it
-    % is 'varianceThreshold', return whatever number of principal
-    % components is needed to explain at least that percentage of dataset
-    % variance. If it is 'numComponents', return exactly the fixed number of
+    % is 'varianceThreshold', return the smallest number of principal
+    % components needed to explain at least that percentage of dataset
+    % variance. If it is 'fixedNumComponents', return exactly the fixed number of
     % principal components specified by the pcaSpec struct. 
     % 3. 'selectionMode' will always have exactly one value and one
     % corresponding parameter (either 'varianceThreshold' or
-    % 'numComponents'). Whichever mode is selected, please ignore the
+    % 'fixedNumComponents'). Whichever mode is selected, please ignore the
     % parameter passed in for the other mode.
     % 4. mu is computed from the training data passed into fitPCATransform, and must be 
     % used to center both training and test features during applyPCATransform.
@@ -40,8 +41,10 @@ function pcaTransform = fitPCATransform(Xtrain, pcaSpec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % -- YOUR IMPLEMENTATION HERE -- %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    pcaTransform = struct();
     
     
     % -- Output validation - PLEASE DO NOT REMOVE --
-    validatePCATransform(pcaTransform);
+    validatePCATransform(pcaTransform, Xtrain);
 end
