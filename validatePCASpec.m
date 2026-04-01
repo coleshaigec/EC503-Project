@@ -18,16 +18,30 @@ function validatePCASpec(pcaSpec)
             'pcaSpec.enabled must be a logical scalar.');
     end
 
-    if pcaSpec.enabled
-        if ~isfield(pcaSpec, 'varianceThreshold')
-        error('validatePCASpec:MissingField', ...
-            'pcaSpec must have a ''varianceThreshold'' field when PCA is enabled.');
-        end
-        varianceThresholdAttributes = {'scalar', 'finite', '>', 0, '<=', 1};
-        validateattributes(pcaSpec.varianceThreshold, {'numeric'}, varianceThresholdAttributes, mfilename, 'pcaSpec.varianceThreshold');
-    elseif numel(fieldnames(pcaSpec)) ~= 1
-            error('validatePCASpec:InvalidStruct', ...
-                ['When pcaSpec.enabled is false, pcaSpec may contain ', ...
-                 'only the ''enabled'' field.']);
+    if ~isfield(pcaSpec, 'varianceThreshold')
+    error('validatePCASpec:MissingField', ...
+        'pcaSpec must have a ''varianceThreshold'' field.');
     end
+
+    if ~isfield(pcaSpec, 'selectionMode')
+        error('validatePCASpec:MissingField', ...
+        'pcaSpec must have a ''selectionMode'' field.');
+    end
+
+    if ~isfield(pcaSpec, 'fixedNumComponents')
+        error('validatePCASpec:MissingField', ...
+        'pcaSpec must have a ''fixedNumComponents'' field.');
+    end
+
+    if ~ismember(pcaSpec.selectionMode, ["varianceThreshold", "fixedNumComponents"])
+        error('validatePCASpec:InvalidFieldValue', ...
+                'pcaSpec.selectionMode must be one of ''varianceThreshold'' or ''fixedNumComponents''.');
+    end
+
+
+    varianceThresholdAttributes = {'scalar', 'finite', '>', 0, '<=', 1};
+    numComponentsAttributes = {'scalar', 'finite', 'integer' '>', 0};
+    validateattributes(pcaSpec.varianceThreshold, {'numeric'}, varianceThresholdAttributes, mfilename, 'pcaSpec.varianceThreshold');
+    validateattributes(pcaSpec.fixedNumComponents, {'numeric'}, numComponentsAttributes, mfilename, 'pcaSpec.fixedNumComponents');
+
 end

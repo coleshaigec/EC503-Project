@@ -1,6 +1,5 @@
 function normalizedData = applyNormalizationTransform(rawData, normalizationParameters)
-    % APPLYNORMALIZATIONTRANSFORM Apply normalization parameters to train
-    % and test sets.
+    % APPLYNORMALIZATIONTRANSFORM Apply normalization parameters to train and test sets.
     %
     % INPUT: 
     %   rawData struct with fields:
@@ -19,9 +18,9 @@ function normalizedData = applyNormalizationTransform(rawData, normalizationPara
     % OUTPUT:
     %  normalizedData struct with fields:
     %       .Xtrain (nTrain x d double) - normalized training feature matrix
-    %       .ytrain (nTrain x 1 double)    - training label vector
+    %       .ytrain (nTrain x 1 double) - training label vector
     %       .Xtest  (nTest x d double)  - normalized test feature matrix
-    %       .ytest  (nTest x 1 double)     - test label vector
+    %       .ytest  (nTest x 1 double)  - test label vector
     %       .ntrain (int)               - training dataset size
     %       .ntest  (int)               - test dataset size
     %       .d      (int)               - dataset dimension
