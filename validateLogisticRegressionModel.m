@@ -1,8 +1,8 @@
-function validateLogisticRegressionModel(trainedModel, trainingData, logisticRegressionHyperparameters)
+function validateLogisticRegressionModel(logisticRegressionModel, trainingData, logisticRegressionHyperparameters)
     % VALIDATELOGISTICREGRESSIONMODEL Validates trained logistic regression model.
     %
     % INPUTS
-    %  trainedModel struct with fields
+    %  logisticRegressionModel struct with fields
     %      .modelObject                - trained MATLAB multiclass linear classification model
     %      .classLabels (m x 1 double) - unique labels present in training data
     %      .numClasses  (double)       - number of classes
@@ -17,58 +17,58 @@ function validateLogisticRegressionModel(trainedModel, trainingData, logisticReg
     %      .solver (string)            - solver type for templateLinear
 
     % -- Validate type --
-    if ~isstruct(trainedModel)
+    if ~isstruct(logisticRegressionModel)
         error('validateLogisticRegressionModel:InvalidType', ...
-            'trainedModel must be a struct.');
+            'logisticRegressionModel must be a struct.');
     end
 
     % -- Validate required field existence --
-    if ~isfield(trainedModel, 'modelObject')
+    if ~isfield(logisticRegressionModel, 'modelObject')
         error('validateLogisticRegressionModel:MissingField', ...
-            'trainedModel must contain field ''modelObject''.');
+            'logisticRegressionModel must contain field ''modelObject''.');
     end
 
-    if ~isfield(trainedModel, 'classLabels')
+    if ~isfield(logisticRegressionModel, 'classLabels')
         error('validateLogisticRegressionModel:MissingField', ...
-            'trainedModel must contain field ''classLabels''.');
+            'logisticRegressionModel must contain field ''classLabels''.');
     end
 
-    if ~isfield(trainedModel, 'numClasses')
+    if ~isfield(logisticRegressionModel, 'numClasses')
         error('validateLogisticRegressionModel:MissingField', ...
-            'trainedModel must contain field ''numClasses''.');
+            'logisticRegressionModel must contain field ''numClasses''.');
     end
 
     % -- Re-validate hyperparameters and training data context --
     validateLogisticRegressionHyperparameters(trainingData, logisticRegressionHyperparameters);
 
     % -- Validate modelObject --
-    assert(isobject(trainedModel.modelObject), ...
+    assert(isobject(logisticRegressionModel.modelObject), ...
         'validateLogisticRegressionModel:InvalidModelObject', ...
-        'trainedModel.modelObject must be a MATLAB model object.');
+        'logisticRegressionModel.modelObject must be a MATLAB model object.');
 
     % -- Validate classLabels --
-    validateattributes(trainedModel.classLabels, {'double'}, ...
+    validateattributes(logisticRegressionModel.classLabels, {'double'}, ...
         {'vector', 'real', 'nonempty', 'finite'}, ...
-        mfilename, 'trainedModel.classLabels');
+        mfilename, 'logisticRegressionModel.classLabels');
 
     expectedClassLabels = unique(trainingData.ytrain);
-    assert(isequal(trainedModel.classLabels, expectedClassLabels), ...
+    assert(isequal(logisticRegressionModel.classLabels, expectedClassLabels), ...
         'validateLogisticRegressionModel:InvalidClassLabels', ...
-        'trainedModel.classLabels must equal unique(trainingData.ytrain).');
+        'logisticRegressionModel.classLabels must equal unique(trainingData.ytrain).');
 
     % -- Validate numClasses --
-    validateattributes(trainedModel.numClasses, {'numeric'}, ...
+    validateattributes(logisticRegressionModel.numClasses, {'numeric'}, ...
         {'scalar', 'real', 'finite', 'positive', 'integer'}, ...
-        mfilename, 'trainedModel.numClasses');
+        mfilename, 'logisticRegressionModel.numClasses');
 
-    assert(trainedModel.numClasses == numel(expectedClassLabels), ...
+    assert(logisticRegressionModel.numClasses == numel(expectedClassLabels), ...
         'validateLogisticRegressionModel:InvalidNumClasses', ...
-        'trainedModel.numClasses must equal numel(unique(trainingData.ytrain)).');
+        'logisticRegressionModel.numClasses must equal numel(unique(trainingData.ytrain)).');
 
     % -- Validate modelObject class metadata if available --
-    if isprop(trainedModel.modelObject, 'ClassNames')
-        assert(isequal(trainedModel.modelObject.ClassNames, expectedClassLabels), ...
+    if isprop(logisticRegressionModel.modelObject, 'ClassNames')
+        assert(isequal(logisticRegressionModel.modelObject.ClassNames, expectedClassLabels), ...
             'validateLogisticRegressionModel:ClassNamesMismatch', ...
-            'trainedModel.modelObject.ClassNames must match trainingData class labels.');
+            'logisticRegressionModel.modelObject.ClassNames must match trainingData class labels.');
     end
 end
