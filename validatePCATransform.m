@@ -13,7 +13,7 @@ function validatePCATransform(pcaTransform, Xtrain)
     %  Xtrain (nTrain x d double) - training feature matrix 
 
     % -- Validate structure of pcaTransform --
-     if ~isstruct(pcaTransform)
+    if ~isstruct(pcaTransform)
         error('validatePCATransform:InvalidType', ...
             'pcaTransform must be a struct.');
     end
