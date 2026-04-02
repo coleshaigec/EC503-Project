@@ -28,7 +28,6 @@ function knnResult = computeKNNPredictions(dataset, knnModel)
     %          .Xtrain (nTrain x d double)          - training feature matrix
     %          .ytrain (nTrain x 1 double)          - training label vector
     %          .k (int > 0)                         - number of NNs used
-    %  
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Implementation requirements and notes: %
