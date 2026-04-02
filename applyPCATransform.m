@@ -31,7 +31,9 @@ function pcaResult = applyPCATransform(rawData, pcaTransform)
     %      .pcaTransform (struct)      - unchanged from implementation
 
 
-    % Implementation requirements and notes:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Implementation requirements and notes: %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % 0. Please don't delete the docstring above these notes
     % 1. The pcaTransform struct from the fitPCATransform function is used to apply PCA to both training and test datasets 
     % 2. The return item pcaResult is a copy of the original dataset

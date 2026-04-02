@@ -49,5 +49,4 @@ function trainedModel = trainModel(trainingData, modelSpec)
 
     % -- Output validation --
     validateTrainedModel(trainedModel);
-
 end
