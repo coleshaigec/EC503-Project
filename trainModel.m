@@ -14,6 +14,7 @@ function trainedModel = trainModel(trainingData, modelSpec)
     %  trainedModel struct with fields
     %      .model (struct)             - trained model
     %      .modelName (string)         - model type to be trained
+    %      .taskType  (string)         - 'classification' or 'regression'
     %      .hyperparameters            - hyperparameters used in training
 
     
@@ -29,23 +30,33 @@ function trainedModel = trainModel(trainingData, modelSpec)
     switch modelSpec.modelName
         case 'logisticRegression'
             trainedModel.model = trainLogisticRegressionModel(trainingData, modelSpec.hyperparameters);
+            trainedModel.model.taskType = 'regression';
         case 'kernelSVM'
             trainedModel.model = trainKernelSVMModel(trainingData, modelSpec.hyperparameters);
+            trainedModel.model.taskType = 'classification';
         case 'randomForest'
             trainedModel.model = trainRandomForestModel(trainingData, modelSpec.hyperparameters);
+            trainedModel.model.taskType = 'classification';
         case 'gradientBoostingClassifier'
             trainedModel.model = trainGradientBoostingClassificationModel(trainingData, modelSpec.hyperparameters);
+            trainedModel.model.taskType = 'classification';
         case 'gradientBoostingRegression'
             trainedModel.model = trainGradientBoostingRegressionModel(trainingData, modelSpec.hyperparameters);
+            trainedModel.model.taskType = 'regression';
         case 'naiveBayes'
             trainedModel.model = trainNaiveBayesModel(trainingData, modelSpec.hyperparameters);
+            trainedModel.model.taskType = 'classification';
         case 'ridgeRegression'
             trainedModel.model = trainRidgeRegressionModel(trainingData, modelSpec.hyperparameters);
+            trainedModel.model.taskType = 'regression';
         case 'kNN'
             trainedModel.model = trainKNNModel(trainingData, modelSpec.hyperparameters);
+            trainedModel.model.taskType = 'classification';
         otherwise
             error('trainModel:InvalidModelName', 'Unsupported model name: %s', modelSpec.modelName);
     end
+
+    trainedModel.modelName = modelSpec.modelName;
 
     % -- Output validation --
     validateTrainedModel(trainedModel);
