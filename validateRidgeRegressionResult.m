@@ -3,26 +3,21 @@ function validateRidgeRegressionResult(ridgeRegressionResult, dataset, ridgeRegr
     %
     % INPUTS
     %  ridgeRegressionResult struct with fields
-    %      .yHatTrain (nTrain x 1 double) - predicted training labels
-    %      .yHatTest  (nTest x 1 double)  - predicted test labels
-    %      .ridgeRegressionModel struct with fields
-    %          .coeff  (d x 1 double)     - ridge regression coefficients
-    %          .bias   (double)           - intercept term
-    %          .lambda (double >= 0)      - regularization penalty
+    %      .yHat (n x 1 double) - predicted labels
+    %      .metadata struct with fields
+    %          .ridgeRegressionModel struct with fields
+    %              .coeff  (d x 1 double) - ridge regression coefficients
+    %              .bias   (double)       - intercept term
+    %              .lambda (double >= 0)  - regularization penalty
     %
     %  dataset struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
-    %      .Xtest  (nTest x d double)  - test feature matrix
-    %      .ytest  (nTest x 1 double)  - test label vector
-    %      .ntrain (int)               - training dataset size
-    %      .ntest  (int)               - test dataset size
-    %      .d      (int)               - dataset dimension
+    %      .X (n x d double) - feature matrix
+    %      .y (n x 1 double) - label vector
     %
     %  ridgeRegressionModel struct with fields
-    %      .coeff  (d x 1 double)      - ridge regression coefficients
-    %      .bias   (double)            - intercept term
-    %      .lambda (double >= 0)       - regularization penalty
+    %      .coeff  (d x 1 double) - ridge regression coefficients
+    %      .bias   (double)       - intercept term
+    %      .lambda (double >= 0)  - regularization penalty
 
     % -- Validate structure of ridgeRegressionResult --
     if ~isstruct(ridgeRegressionResult)
@@ -30,58 +25,90 @@ function validateRidgeRegressionResult(ridgeRegressionResult, dataset, ridgeRegr
             'ridgeRegressionResult must be a struct.');
     end
 
-    if ~isfield(ridgeRegressionResult, 'yHatTrain')
+    if ~isfield(ridgeRegressionResult, 'yHat')
         error('validateRidgeRegressionResult:MissingField', ...
-            'ridgeRegressionResult must have a ''yHatTrain'' field.');
+            'ridgeRegressionResult must have a ''yHat'' field.');
     end
 
-    if ~isfield(ridgeRegressionResult, 'yHatTest')
+    if ~isfield(ridgeRegressionResult, 'metadata')
         error('validateRidgeRegressionResult:MissingField', ...
-            'ridgeRegressionResult must have a ''yHatTest'' field.');
+            'ridgeRegressionResult must have a ''metadata'' field.');
     end
 
-    if ~isfield(ridgeRegressionResult, 'ridgeRegressionModel')
-        error('validateRidgeRegressionResult:MissingField', ...
-            'ridgeRegressionResult must have a ''ridgeRegressionModel'' field.');
+    if ~isstruct(ridgeRegressionResult.metadata)
+        error('validateRidgeRegressionResult:InvalidType', ...
+            'ridgeRegressionResult.metadata must be a struct.');
     end
 
-    % -- Re-validate supplied ridge model and recover dimensions --
-    validateRidgeRegressionModel(ridgeRegressionModel, dataset, ...
-        struct('lambda', ridgeRegressionModel.lambda));
+    if ~isfield(ridgeRegressionResult.metadata, 'ridgeRegressionModel')
+        error('validateRidgeRegressionResult:MissingField', ...
+            'ridgeRegressionResult.metadata must have a ''ridgeRegressionModel'' field.');
+    end
 
-    nTrain = dataset.ntrain;
-    nTest = dataset.ntest;
+    % -- Validate dataset --
+    if ~isstruct(dataset)
+        error('validateRidgeRegressionResult:InvalidType', ...
+            'dataset must be a struct.');
+    end
+
+    if ~isfield(dataset, 'X')
+        error('validateRidgeRegressionResult:MissingField', ...
+            'dataset must have an ''X'' field.');
+    end
+
+    if ~isfield(dataset, 'y')
+        error('validateRidgeRegressionResult:MissingField', ...
+            'dataset must have a ''y'' field.');
+    end
+
+    validateattributes(dataset.X, {'double'}, ...
+        {'2d', 'real', 'nonempty', 'finite'}, ...
+        mfilename, 'dataset.X');
+
+    validateattributes(dataset.y, {'double'}, ...
+        {'vector', 'real', 'nonempty', 'finite'}, ...
+        mfilename, 'dataset.y');
+
+    n = size(dataset.X, 1);
+    d = size(dataset.X, 2);
+
+    assert(numel(dataset.y) == n, ...
+        'dataset.y must have dimension n x 1.');
+
+    % -- Re-validate supplied ridge model --
+    trainingDataForValidation = struct();
+    trainingDataForValidation.Xtrain = dataset.X;
+    trainingDataForValidation.ytrain = dataset.y;
+
+    ridgeRegressionHyperparameters = struct();
+    ridgeRegressionHyperparameters.lambda = ridgeRegressionModel.lambda;
+
+    validateRidgeRegressionModel(ridgeRegressionModel, ...
+        trainingDataForValidation, ridgeRegressionHyperparameters);
 
     % -- Define attributes --
     PREDICTION_VECTOR_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'double'};
 
     % -- Validate attached model metadata field --
-    assert(isequal(ridgeRegressionResult.ridgeRegressionModel, ridgeRegressionModel), ...
-        'ridgeRegressionResult.ridgeRegressionModel must equal the supplied ridgeRegressionModel.');
+    assert(isequal(ridgeRegressionResult.metadata.ridgeRegressionModel, ridgeRegressionModel), ...
+        'ridgeRegressionResult.metadata.ridgeRegressionModel must equal the supplied ridgeRegressionModel.');
 
-    % -- Validate yHatTrain --
-    validateattributes(ridgeRegressionResult.yHatTrain, {'double'}, ...
-        PREDICTION_VECTOR_ATTRIBUTES, mfilename, 'ridgeRegressionResult.yHatTrain');
-    assert(numel(ridgeRegressionResult.yHatTrain) == nTrain, ...
-        'ridgeRegressionResult.yHatTrain must have dimension nTrain x 1.');
+    % -- Validate yHat --
+    validateattributes(ridgeRegressionResult.yHat, {'double'}, ...
+        PREDICTION_VECTOR_ATTRIBUTES, mfilename, 'ridgeRegressionResult.yHat');
+    assert(numel(ridgeRegressionResult.yHat) == n, ...
+        'ridgeRegressionResult.yHat must have dimension n x 1.');
 
-    % -- Validate yHatTest --
-    validateattributes(ridgeRegressionResult.yHatTest, {'double'}, ...
-        PREDICTION_VECTOR_ATTRIBUTES, mfilename, 'ridgeRegressionResult.yHatTest');
-    assert(numel(ridgeRegressionResult.yHatTest) == nTest, ...
-        'ridgeRegressionResult.yHatTest must have dimension nTest x 1.');
+    % -- Validate dimensional compatibility between dataset and model --
+    assert(isequal(size(ridgeRegressionModel.coeff), [d, 1]), ...
+        'ridgeRegressionModel.coeff must have dimension d x 1.');
 
     % -- Validate prediction semantics against supplied model --
-    expectedYHatTrain = dataset.Xtrain * ridgeRegressionModel.coeff + ridgeRegressionModel.bias;
-    expectedYHatTest = dataset.Xtest * ridgeRegressionModel.coeff + ridgeRegressionModel.bias;
+    expectedYHat = dataset.X * ridgeRegressionModel.coeff + ridgeRegressionModel.bias;
 
-    assert(isequal(size(expectedYHatTrain), [nTrain, 1]), ...
-        'Internal error: expectedYHatTrain must have dimension nTrain x 1.');
-    assert(isequal(size(expectedYHatTest), [nTest, 1]), ...
-        'Internal error: expectedYHatTest must have dimension nTest x 1.');
+    assert(isequal(size(expectedYHat), [n, 1]), ...
+        'Internal error: expectedYHat must have dimension n x 1.');
 
-    assert(isequal(ridgeRegressionResult.yHatTrain, expectedYHatTrain), ...
-        'ridgeRegressionResult.yHatTrain must equal dataset.Xtrain * coeff + bias.');
-    assert(isequal(ridgeRegressionResult.yHatTest, expectedYHatTest), ...
-        'ridgeRegressionResult.yHatTest must equal dataset.Xtest * coeff + bias.');
+    assert(isequal(ridgeRegressionResult.yHat, expectedYHat), ...
+        'ridgeRegressionResult.yHat must equal dataset.X * coeff + bias.');
 end

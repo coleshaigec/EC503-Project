@@ -1,15 +1,16 @@
 function runPipeline(rawData, runSpec)
-    %RUNPIPELINE Executes a single run of the preprocessing + training +
-    %reporting pipeline on a single windowed CMAPSS subset. 
+    %RUNPIPELINE Executes a single run of the preprocessing + training + reporting pipeline on a single windowed CMAPSS subset. 
+    %
+    % DOCSTRING TO BE POPULATED
 
-    % Step 1: Inject pathologies to data
+    % -- Step 1: Inject pathologies to data --
     pathologySpec = struct();
     pathologySpec.missingnessSpec = runSpec.missingnessSpec;
     pathologySpec.imbalanceSpec = runSpec.imbalanceSpec;
 
     dataWithPathologies = injectPathologiesToData(rawData, pathologySpec);
 
-    % Step 2: Apply feature transformations
+    % -- Step 2: Apply feature transformations -- 
     transformationSpec = struct();
     transformationSpec.pcaSpec = runSpec.pcaSpec;
     transformationSpec.normalizationSpec = struct(...
@@ -18,7 +19,8 @@ function runPipeline(rawData, runSpec)
 
     transformedData = applyFeatureTransformationsToData(dataWithPathologies, transformationSpec);
 
-    % Step 3: Run hyperparameter tuning on training set
+    % -- Step 3: Run hyperparameter tuning on training set --
+    
     
 
 

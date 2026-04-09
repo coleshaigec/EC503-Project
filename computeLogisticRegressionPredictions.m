@@ -2,13 +2,8 @@ function logisticRegressionResult = computeLogisticRegressionPredictions(dataset
 % COMPUTELOGISTICREGRESSIONPREDICTIONS Computes predictions of logistic regression multi-class classification model on dataset.
     % INPUT 
     %  dataset struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
-    %      .Xtest  (nTest x d double)  - test feature matrix
-    %      .ytest  (nTest x 1 double)  - test label vector
-    %      .ntrain (int)               - training dataset size
-    %      .ntest  (int)               - test dataset size
-    %      .d      (int)               - dataset dimension
+    %      .X (n x d double)    - feature matrix
+    %      .y (n x 1 double)    - label vector
     %
     %  logisticRegressionModel struct with fields
     %      .modelObject                - trained MATLAB ECOC multiclass classification model
@@ -17,14 +12,13 @@ function logisticRegressionResult = computeLogisticRegressionPredictions(dataset
     %
     % OUTPUT
     %  logisticRegressionResult struct with fields
-    %      .yHatTrain (ntrain x 1 double)           - predicted training labels
-    %      .yHatTest  (ntest x 1 double)            - predicted test labels
-    %      .scoresTrain (nTrain x m double)         — class scores for training samples
-    %      .scoresTest (nTest x m double)           — class scores for test samples
-    %      .logisticRegressionModel struct with fields
-    %      .modelObject                             - trained MATLAB ECOC multiclass classification model
-    %      .classLabels (m x 1 double)              - unique labels present in training data
-    %      .numClasses  (double)                    - number of classes
+    %      .yHat (n x 1 double)                              - predicted labels
+    %      .metadata struct with fields
+    %          .scores (n x m double)                        — class scores for training samples
+    %          .logisticRegressionModel struct with fields
+    %               .modelObject                             - trained MATLAB ECOC multiclass classification model
+    %               .classLabels (m x 1 double)              - unique labels present in training data
+    %               .numClasses  (double)                    - number of classes
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Implementation requirements and notes: %

@@ -3,13 +3,8 @@ function knnResult = computeKNNPredictions(dataset, knnModel)
     %
     % INPUT 
     %  dataset struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
-    %      .Xtest  (nTest x d double)  - test feature matrix
-    %      .ytest  (nTest x 1 double)  - test label vector
-    %      .ntrain (int)               - training dataset size
-    %      .ntest  (int)               - test dataset size
-    %      .d      (int)               - dataset dimension
+    %      .X (n x d double) - feature matrix
+    %      .y (n x 1 double) - label vector
     %
     %  knnModel struct with fields
     %      .Xtrain (nTrain x d double) - training feature matrix
@@ -18,16 +13,14 @@ function knnResult = computeKNNPredictions(dataset, knnModel)
     %
     % OUTPUT
     %  knnResult struct with fields
-    %      .yHatTrain (ntrain x 1 double)           - predicted training labels
-    %      .yHatTest  (ntest x 1 double)            - predicted test labels
-    %      .knnDistancesTrain (ntrain x k double)   - distances of k-nearest neighbors of each training sample
-    %      .knnDistancesTest  (ntest x k double)    - distances of k-nearest neighbors of each test sample
-    %      .knnIndicesTrain   (ntrain x k int)      - indices of k-nearest neighbors of each training point
-    %      .knnIndicesTest   (ntest x k int)        - indices of k-nearest neighbors of each test point
-    %      .knnModel struct with fields
-    %          .Xtrain (nTrain x d double)          - training feature matrix
-    %          .ytrain (nTrain x 1 double)          - training label vector
-    %          .k (int > 0)                         - number of NNs used
+    %      .yHat (n x 1 double)           - predicted labels
+    %      .metadata struct with fields
+    %          .knnDistances (n x k double)   - distances of k-nearest neighbors of each training sample
+    %          .knnIndices (n x k int)        - indices of k-nearest neighbors of each training point
+    %          .knnModel struct with fields
+    %              .Xtrain (nTrain x d double)          - training feature matrix
+    %              .ytrain (nTrain x 1 double)          - training label vector
+    %              .k (int > 0)                         - number of NNs used
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Implementation requirements and notes: %

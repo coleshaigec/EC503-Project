@@ -3,13 +3,8 @@ function predictionResult = computePredictions(dataset, model)
     %
     % INPUT 
     %  dataset struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
-    %      .Xtest  (nTest x d double)  - test feature matrix
-    %      .ytest  (nTest x 1 double)  - test label vector
-    %      .ntrain (int)               - training dataset size
-    %      .ntest  (int)               - test dataset size
-    %      .d      (int)               - dataset dimension
+    %      .X (n x d double)           - feature matrix
+    %      .y (n x 1 double)           - label vector
     %
     %  model struct with fields
     %      .model (struct)             - trained model
@@ -18,10 +13,9 @@ function predictionResult = computePredictions(dataset, model)
     %      .hyperparameters (struct)   - hyperparameters used in training
     %
     % OUTPUT
-    %  predictions struct with fields
-    %      .yHatTrain (ntrain x 1 double)
-    %      .yHatTest  (ntest x 1 double)
-    %      other model-specific fields
+    %  predictionResult struct with fields
+    %      .yHat (n x 1 double)        - predicted labels
+    %      .metadata struct with model-specific fields
 
     % -- Parse model and call appropriate model predictor --
     switch model.modelName

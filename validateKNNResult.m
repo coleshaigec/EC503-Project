@@ -3,25 +3,18 @@ function validateKNNResult(knnResult, dataset, knnModel)
     %
     % INPUTS
     %  knnResult struct with fields
-    %      .yHatTrain (ntrain x 1 double)           - predicted training labels
-    %      .yHatTest  (ntest x 1 double)            - predicted test labels
-    %      .knnDistancesTrain (ntrain x k double)   - distances of k-nearest neighbors of each training sample
-    %      .knnDistancesTest  (ntest x k double)    - distances of k-nearest neighbors of each test sample
-    %      .knnIndicesTrain   (ntrain x k int)      - indices of k-nearest neighbors of each training point
-    %      .knnIndicesTest    (ntest x k int)       - indices of k-nearest neighbors of each test point
-    %      .knnModel struct with fields
-    %          .Xtrain (nTrain x d double)          - training feature matrix
-    %          .ytrain (nTrain x 1 double)          - training label vector
-    %          .k (int > 0)                         - number of NNs used
+    %      .yHat (n x 1 double) - predicted labels
+    %      .metadata struct with fields
+    %          .knnDistances (n x k double) - distances of k-nearest neighbors of each sample
+    %          .knnIndices (n x k int)      - indices of k-nearest neighbors of each sample
+    %          .knnModel struct with fields
+    %              .Xtrain (nTrain x d double) - training feature matrix
+    %              .ytrain (nTrain x 1 double) - training label vector
+    %              .k (int > 0)                - number of NNs used
     %
     %  dataset struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
-    %      .Xtest  (nTest x d double)  - test feature matrix
-    %      .ytest  (nTest x 1 double)  - test label vector
-    %      .ntrain (int)               - training dataset size
-    %      .ntest  (int)               - test dataset size
-    %      .d      (int)               - dataset dimension
+    %      .X (n x d double) - feature matrix
+    %      .y (n x 1 double) - label vector
     %
     %  knnModel struct with fields
     %      .Xtrain (nTrain x d double) - training feature matrix
@@ -34,119 +27,128 @@ function validateKNNResult(knnResult, dataset, knnModel)
             'knnResult must be a struct.');
     end
 
-    if ~isfield(knnResult, 'yHatTrain')
+    if ~isfield(knnResult, 'yHat')
         error('validateKNNResult:MissingField', ...
-            'knnResult must have a ''yHatTrain'' field.');
+            'knnResult must have a ''yHat'' field.');
     end
 
-    if ~isfield(knnResult, 'yHatTest')
+    if ~isfield(knnResult, 'metadata')
         error('validateKNNResult:MissingField', ...
-            'knnResult must have a ''yHatTest'' field.');
+            'knnResult must have a ''metadata'' field.');
     end
 
-    if ~isfield(knnResult, 'knnDistancesTrain')
-        error('validateKNNResult:MissingField', ...
-            'knnResult must have a ''knnDistancesTrain'' field.');
+    if ~isstruct(knnResult.metadata)
+        error('validateKNNResult:InvalidType', ...
+            'knnResult.metadata must be a struct.');
     end
 
-    if ~isfield(knnResult, 'knnDistancesTest')
+    if ~isfield(knnResult.metadata, 'knnDistances')
         error('validateKNNResult:MissingField', ...
-            'knnResult must have a ''knnDistancesTest'' field.');
+            'knnResult.metadata must have a ''knnDistances'' field.');
     end
 
-    if ~isfield(knnResult, 'knnIndicesTrain')
+    if ~isfield(knnResult.metadata, 'knnIndices')
         error('validateKNNResult:MissingField', ...
-            'knnResult must have a ''knnIndicesTrain'' field.');
+            'knnResult.metadata must have a ''knnIndices'' field.');
     end
 
-    if ~isfield(knnResult, 'knnIndicesTest')
+    if ~isfield(knnResult.metadata, 'knnModel')
         error('validateKNNResult:MissingField', ...
-            'knnResult must have a ''knnIndicesTest'' field.');
+            'knnResult.metadata must have a ''knnModel'' field.');
     end
 
-    if ~isfield(knnResult, 'knnModel')
-        error('validateKNNResult:MissingField', ...
-            'knnResult must have a ''knnModel'' field.');
+    % -- Validate dataset --
+    if ~isstruct(dataset)
+        error('validateKNNResult:InvalidType', ...
+            'dataset must be a struct.');
     end
+
+    if ~isfield(dataset, 'X')
+        error('validateKNNResult:MissingField', ...
+            'dataset must have an ''X'' field.');
+    end
+
+    if ~isfield(dataset, 'y')
+        error('validateKNNResult:MissingField', ...
+            'dataset must have a ''y'' field.');
+    end
+
+    validateattributes(dataset.X, {'double'}, ...
+        {'2d', 'real', 'nonempty', 'finite'}, ...
+        mfilename, 'dataset.X');
+
+    validateattributes(dataset.y, {'double'}, ...
+        {'vector', 'real', 'nonempty', 'finite'}, ...
+        mfilename, 'dataset.y');
+
+    n = size(dataset.X, 1);
+    d = size(dataset.X, 2);
+    assert(numel(dataset.y) == n, ...
+        'dataset.y must have dimension n x 1.');
 
     % -- Re-validate supplied kNN model and recover dimensions --
-    validateKNNModel(knnModel, dataset, struct('k', knnModel.k));
+    validateKNNModel(knnModel, ...
+        struct('Xtrain', knnModel.Xtrain, 'ytrain', knnModel.ytrain), ...
+        struct('k', knnModel.k));
 
-    nTrain = dataset.ntrain;
-    nTest = dataset.ntest;
+    nTrain = size(knnModel.Xtrain, 1);
     k = knnModel.k;
-    validClassLabels = unique(dataset.ytrain);
+    validClassLabels = unique(knnModel.ytrain);
 
     % -- Define attributes --
     LABEL_VECTOR_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'double'};
     DISTANCE_MATRIX_ATTRIBUTES = {'2d', 'real', 'nonempty', 'finite', 'double', 'nonnegative'};
     INDEX_MATRIX_ATTRIBUTES = {'2d', 'real', 'nonempty', 'finite', 'integer', 'positive'};
 
-    % -- Validate yHatTrain --
-    validateattributes(knnResult.yHatTrain, {'double'}, ...
-        LABEL_VECTOR_ATTRIBUTES, mfilename, 'knnResult.yHatTrain');
-    assert(numel(knnResult.yHatTrain) == nTrain, ...
-        'knnResult.yHatTrain must have dimension nTrain x 1.');
-    assert(all(ismember(knnResult.yHatTrain, validClassLabels)), ...
-        'knnResult.yHatTrain must contain only labels present in dataset.ytrain.');
+    % -- Validate yHat --
+    validateattributes(knnResult.yHat, {'double'}, ...
+        LABEL_VECTOR_ATTRIBUTES, mfilename, 'knnResult.yHat');
+    assert(numel(knnResult.yHat) == n, ...
+        'knnResult.yHat must have dimension n x 1.');
+    assert(all(ismember(knnResult.yHat, validClassLabels)), ...
+        'knnResult.yHat must contain only labels present in knnModel.ytrain.');
 
-    % -- Validate yHatTest --
-    validateattributes(knnResult.yHatTest, {'double'}, ...
-        LABEL_VECTOR_ATTRIBUTES, mfilename, 'knnResult.yHatTest');
-    assert(numel(knnResult.yHatTest) == nTest, ...
-        'knnResult.yHatTest must have dimension nTest x 1.');
-    assert(all(ismember(knnResult.yHatTest, validClassLabels)), ...
-        'knnResult.yHatTest must contain only labels present in dataset.ytrain.');
+    % -- Validate knnDistances --
+    validateattributes(knnResult.metadata.knnDistances, {'double'}, ...
+        DISTANCE_MATRIX_ATTRIBUTES, mfilename, 'knnResult.metadata.knnDistances');
+    assert(isequal(size(knnResult.metadata.knnDistances), [n, k]), ...
+        'knnResult.metadata.knnDistances must have dimension n x k.');
 
-    % -- Validate knnDistancesTrain --
-    validateattributes(knnResult.knnDistancesTrain, {'double'}, ...
-        DISTANCE_MATRIX_ATTRIBUTES, mfilename, 'knnResult.knnDistancesTrain');
-    assert(isequal(size(knnResult.knnDistancesTrain), [nTrain, k]), ...
-        'knnResult.knnDistancesTrain must have dimension nTrain x k.');
-
-    % -- Validate knnDistancesTest --
-    validateattributes(knnResult.knnDistancesTest, {'double'}, ...
-        DISTANCE_MATRIX_ATTRIBUTES, mfilename, 'knnResult.knnDistancesTest');
-    assert(isequal(size(knnResult.knnDistancesTest), [nTest, k]), ...
-        'knnResult.knnDistancesTest must have dimension nTest x k.');
-
-    % -- Validate knnIndicesTrain --
-    validateattributes(knnResult.knnIndicesTrain, {'numeric'}, ...
-        INDEX_MATRIX_ATTRIBUTES, mfilename, 'knnResult.knnIndicesTrain');
-    assert(isequal(size(knnResult.knnIndicesTrain), [nTrain, k]), ...
-        'knnResult.knnIndicesTrain must have dimension nTrain x k.');
-    assert(all(knnResult.knnIndicesTrain(:) <= nTrain), ...
-        'knnResult.knnIndicesTrain must contain indices in the range 1:nTrain.');
-
-    % -- Validate knnIndicesTest --
-    validateattributes(knnResult.knnIndicesTest, {'numeric'}, ...
-        INDEX_MATRIX_ATTRIBUTES, mfilename, 'knnResult.knnIndicesTest');
-    assert(isequal(size(knnResult.knnIndicesTest), [nTest, k]), ...
-        'knnResult.knnIndicesTest must have dimension nTest x k.');
-    assert(all(knnResult.knnIndicesTest(:) <= nTrain), ...
-        'knnResult.knnIndicesTest must contain indices in the range 1:nTrain.');
+    % -- Validate knnIndices --
+    validateattributes(knnResult.metadata.knnIndices, {'numeric'}, ...
+        INDEX_MATRIX_ATTRIBUTES, mfilename, 'knnResult.metadata.knnIndices');
+    assert(isequal(size(knnResult.metadata.knnIndices), [n, k]), ...
+        'knnResult.metadata.knnIndices must have dimension n x k.');
+    assert(all(knnResult.metadata.knnIndices(:) <= nTrain), ...
+        'knnResult.metadata.knnIndices must contain indices in the range 1:nTrain.');
 
     % -- Validate ordering of distances --
-    isTrainSorted = all(all(diff(knnResult.knnDistancesTrain, 1, 2) >= 0));
-    isTestSorted = all(all(diff(knnResult.knnDistancesTest, 1, 2) >= 0));
-    assert(isTrainSorted, ...
-        'knnResult.knnDistancesTrain must be sorted in nondecreasing order across neighbors.');
-    assert(isTestSorted, ...
-        'knnResult.knnDistancesTest must be sorted in nondecreasing order across neighbors.');
-
-    % -- Validate self-neighbor exclusion for training predictions --
-    trainRowIndices = (1:nTrain).';
-    selfIncludedMask = any(knnResult.knnIndicesTrain == trainRowIndices, 2);
-    assert(~any(selfIncludedMask), ...
-        'knnResult.knnIndicesTrain must exclude the sample itself from its own neighbor set.');
+    isSorted = all(all(diff(knnResult.metadata.knnDistances, 1, 2) >= 0));
+    assert(isSorted, ...
+        'knnResult.metadata.knnDistances must be sorted in nondecreasing order across neighbors.');
 
     % -- Validate attached model metadata --
-    assert(isequal(knnResult.knnModel, knnModel), ...
-        'knnResult.knnModel must equal the supplied knnModel.');
+    assert(isequal(knnResult.metadata.knnModel, knnModel), ...
+        'knnResult.metadata.knnModel must equal the supplied knnModel.');
 
     % -- Validate consistency between attached model and supplied model --
-    assert(isequal(knnResult.knnModel.Xtrain, dataset.Xtrain), ...
-        'knnResult.knnModel.Xtrain must equal dataset.Xtrain.');
-    assert(isequal(knnResult.knnModel.ytrain, dataset.ytrain), ...
-        'knnResult.knnModel.ytrain must equal dataset.ytrain.');
+    assert(isequal(knnResult.metadata.knnModel.Xtrain, knnModel.Xtrain), ...
+        'knnResult.metadata.knnModel.Xtrain must equal knnModel.Xtrain.');
+    assert(isequal(knnResult.metadata.knnModel.ytrain, knnModel.ytrain), ...
+        'knnResult.metadata.knnModel.ytrain must equal knnModel.ytrain.');
+    assert(knnResult.metadata.knnModel.k == knnModel.k, ...
+        'knnResult.metadata.knnModel.k must equal knnModel.k.');
+
+    % -- Validate dimensional compatibility between dataset and model --
+    assert(size(knnModel.Xtrain, 2) == d, ...
+        'dataset.X and knnModel.Xtrain must have the same number of columns.');
+
+    % -- Validate self-neighbor exclusion when dataset matches model training data --
+    isSameDatasetAsTraining = isequal(dataset.X, knnModel.Xtrain) && isequal(dataset.y, knnModel.ytrain);
+    if isSameDatasetAsTraining
+        rowIndices = (1:nTrain).';
+        selfIncludedMask = any(knnResult.metadata.knnIndices == rowIndices, 2);
+        assert(~any(selfIncludedMask), ...
+            'knnResult.metadata.knnIndices must exclude the sample itself when predicting on the training set.');
+    end
 end
