@@ -3,8 +3,8 @@ function trainedModel = trainModel(trainingData, modelSpec)
     %
     % INPUTS
     %  trainingData struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
+    %      .X (nTrain x d double) - training feature matrix
+    %      .y (nTrain x 1 double) - training label vector
     %
     %  modelSpec struct with fields
     %      .modelName (string)         - model type to be trained
@@ -30,28 +30,28 @@ function trainedModel = trainModel(trainingData, modelSpec)
     switch modelSpec.modelName
         case 'logisticRegression'
             trainedModel.model = trainLogisticRegressionModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.model.taskType = 'regression';
+            trainedModel.taskType = 'classification';
         case 'kernelSVM'
             trainedModel.model = trainKernelSVMModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.model.taskType = 'classification';
+            trainedModel.taskType = 'classification';
         case 'randomForest'
             trainedModel.model = trainRandomForestModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.model.taskType = 'classification';
+            trainedModel.taskType = 'classification';
         case 'gradientBoostingClassifier'
             trainedModel.model = trainGradientBoostingClassificationModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.model.taskType = 'classification';
+            trainedModel.taskType = 'classification';
         case 'gradientBoostingRegression'
             trainedModel.model = trainGradientBoostingRegressionModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.model.taskType = 'regression';
+            trainedModel.taskType = 'regression';
         case 'naiveBayes'
             trainedModel.model = trainNaiveBayesModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.model.taskType = 'classification';
+            trainedModel.taskType = 'classification';
         case 'ridgeRegression'
             trainedModel.model = trainRidgeRegressionModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.model.taskType = 'regression';
+            trainedModel.taskType = 'regression';
         case 'kNN'
             trainedModel.model = trainKNNModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.model.taskType = 'classification';
+            trainedModel.taskType = 'classification';
         otherwise
             error('trainModel:InvalidModelName', 'Unsupported model name: %s', modelSpec.modelName);
     end

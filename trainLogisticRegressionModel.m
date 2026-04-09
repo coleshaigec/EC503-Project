@@ -3,8 +3,8 @@ function trainedModel = trainLogisticRegressionModel(trainingData, logisticRegre
     %
     % INPUTS
     %  trainingData struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
+    %      .X (n x d double) - training feature matrix
+    %      .y (n x 1 double) - training label vector
     %
     %  logisticRegressionHyperparameters struct with fields
     %      .lambda (double >= 0)       - regularization strength
@@ -30,15 +30,15 @@ function trainedModel = trainLogisticRegressionModel(trainingData, logisticRegre
 
     % -- Train multiclass linear classifier using MATLAB built-in --
     modelObject = fitcecoc( ...
-        trainingData.Xtrain, ...
-        trainingData.ytrain, ...
+        trainingData.X, ...
+        trainingData.y, ...
         'Learners', logisticTemplate, ...
-        'ClassNames', unique(trainingData.ytrain), ...
+        'ClassNames', unique(trainingData.y), ...
         'FitPosterior', true...
     );
 
     % -- Populate output struct --
-    classes = unique(trainingData.ytrain);
+    classes = unique(trainingData.y);
     trainedModel = struct();
     trainedModel.modelObject = modelObject;
     trainedModel.classLabels = classes;

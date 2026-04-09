@@ -3,8 +3,8 @@ function knnModel = trainKNNModel(trainingData, knnHyperparameters)
     %
     % INPUTS
     %  trainingData struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
+    %      .X (n x d double) - training feature matrix
+    %      .y (n x 1 double) - training label vector
     %
     %  knnHyperparameters struct with fields
     %      .k (int > 0)                - number of NNs used
@@ -27,8 +27,8 @@ function knnModel = trainKNNModel(trainingData, knnHyperparameters)
 
     % -- Construct kNN model struct --
     knnModel = struct();
-    knnModel.Xtrain = trainingData.Xtrain;
-    knnModel.ytrain = trainingData.ytrain;
+    knnModel.Xtrain = trainingData.X;
+    knnModel.ytrain = trainingData.y;
     knnModel.k = knnHyperparameters.k;
 
     % -- Validate output --

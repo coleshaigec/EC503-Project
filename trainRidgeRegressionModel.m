@@ -3,8 +3,8 @@ function ridgeRegressionModel = trainRidgeRegressionModel(trainingData, ridgeReg
     %
     % INPUTS
     %  trainingData struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
+    %      .X (nTrain x d double)      - training feature matrix
+    %      .y (nTrain x 1 double)      - training label vector
     %
     %  ridgeRegressionHyperparameters struct with fields
     %      .lambda (double > 0)        - regularization penalty parameter
