@@ -18,6 +18,8 @@ function runScore = computeClassificationTuningScore(validationData, trainedMode
     % NOTES
     %  - 75/25 F1/accuracy weighting is used since CMAPSS dataset is
     %  inherently skewed, making F1 a more reliable metric
+    %  - This balance is an approximate heuristic choice based on CMAPSS
+    %  EDA rather than some unique optimization calculation
 
     % Compute predicted labels
     predictions = computePredictions(validationData, trainedModel);
