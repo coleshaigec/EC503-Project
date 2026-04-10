@@ -72,7 +72,7 @@ function dataset = buildDatasetForPipelineRun(windowedCMAPSSData, runPlan)
 
     % -- If missingness is enabled, inject it --
     if runPlan.missingnessSpec.enabled
-        error('buildDatasetForPipelineRun:MissingnessNotImplemented', 'Missingness injection is not yet implemented.'); % TO BE IMPLEMENTEd
+        error('buildDatasetForPipelineRun:MissingnessNotImplemented', 'Missingness injection is not yet implemented.');
     end
 
     % -- Normalize data --
