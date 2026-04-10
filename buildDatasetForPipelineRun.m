@@ -1,88 +1,40 @@
-function dataset = buildDatasetForPipelineRun(rawCMAPSSData, runPlan)
-    % BUILDDATASETFORPIPELINERUN Applies preprocessing transforms to raw CMAPSS data according to plan for a single pipeline run. 
+function dataset = buildDatasetForPipelineRun(windowedCMAPSSData, runPlan)
+    % BUILDDATASETFORPIPELINERUN Builds pipeline-ready tabular dataset from windowed CMAPSS data according to plan for a single pipeline run. 
     % 
     % INPUTS 
-    %  rawCMAPSSData struct with fields
+    %  windowedCMAPSSData struct with fields
     %      .FD001 struct with fields
-    %          .train struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .test struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .name (string)
+    %          .Xtrain (ntrain x d double)  - training feature matrix
+    %          .ytrain (ntrain x 1 double)  - training label vector
+    %          .Xtest  (ntest x d double)   - test feature matrix
+    %          .ytest  (ntest x 1 double)   - test label vector
+    %          .ntrain (double)             - training set cardinality
+    %          .ntest  (double)             - test set cardinality
+    %          .d      (double)             - dataset dimension
     %      .FD002 struct with fields
-    %          .train struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .test struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .name (string)
+    %          .Xtrain (ntrain x d double)  - training feature matrix
+    %          .ytrain (ntrain x 1 double)  - training label vector
+    %          .Xtest  (ntest x d double)   - test feature matrix
+    %          .ytest  (ntest x 1 double)   - test label vector
+    %          .ntrain (double)             - training set cardinality
+    %          .ntest  (double)             - test set cardinality
+    %          .d      (double)             - dataset dimension
     %      .FD003 struct with fields
-    %          .train struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .test struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .name (string)
+    %          .Xtrain (ntrain x d double)  - training feature matrix
+    %          .ytrain (ntrain x 1 double)  - training label vector
+    %          .Xtest  (ntest x d double)   - test feature matrix
+    %          .ytest  (ntest x 1 double)   - test label vector
+    %          .ntrain (double)             - training set cardinality
+    %          .ntest  (double)             - test set cardinality
+    %          .d      (double)             - dataset dimension
     %      .FD004 struct with fields
-    %          .train struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .test struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .name (string)
+    %          .Xtrain (ntrain x d double)  - training feature matrix
+    %          .ytrain (ntrain x 1 double)  - training label vector
+    %          .Xtest  (ntest x d double)   - test feature matrix
+    %          .ytest  (ntest x 1 double)   - test label vector
+    %          .ntrain (double)             - training set cardinality
+    %          .ntest  (double)             - test set cardinality
+    %          .d      (double)             - dataset dimension
     %
     %  runPlan struct with fields
     %      .pcaSpec struct with fields
@@ -104,11 +56,6 @@ function dataset = buildDatasetForPipelineRun(rawCMAPSSData, runPlan)
     %
     % OUTPUTS
 
-
-    % -- Trim off undesired sensors and apply windowing -- 
-    trimmedCMAPSSData = trimSensorReadings(cmapssData);
-    windowedCMAPSSData = buildWindowedDataset(trimmedCMAPSSData, runPlan.windowSize);
-
     % -- Choose desired CMAPSS subset from windowed data --
     chosenSubset = windowedCMAPSSData.(runPlan.cmapssSubset);
 
@@ -125,7 +72,7 @@ function dataset = buildDatasetForPipelineRun(rawCMAPSSData, runPlan)
 
     % -- If missingness is enabled, inject it --
     if runPlan.missingnessSpec.enabled
-        fprintf('!!! MISSINGNESS TO BE IMPLEMENTED !!!'); % TO BE IMPLEMENTEd
+        error('buildDatasetForPipelineRun:MissingnessNotImplemented', 'Missingness injection is not yet implemented.'); % TO BE IMPLEMENTEd
     end
 
     % -- Normalize data --
@@ -133,12 +80,21 @@ function dataset = buildDatasetForPipelineRun(rawCMAPSSData, runPlan)
     chosenSubset.Xtrain = applyNormalizationTransform(chosenSubset.Xtrain, normalizationParameters);
     chosenSubset.Xtest = applyNormalizationTransform(chosenSubset.Xtest, normalizationParameters);
 
-    % -- If PCA is enabled, apply it --
+    % -- If PCA is enabled, fit and apply it --
     if runPlan.pcaSpec.enabled
         pcaTransform = fitPCATransform(chosenSubset.Xtrain, runPlan.pcaSpec);
-        
+        chosenSubset.Xtrain = applyPCATransform(chosenSubset.Xtrain, pcaTransform);
+        chosenSubset.Xtest = applyPCATransform(chosenSubset.Xtest, pcaTransform);
     end
 
+    % -- Populate output struct --
+    dataset = struct();
+    dataset.Xtrain = chosenSubset.Xtrain;
+    dataset.Xtest = chosenSubset.Xtest;
+    dataset.ytrain = chosenSubset.ytrain;
+    dataset.ytest = chosenSubset.ytest;
+    dataset.ntrain = size(chosenSubset.Xtrain, 1);
+    dataset.ntest = size(chosenSubset.Xtest, 1);
+    dataset.d = size(chosenSubset.Xtrain, 2);
 
-    
 end
