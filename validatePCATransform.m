@@ -1,4 +1,4 @@
-function validatePCATransform(pcaTransform, Xtrain)
+function validatePCATransform(pcaTransform, X)
     % VALIDATEPCATRANSFORM Validates pcaTransform constructed by fitPCATransform.
     % 
     % INPUT: 
@@ -10,7 +10,7 @@ function validatePCATransform(pcaTransform, Xtrain)
     %      .projectedDimension (int) - projected dimension after PCA
     %      .eigenvalues (1 x k) - eigenvalues associated with PCA transform
     % 
-    %  Xtrain (nTrain x d double) - training feature matrix 
+    %  X (n x d double) - training feature matrix 
 
     % -- Validate structure of pcaTransform --
     if ~isstruct(pcaTransform)
@@ -49,7 +49,7 @@ function validatePCATransform(pcaTransform, Xtrain)
     end
 
     % -- Validate pcaTransform field values --
-    [~, d] = size(Xtrain); % use Xtrain as source of truth
+    [~, d] = size(X); % use X as source of truth
     POSITIVE_INTEGER_ATTRIBUTES = {'scalar', 'finite', 'positive', 'integer'};
     GENERAL_DOUBLE_VECTOR_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'double'};
     EXPLAINED_VECTOR_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'positive', 'double', '>', 0, '<=', 100};

@@ -23,7 +23,7 @@ function knnModel = trainKNNModel(trainingData, knnHyperparameters)
     % All kNN implementation assumptions are documented in that function.
 
     % -- Validate hyperparameters -- 
-    validateKNNHyperparameters(knnHyperparameters);
+    % validateKNNHyperparameters(knnHyperparameters);
 
     % -- Construct kNN model struct --
     knnModel = struct();

@@ -1,8 +1,10 @@
-function pcaTransform = fitPCATransform(Xtrain, pcaSpec)
-    % FITPCATRANSFORM Fits PCA transform on training dataset according to pipeline specifications.
+function pcaTransform = fitPCATransform(X, pcaSpec)
+    % FITPCATRANSFORM Fits PCA transform on specified dataset according to pipeline specifications.
+    %
+    % AUTHOR: Kelly Falcon
     %
     % INPUTS: 
-    %  Xtrain (nTrain x d double) - training feature matrix
+    %  X (n x d double) - feature matrix
     %  
     %  pcaSpec struct with fields:
     %      .enabled (boolean)
@@ -18,7 +20,6 @@ function pcaTransform = fitPCATransform(Xtrain, pcaSpec)
     %      .originalDimension (int) - original dataset dimension
     %      .projectedDimension (int) - projected dimension after PCA
     %      .eigenvalues (1 x k) - eigenvalues associated with PCA transform
-
 
     % Implementation requirements and notes:
     % 0. Please don't delete the docstring above these notes
@@ -46,5 +47,5 @@ function pcaTransform = fitPCATransform(Xtrain, pcaSpec)
     
     
     % -- Output validation - PLEASE DO NOT REMOVE --
-    validatePCATransform(pcaTransform, Xtrain);
+    validatePCATransform(pcaTransform, X);
 end

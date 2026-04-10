@@ -1,144 +1,175 @@
-function validateExperimentSpec(spec)
-    %VALIDATEEXPERIMENTSPEC Validate resolved plan of experimentation.
-    %   VALIDATEEXPERIMENTSPEC(SPEC) throws an error if SPEC is not a legal,
-    %   fully resolved experimental configuration for multi-run pipeline execution.
+function validateExperimentSpec(experimentSpec)
+    % VALIDATEEXPERIMENTSPEC Validates experiment specification for run-plan construction.
+    %
+    % AUTHOR: Cole H. Shaigec
+    %
+    % INPUT
+    %  experimentSpec struct with fields
+    %      .id
+    %      .modelSpecs
+    %      .pcaSpecs
+    %      .missingnessSpecs
+    %      .warningHorizons
+    %      .windowSizes
+    %      .cmapssSubsets
+    %
+    % OUTPUT
+    %  None. Throws an error if validation fails.
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  Validate high-level structure  %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % -- Top-level type check --
+    assert(isstruct(experimentSpec) && isscalar(experimentSpec), ...
+        'experimentSpec must be a scalar struct.');
 
-    if ~isstruct(spec)
-        error('validateExperimentSpec:InvalidType', ...
-            'experimentSpec must be a struct.');
+    % -- Required field check --
+    requiredFields = { ...
+        'id', ...
+        'modelSpecs', ...
+        'pcaSpecs', ...
+        'missingnessSpecs', ...
+        'warningHorizons', ...
+        'windowSizes', ...
+        'cmapssSubsets' ...
+    };
+
+    missingFields = requiredFields(~isfield(experimentSpec, requiredFields));
+    assert(isempty(missingFields), ...
+        'experimentSpec is missing required field(s): %s.', ...
+        strjoin(missingFields, ', '));
+
+    % -- Validate id --
+    assert(isnumeric(experimentSpec.id) && isscalar(experimentSpec.id) ...
+        && isfinite(experimentSpec.id) && experimentSpec.id > 0 ...
+        && mod(experimentSpec.id, 1) == 0, ...
+        'experimentSpec.id must be a positive integer scalar.');
+
+    % -- Validate windowSizes --
+    assert(isnumeric(experimentSpec.windowSizes) && isvector(experimentSpec.windowSizes) ...
+        && ~isempty(experimentSpec.windowSizes), ...
+        'experimentSpec.windowSizes must be a nonempty numeric vector.');
+
+    assert(all(isfinite(experimentSpec.windowSizes)) ...
+        && all(experimentSpec.windowSizes > 0) ...
+        && all(mod(experimentSpec.windowSizes, 1) == 0), ...
+        'experimentSpec.windowSizes must contain only positive integers.');
+
+    % -- Validate warningHorizons --
+    assert(iscell(experimentSpec.warningHorizons) && isvector(experimentSpec.warningHorizons) ...
+        && ~isempty(experimentSpec.warningHorizons), ...
+        ['experimentSpec.warningHorizons must be a nonempty cell array, ' ...
+         'where each cell contains a positive numeric vector.']);
+
+    for i = 1:numel(experimentSpec.warningHorizons)
+        currentWarningHorizons = experimentSpec.warningHorizons{i};
+
+        assert(isnumeric(currentWarningHorizons) && isvector(currentWarningHorizons) ...
+            && ~isempty(currentWarningHorizons), ...
+            ['Each entry of experimentSpec.warningHorizons must be a nonempty ' ...
+             'numeric vector. Failed at cell index %d.'], i);
+
+        assert(all(isfinite(currentWarningHorizons)) && all(currentWarningHorizons > 0), ...
+            ['Each warning horizon vector must contain only positive finite values. ' ...
+             'Failed at cell index %d.'], i);
     end
 
-    if ~isfield(spec, 'id')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have an ''id'' field.');
+    % -- Validate cmapssSubsets --
+    assert(iscell(experimentSpec.cmapssSubsets) && isvector(experimentSpec.cmapssSubsets) ...
+        && ~isempty(experimentSpec.cmapssSubsets), ...
+        'experimentSpec.cmapssSubsets must be a nonempty cell array.');
+
+    validSubsets = {'FD001', 'FD002', 'FD003', 'FD004'};
+
+    for i = 1:numel(experimentSpec.cmapssSubsets)
+        currentSubset = experimentSpec.cmapssSubsets{i};
+
+        isValidCharSubset = ischar(currentSubset) && isrow(currentSubset);
+        isValidStringSubset = isstring(currentSubset) && isscalar(currentSubset);
+
+        assert(isValidCharSubset || isValidStringSubset, ...
+            ['Each entry of experimentSpec.cmapssSubsets must be a char row vector ' ...
+             'or string scalar. Failed at cell index %d.'], i);
+
+        currentSubset = char(string(currentSubset));
+
+        assert(any(strcmp(currentSubset, validSubsets)), ...
+            ['Invalid CMAPSS subset "%s" at cell index %d. Valid options are: ' ...
+             'FD001, FD002, FD003, FD004.'], currentSubset, i);
     end
 
-    if ~isfield(spec, 'name')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have a ''name'' field.');
+    % -- Validate pcaSpecs --
+    assert(isstruct(experimentSpec.pcaSpecs) && ~isempty(experimentSpec.pcaSpecs), ...
+        'experimentSpec.pcaSpecs must be a nonempty struct array.');
+
+    for i = 1:numel(experimentSpec.pcaSpecs)
+        validatePCASpec(experimentSpec.pcaSpecs(i), i);
     end
 
-    if ~isfield(spec, 'warningHorizons')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have a ''warningHorizons'' field.');
+    % -- Validate missingnessSpecs --
+    assert(isstruct(experimentSpec.missingnessSpecs) ...
+        && ~isempty(experimentSpec.missingnessSpecs), ...
+        'experimentSpec.missingnessSpecs must be a nonempty struct array.');
+
+    for i = 1:numel(experimentSpec.missingnessSpecs)
+        validateMissingnessSpec(experimentSpec.missingnessSpecs(i), i);
     end
 
-    % if ~isfield(spec, 'noiseOptions')
-    %     error('validateExperimentSpec:MissingField', ...
-    %         'experimentSpec must have a ''noiseOptions'' field.');
-    % end
+    % -- Validate modelSpecs --
+    assert(isstruct(experimentSpec.modelSpecs) && ~isempty(experimentSpec.modelSpecs), ...
+        'experimentSpec.modelSpecs must be a nonempty struct array.');
 
-    if ~isfield(spec, 'missingnessOptions')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have a ''missingnessOptions'' field.');
+    for i = 1:numel(experimentSpec.modelSpecs)
+        validateModelSpec(experimentSpec.modelSpecs(i), i);
     end
+end
 
-    if ~isfield(spec, 'pcaOptions')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have a ''pcaOptions'' field.');
-    end
 
-    if ~isfield(spec, 'imbalanceOptions')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have an ''imbalanceOptions'' field.');
-    end
+function validatePCASpec(pcaSpec, pcaSpecIndex)
+    % VALIDATEPCASPEC Validates a single PCA specification.
 
-    if ~isfield(spec, 'modelOptions')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have a ''modelOptions'' field.');
-    end
+    assert(isstruct(pcaSpec) && isscalar(pcaSpec), ...
+        'Each pcaSpec must be a scalar struct. Failed at index %d.', pcaSpecIndex);
 
-    if ~isfield(spec, 'datasetOptions')
-        error('validateExperimentSpec:MissingField', ...
-            'experimentSpec must have a ''datasetOptions'' field.');
-    end
+    requiredFields = {'enabled', 'selectionMode', 'varianceThreshold', 'fixedNumComponents'};
+    missingFields = requiredFields(~isfield(pcaSpec, requiredFields));
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  Validate metadata fields  %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    assert(isempty(missingFields), ...
+        'pcaSpec at index %d is missing required field(s): %s.', ...
+        pcaSpecIndex, strjoin(missingFields, ', '));
 
-    POSITIVE_INTEGER_ATTRIBUTES = {'scalar', 'finite', 'positive', 'integer'};
-    
-    
-    validateattributes(spec.id, {'numeric'}, POSITIVE_INTEGER_ATTRIBUTES, mfilename, 'spec.id');
-    
-    if ~(isstring(spec.name) && isscalar(spec.name) && strlength(spec.name) > 0)
-        error('validateExperimentSpec:InvalidFieldValue', ...
-            'experimentSpec.name must be a non-empty string scalar.');
-    end
+    assert(islogical(pcaSpec.enabled) && isscalar(pcaSpec.enabled), ...
+        'pcaSpec(%d).enabled must be a logical scalar.', pcaSpecIndex);
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  Validate warning horizons  %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    POSITIVE_INTEGER_VECTOR_ATTRIBUTES = {'vector', 'nonempty', 'finite', 'positive', 'integer'};
-    validateattributes(spec.warningHorizons, {'numeric'}, POSITIVE_INTEGER_VECTOR_ATTRIBUTES, mfilename, 'spec.warningHorizons');
+    selectionMode = string(pcaSpec.selectionMode);
+    assert(isscalar(selectionMode), ...
+        'pcaSpec(%d).selectionMode must be a string scalar or char vector.', pcaSpecIndex);
 
-    if numel(unique(spec.warningHorizons)) ~= numel(spec.warningHorizons)
-        error('validateExperimentSpec:InvalidFieldValue', ...
-            'experimentSpec.warningHorizons may not contain duplicate values.');
-    end
+    validSelectionModes = ["varianceThreshold", "fixedNumComponents"];
+    assert(any(selectionMode == validSelectionModes), ...
+        ['pcaSpec(%d).selectionMode must be either "varianceThreshold" ' ...
+         'or "fixedNumComponents".'], pcaSpecIndex);
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  Validate options structs  %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % if ~(isvector(spec.noiseOptions) && numel(spec.noiseOptions) > 0 && isstruct(spec.noiseOptions))
-    %     error('validateExperimentSpec:InvalidFieldValue', ...
-    %         'experimentSpec.noiseOptions must be a non-empty struct array.');
-    % end
+    assert(isnumeric(pcaSpec.varianceThreshold) && isscalar(pcaSpec.varianceThreshold) ...
+        && isfinite(pcaSpec.varianceThreshold) ...
+        && pcaSpec.varianceThreshold >= 0 ...
+        && pcaSpec.varianceThreshold <= 1, ...
+        'pcaSpec(%d).varianceThreshold must be a scalar in [0, 1].', pcaSpecIndex);
 
-    if ~(isvector(spec.missingnessOptions) && numel(spec.missingnessOptions) > 0 && isstruct(spec.missingnessOptions))
-        error('validateExperimentSpec:InvalidFieldValue', ...
-            'experimentSpec.missingnessOptions must be a non-empty struct array.');
-    end
+    assert(isnumeric(pcaSpec.fixedNumComponents) && isscalar(pcaSpec.fixedNumComponents) ...
+        && isfinite(pcaSpec.fixedNumComponents) ...
+        && pcaSpec.fixedNumComponents > 0 ...
+        && mod(pcaSpec.fixedNumComponents, 1) == 0, ...
+        'pcaSpec(%d).fixedNumComponents must be a positive integer scalar.', pcaSpecIndex);
+end
 
-    if ~(isvector(spec.pcaOptions) && numel(spec.pcaOptions) > 0 && isstruct(spec.pcaOptions))
-        error('validateExperimentSpec:InvalidFieldValue', ...
-            'experimentSpec.pcaOptions must be a non-empty struct array.');
-    end
 
-    if ~(isvector(spec.imbalanceOptions) && numel(spec.imbalanceOptions) > 0 && isstruct(spec.imbalanceOptions))
-        error('validateExperimentSpec:InvalidFieldValue', ...
-            'experimentSpec.imbalanceOptions must be a non-empty struct array.');
-    end
+function validateMissingnessSpec(missingnessSpec, missingnessSpecIndex)
+    % VALIDATEMISSINGNESSSPEC Validates a single missingness specification.
+    %
+    % NOTE:
+    %  Missingness spec schema is still evolving. This validator currently
+    %  enforces only that each entry is a scalar struct. Tighten this later
+    %  once the schema is finalized.
 
-    if ~(isvector(spec.modelOptions) && numel(spec.modelOptions) > 0 && isstruct(spec.modelOptions))
-        error('validateExperimentSpec:InvalidFieldValue', ...
-            'experimentSpec.modelOptions must be a non-empty struct array.');
-    end
-
-    if ~(isvector(spec.datasetOptions) && numel(spec.datasetOptions) > 0 && isstruct(spec.datasetOptions))
-        error('validateExperimentSpec:InvalidFieldValue', ...
-            'experimentSpec.datasetOptions must be a non-empty struct array.');
-    end
-
-    % Ensure that all spec objects are valid
-    % for i = 1 : numel(spec.noiseOptions)
-    %     validateNoiseSpec(spec.noiseOptions(i));
-    % end
-
-    for i = 1 : numel(spec.missingnessOptions)
-        validateMissingnessSpec(spec.missingnessOptions(i));
-    end
-
-    for i = 1 : numel(spec.pcaOptions)
-        validatePCASpec(spec.pcaOptions(i));
-    end
-
-    for i = 1 : numel(spec.imbalanceOptions)
-        validateImbalanceSpec(spec.imbalanceOptions(i));
-    end
-
-    for i = 1 : numel(spec.modelOptions)
-        validateModelSpec(spec.modelOptions(i));
-    end
-
-    for i = 1 : numel(spec.datasetOptions)
-        validateDatasetSpec(spec.datasetOptions(i));
-    end
+    assert(isstruct(missingnessSpec) && isscalar(missingnessSpec), ...
+        'Each missingnessSpec must be a scalar struct. Failed at index %d.', ...
+        missingnessSpecIndex);
 end

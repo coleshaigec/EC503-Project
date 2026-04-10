@@ -1,4 +1,15 @@
 function cmapssData = readCMAPSSData()
+    % READCMAPSSDATA Extracts raw CMAPSS data from text files
+    %
+    % AUTHOR: Cole H. Shaigec
+    %
+    % OUTPUT
+    %  cmapssData struct with fields
+    %      .FD001 struct with fields
+    %
+    %
+    %
+    % DOCSTRING STILL UNDER CONSTRUCTION
     cmapssDataFolderPath = './dataCMAPSS/CMAPSSData/';
     cmapssData = struct();
 

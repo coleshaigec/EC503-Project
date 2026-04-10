@@ -8,8 +8,8 @@ function validateKNNModel(knnModel, trainingData, hyperparameters)
     %      .k (int > 0)                - number of NNs used
     %
     %  trainingData struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
+    %      .X (n x d double) - training feature matrix
+    %      .y (n x 1 double) - training label vector
     %
     %  hyperparameters struct with fields
     %      .k (int > 0)                - number of NNs used
@@ -53,8 +53,8 @@ function validateKNNModel(knnModel, trainingData, hyperparameters)
     validateKNNHyperparameters(hyperparameters, trainingData);
 
     % -- Validate dimensional consistency --
-    nTrain = size(trainingData.Xtrain, 1);
-    d = size(trainingData.Xtrain, 2);
+    nTrain = size(trainingData.X, 1);
+    d = size(trainingData.X, 2);
 
     assert(isequal(size(knnModel.Xtrain), [nTrain, d]), ...
         'knnModel.Xtrain must have dimension nTrain x d.');
@@ -62,10 +62,10 @@ function validateKNNModel(knnModel, trainingData, hyperparameters)
         'knnModel.ytrain must have dimension nTrain x 1.');
 
     % -- Validate model contents against training data and hyperparameters --
-    assert(isequal(knnModel.Xtrain, trainingData.Xtrain), ...
-        'knnModel.Xtrain must equal trainingData.Xtrain.');
-    assert(isequal(knnModel.ytrain, trainingData.ytrain), ...
-        'knnModel.ytrain must equal trainingData.ytrain.');
+    assert(isequal(knnModel.Xtrain, trainingData.X), ...
+        'knnModel.Xtrain must equal trainingData.X.');
+    assert(isequal(knnModel.ytrain, trainingData.y), ...
+        'knnModel.ytrain must equal trainingData.y.');
     assert(knnModel.k == hyperparameters.k, ...
         'knnModel.k must equal hyperparameters.k.');
 end

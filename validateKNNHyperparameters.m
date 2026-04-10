@@ -3,7 +3,7 @@ function validateKNNHyperparameters(knnHyperparameters, trainingData)
     %
     % INPUTS
     %  trainingData struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
+    %      .X (nTrain x d double) - training feature matrix
     %      .ytrain (nTrain x 1 double) - training label vector
     %
     %  knnHyperparameters struct with fields
@@ -29,12 +29,12 @@ function validateKNNHyperparameters(knnHyperparameters, trainingData)
     k = knnHyperparameters.k;
 
     % -- Validate against training data --
-    if ~isstruct(trainingData) || ~isfield(trainingData, 'Xtrain')
+    if ~isstruct(trainingData) || ~isfield(trainingData, 'X')
         error('validateKNNHyperparameters:InvalidTrainingData', ...
-            'trainingData must be a struct with field ''Xtrain''.');
+            'trainingData must be a struct with field ''X''.');
     end
 
-    nTrain = size(trainingData.Xtrain, 1);
+    nTrain = size(trainingData.X, 1);
 
     % k cannot exceed number of training samples
     assert(k <= nTrain, ...

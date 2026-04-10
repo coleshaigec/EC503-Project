@@ -11,19 +11,19 @@ function hyperparameterIterable = unpackHyperparameterSearchGrid(searchGrid, mod
     %      .numCombinations (integer scalar)            - number of hyperparameter combinations in Cartesian product on search grid
     %      .candidateHyperparameterSets (struct array)  - hyperparameters to be iterated over on tuning
 
-    % Validate inputs
+    % -- Validate inputs --
     validateHyperparameterSearchGrid(searchGrid, modelName);
 
-    % Extract field names
+    % -- Extract field names --
     hyperparameterNames = fieldnames(searchGrid);
 
-    % Build template struct
+    % -- Build template struct -- 
     template = struct();
     for i = 1:numel(hyperparameterNames)
         template.(hyperparameterNames{i}) = [];
     end
 
-    % Enumerate Cartesian product of hyperparameter grids
+    % -- Enumerate Cartesian product of hyperparameter grids --
     valueSets = cell(numel(hyperparameterNames), 1);
 
     for i = 1:numel(hyperparameterNames)
@@ -33,7 +33,7 @@ function hyperparameterIterable = unpackHyperparameterSearchGrid(searchGrid, mod
     T = combinations(valueSets{:});
     numCombinations = height(T);
 
-    % Preallocate and populate struct array
+    % -- Preallocate and populate struct array -- 
     candidateHyperparameterSets = repmat(template, numCombinations, 1);
 
     for i = 1 : numCombinations
@@ -44,7 +44,7 @@ function hyperparameterIterable = unpackHyperparameterSearchGrid(searchGrid, mod
         candidateHyperparameterSets(i) = currentGrid;
     end
 
-    % Build output iterable
+    % -- Build output iterable -- 
     hyperparameterIterable = struct();
     hyperparameterIterable.hyperparameterNames = hyperparameterNames;
     hyperparameterIterable.numCombinations = numCombinations;

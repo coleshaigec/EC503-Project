@@ -19,7 +19,7 @@ function runPipeline(rawData, runSpec)
 
     transformedData = applyFeatureTransformationsToData(dataWithPathologies, transformationSpec);
 
-    % -- Step 3: Run hyperparameter tuning on training set --
+    % -- Step 3: Split off validation set(s) and run hyperparameter tuning --
     
     
 

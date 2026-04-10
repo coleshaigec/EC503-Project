@@ -1,4 +1,29 @@
 function cmapssSubset = readSubsetFromCMAPSS(cmapssDataFolderPath, subsetName)
+    % READSUBSETFROMCMAPSS Reads a specified subset of the CMAPSS dataset from its host text files.
+    %
+    % AUTHOR: Cole H. Shaigec
+    % 
+    % INPUTS
+    %  cmapssDataFolderPath (string)  - relative path to directory containing CMAPSS data files
+    %  subsetName (string)            - 'FD001', 'FD002', 'FD003', or 'FD004'
+    %
+    % OUTPUTS
+    %  cmapssSubset struct with fields
+    %      .train struct with fields
+    %          .engines (array of structs, each with fields)
+    %              .unitNumber
+    %              .timestamps
+    %              .maxTimestamp
+    %              .operatingConditions
+    %              .sensorReadings
+    %              .RUL
+    %          .numRecords
+    %
+    %
+    %      .test struct with fields
+    %
+    %      .name (string)       - 'FD001', 'FD002', 'FD003', or 'FD004'      
+
     trainPath = fullfile(cmapssDataFolderPath, sprintf('train_%s.txt', subsetName));
     testPath = fullfile(cmapssDataFolderPath, sprintf('test_%s.txt', subsetName));
     rulPath = fullfile(cmapssDataFolderPath, sprintf('RUL_%s.txt', subsetName));
