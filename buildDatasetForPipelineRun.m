@@ -101,14 +101,42 @@ function dataset = buildDatasetForPipelineRun(rawCMAPSSData, runPlan)
     %      .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %      .warningHorizons (positive scalar array)  - classes for classification
     %      .windowSize (positive integer)            - for dataset windowing
+    %
+    % OUTPUTS
+
 
     % -- Trim off undesired sensors and apply windowing -- 
     trimmedCMAPSSData = trimSensorReadings(cmapssData);
     windowedCMAPSSData = buildWindowedDataset(trimmedCMAPSSData, runPlan.windowSize);
 
+    % -- Choose desired CMAPSS subset from windowed data --
+    chosenSubset = windowedCMAPSSData.(runPlan.cmapssSubset);
+
     % -- Remap labels for classification --
     if ismember(runPlan.modelSpec.modelName, CLASSIFICATION_MODELS)
-        remapLabels
+        % Remap labels
+        yTrainRemapped = remapLabels(chosenSubset.ytrain, runPlan.warningHorizons);
+        yTestRemapped = remapLabels(chosenSubset.ytest, runPlan.warningHorizons);
+        
+        % Overwrite originals
+        chosenSubset.ytrain = yTrainRemapped;
+        chosenSubset.ytest = yTestRemapped;
+    end
+
+    % -- If missingness is enabled, inject it --
+    if runPlan.missingnessSpec.enabled
+        fprintf('!!! MISSINGNESS TO BE IMPLEMENTED !!!'); % TO BE IMPLEMENTEd
+    end
+
+    % -- Normalize data --
+    normalizationParameters = fitNormalizationTransform(chosenSubset.Xtrain);
+    chosenSubset.Xtrain = applyNormalizationTransform(chosenSubset.Xtrain, normalizationParameters);
+    chosenSubset.Xtest = applyNormalizationTransform(chosenSubset.Xtest, normalizationParameters);
+
+    % -- If PCA is enabled, apply it --
+    if runPlan.pcaSpec.enabled
+        pcaTransform = fitPCATransform(chosenSubset.Xtrain, runPlan.pcaSpec);
+        
     end
 
 

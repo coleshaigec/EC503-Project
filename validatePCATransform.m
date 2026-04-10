@@ -1,87 +1,146 @@
 function validatePCATransform(pcaTransform, X)
-    % VALIDATEPCATRANSFORM Validates pcaTransform constructed by fitPCATransform.
-    % 
-    % INPUT: 
-    %  pcaTransform struct with fields: 
-    %      .mu (1 x d double) - mean vector used for centering dataset
-    %      .coeff (d x k double) - principal directions
-    %      .explained (1 x k) - explained variance percentages
-    %      .originalDimension (int) - original dataset dimension
-    %      .projectedDimension (int) - projected dimension after PCA
-    %      .eigenvalues (1 x k) - eigenvalues associated with PCA transform
-    % 
-    %  X (n x d double) - training feature matrix 
+    % VALIDATEPCATRANSFORM Validates fitted PCA transform.
+    %
+    % INPUTS
+    %  pcaTransform struct with fields:
+    %      .mu
+    %      .coeff
+    %      .explained
+    %      .originalDimension
+    %      .projectedDimension
+    %      .eigenvalues
+    %
+    %  X (n x d double) - dataset used to fit PCA
+    %
+    % OUTPUT
+    %  None. Throws an error if validation fails.
 
-    % -- Validate structure of pcaTransform --
-    if ~isstruct(pcaTransform)
-        error('validatePCATransform:InvalidType', ...
-            'pcaTransform must be a struct.');
-    end
+    % -- Validate X --
+    assert(isnumeric(X) && ismatrix(X) && ~isempty(X), ...
+        'X must be a nonempty numeric 2D matrix.');
 
-    if ~isfield(pcaTransform, 'mu')
-        error('validatePCATransform:MissingField', ...
-            'pcaTransform must have a ''mu'' field.');
-    end
+    assert(all(isfinite(X), 'all'), ...
+        'X must contain only finite values.');
 
-    if ~isfield(pcaTransform, 'coeff')
-        error('validatePCATransform:MissingField', ...
-            'pcaTransform must have a ''coeff'' field.');
-    end
+    [~, d] = size(X);
 
-    if ~isfield(pcaTransform, 'explained')
-        error('validatePCATransform:MissingField', ...
-            'pcaTransform must have an ''explained'' field.');
-    end
+    % -- Validate top-level pcaTransform --
+    assert(isstruct(pcaTransform) && isscalar(pcaTransform), ...
+        'pcaTransform must be a scalar struct.');
 
-    if ~isfield(pcaTransform, 'originalDimension')
-        error('validatePCATransform:MissingField', ...
-            'pcaTransform must have an ''originalDimension'' field.');
-    end
+    requiredFields = { ...
+        'mu', ...
+        'coeff', ...
+        'explained', ...
+        'originalDimension', ...
+        'projectedDimension', ...
+        'eigenvalues' ...
+    };
 
-    if ~isfield(pcaTransform, 'projectedDimension')
-        error('validatePCATransform:MissingField', ...
-            'pcaTransform must have a ''projectedDimension'' field.');
-    end
+    missingFields = requiredFields(~isfield(pcaTransform, requiredFields));
+    assert(isempty(missingFields), ...
+        'pcaTransform is missing required field(s): %s.', ...
+        strjoin(missingFields, ', '));
 
-    if ~isfield(pcaTransform, 'eigenvalues')
-        error('validatePCATransform:MissingField', ...
-            'pcaTransform must have an ''eigenvalues'' field.');
-    end
+    actualFields = fieldnames(pcaTransform);
+    assert(numel(actualFields) == numel(requiredFields), ...
+        'pcaTransform contains unexpected fields.');
 
-    % -- Validate pcaTransform field values --
-    [~, d] = size(X); % use X as source of truth
-    POSITIVE_INTEGER_ATTRIBUTES = {'scalar', 'finite', 'positive', 'integer'};
-    GENERAL_DOUBLE_VECTOR_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'double'};
-    EXPLAINED_VECTOR_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'positive', 'double', '>', 0, '<=', 100};
-    DOUBLE_MATRIX_ATTRIBUTES = {'matrix', 'real', '2d', 'finite',  'double'};
-    EIGENVALUES_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'double', '>=', 0};
+    % -- Validate originalDimension --
+    assert(isnumeric(pcaTransform.originalDimension) ...
+        && isscalar(pcaTransform.originalDimension) ...
+        && isfinite(pcaTransform.originalDimension) ...
+        && pcaTransform.originalDimension > 0 ...
+        && mod(pcaTransform.originalDimension, 1) == 0, ...
+        'pcaTransform.originalDimension must be a positive integer scalar.');
 
-    % Validate mu
-    assert(isequal(size(pcaTransform.mu), [1,d]), 'mu must be 1 x d.');
-    validateattributes(pcaTransform.mu, {'numeric'}, GENERAL_DOUBLE_VECTOR_ATTRIBUTES, mfilename, 'pcaTransform.mu');
-    
-    % Validate projectedDimension
-    validateattributes(pcaTransform.projectedDimension, {'numeric'}, POSITIVE_INTEGER_ATTRIBUTES, mfilename, 'pcaTransform.projectedDimension');
+    assert(pcaTransform.originalDimension == d, ...
+        ['pcaTransform.originalDimension must match size(X, 2). ' ...
+         'Expected %d, got %d.'], d, pcaTransform.originalDimension);
+
+    % -- Validate projectedDimension --
+    assert(isnumeric(pcaTransform.projectedDimension) ...
+        && isscalar(pcaTransform.projectedDimension) ...
+        && isfinite(pcaTransform.projectedDimension) ...
+        && pcaTransform.projectedDimension > 0 ...
+        && mod(pcaTransform.projectedDimension, 1) == 0, ...
+        'pcaTransform.projectedDimension must be a positive integer scalar.');
+
     k = pcaTransform.projectedDimension;
 
-    % Validate originalDimension
-    validateattributes(pcaTransform.originalDimension, {'numeric'}, POSITIVE_INTEGER_ATTRIBUTES, mfilename, 'pcaTransform.originalDimension');
-    assert(pcaTransform.originalDimension == d, 'originalDimension must match the dimension of the original dataset.');
-    assert(pcaTransform.originalDimension >= k, 'projectedDimension must be less than or equal to original dimension.');
+    assert(k <= d, ...
+        ['pcaTransform.projectedDimension cannot exceed original dimension. ' ...
+         'Got k = %d and d = %d.'], k, d);
 
-    % validate coeff
-    assert(isequal(size(pcaTransform.coeff), [d,k]), 'coeff must be d x k');
-    validateattributes(pcaTransform.coeff, {'numeric'}, DOUBLE_MATRIX_ATTRIBUTES, mfilename, 'pcaTransform.coeff');
-    identityMatrix = eye(k);
-    isOrthonormal = norm(pcaTransform.coeff.' * pcaTransform.coeff - identityMatrix, 'fro') <= 1e-6;
-    assert(isOrthonormal, 'pcaTransform.coeff must have orthonormal columns.');
-    
+    % -- Validate mu --
+    assert(isnumeric(pcaTransform.mu) && isrow(pcaTransform.mu), ...
+        'pcaTransform.mu must be a numeric row vector.');
 
-    % validate explained
-    assert(isequal(size(pcaTransform.explained), [1,k]), 'explained must be 1 x k');
-    validateattributes(pcaTransform.explained, {'numeric'}, EXPLAINED_VECTOR_ATTRIBUTES, mfilename, 'pcaTransform.explained');
+    assert(all(isfinite(pcaTransform.mu)), ...
+        'pcaTransform.mu must contain only finite values.');
 
-    % Validate eigenvalues
-    assert(isequal(size(pcaTransform.eigenvalues), [1,k]), 'coeff must be d x k');
-    validateattributes(pcaTransform.eigenvalues, {'numeric'}, EIGENVALUES_ATTRIBUTES, mfilename, 'pcaTransform.eigenvalues');
+    assert(numel(pcaTransform.mu) == d, ...
+        ['pcaTransform.mu must have length equal to size(X, 2). ' ...
+         'Expected length %d, got %d.'], d, numel(pcaTransform.mu));
+
+    % -- Validate coeff --
+    assert(isnumeric(pcaTransform.coeff) && ismatrix(pcaTransform.coeff), ...
+        'pcaTransform.coeff must be a numeric 2D matrix.');
+
+    assert(all(isfinite(pcaTransform.coeff), 'all'), ...
+        'pcaTransform.coeff must contain only finite values.');
+
+    coeffSize = size(pcaTransform.coeff);
+    assert(isequal(coeffSize, [d, k]), ...
+        ['pcaTransform.coeff must have size (d x k) = (%d x %d). ' ...
+         'Got (%d x %d).'], d, k, coeffSize(1), coeffSize(2));
+
+    gramMatrix = pcaTransform.coeff.' * pcaTransform.coeff;
+    identityTarget = eye(k);
+    orthonormalityTolerance = 1e-8;
+
+    assert(norm(gramMatrix - identityTarget, 'fro') <= orthonormalityTolerance, ...
+        'Columns of pcaTransform.coeff must be approximately orthonormal.');
+
+    % -- Validate explained --
+    assert(isnumeric(pcaTransform.explained) && isrow(pcaTransform.explained), ...
+        'pcaTransform.explained must be a numeric row vector.');
+
+    assert(all(isfinite(pcaTransform.explained)), ...
+        'pcaTransform.explained must contain only finite values.');
+
+    assert(numel(pcaTransform.explained) == k, ...
+        ['pcaTransform.explained must have length k = %d. ' ...
+         'Got %d.'], k, numel(pcaTransform.explained));
+
+    assert(all(pcaTransform.explained >= 0), ...
+        'pcaTransform.explained must contain nonnegative values.');
+
+    assert(sum(pcaTransform.explained) <= 100 + 1e-8, ...
+        'Sum of pcaTransform.explained cannot exceed 100 by more than numerical tolerance.');
+
+    % -- Validate eigenvalues --
+    assert(isnumeric(pcaTransform.eigenvalues) && isrow(pcaTransform.eigenvalues), ...
+        'pcaTransform.eigenvalues must be a numeric row vector.');
+
+    assert(all(isfinite(pcaTransform.eigenvalues)), ...
+        'pcaTransform.eigenvalues must contain only finite values.');
+
+    assert(numel(pcaTransform.eigenvalues) == k, ...
+        ['pcaTransform.eigenvalues must have length k = %d. ' ...
+         'Got %d.'], k, numel(pcaTransform.eigenvalues));
+
+    assert(all(pcaTransform.eigenvalues >= 0), ...
+        'pcaTransform.eigenvalues must contain nonnegative values.');
+
+    assert(all(diff(pcaTransform.eigenvalues) <= 1e-10), ...
+        'pcaTransform.eigenvalues must be sorted in nonincreasing order.');
+
+    assert(all(diff(pcaTransform.explained) <= 1e-10), ...
+        'pcaTransform.explained must be sorted in nonincreasing order.');
+
+    zeroEigenvalueTolerance = 1e-12;
+    assert(all(pcaTransform.explained(pcaTransform.eigenvalues <= zeroEigenvalueTolerance) <= 1e-8), ...
+        ['Components with effectively zero eigenvalue must not have materially ' ...
+         'positive explained variance.']);
 end
