@@ -1,13 +1,20 @@
-function [XTrain, yTrain] = windowTrainingDataset(trainSubset, windowSize)
+function windowedEngines = windowTrainingDataset(engines, windowSize)
     % WINDOWTRAININGDATASET Applies rectangular history windowing to the
     % training data in a CMAPSS subset.
+    %
+    % INPUTS
+    %
+    %
+    % OUTPUTS
+
+    % NOTE TO SELF: THIS NEEDS A REFACTOR TO HANDLE CLEANED CMAPSS SET!
     
-    numEngines = numel(trainSubset.engines);
+    numEngines = numel(engines);
     Xcells = cell(numEngines, 1);
     Ycells = cell(numEngines, 1);
 
     for i = 1:numEngines
-        currentEngine = trainSubset.engines(i);
+        currentEngine = engines(i);
         sensorReadingsCurrentEngine = currentEngine.sensorReadings;
         operatingConditionsCurrentEngine = currentEngine.operatingConditions;
         RULCurrentEngine = currentEngine.RUL;
@@ -45,6 +52,9 @@ function [XTrain, yTrain] = windowTrainingDataset(trainSubset, windowSize)
         Ycells{i} = yengine;
     end
 
-    XTrain = vertcat(Xcells{:});
-    yTrain = vertcat(Ycells{:});
+    X = vertcat(Xcells{:});
+    y = vertcat(Ycells{:});
+    windowedEngines = struct();
+    windowedEngines.X = X;
+    windowedEngines.y = y;
 end

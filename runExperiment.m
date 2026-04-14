@@ -25,6 +25,10 @@ function experimentResult = runExperiment(experimentSpec)
     rawCMAPSSData = readCMAPSSData();
     numChosenSubsets = numel(experimentSpec.cmapssSubsets);
 
+    % -- IGNORE BELOW, CV WILL BE PUT INTO ITS OWN FUNCTIONS -- 
+    crossValidationFolds = buildCrossValidationFolds();
+
+
     templateCVFold = struct( ...
         'X', [], ...
         'y', []...
