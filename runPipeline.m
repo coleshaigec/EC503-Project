@@ -1,4 +1,4 @@
-function runResult = runPipeline(cmapssData, runPlan)
+function trainedModel = runPipeline(cmapssData, runPlan)
     % RUNPIPELINE Executes a single run of the preprocessing + training + reporting pipeline on a single windowed CMAPSS subset. 
     %
     % INPUTS
@@ -83,33 +83,19 @@ function runResult = runPipeline(cmapssData, runPlan)
     %
     % DOCSTRING TO BE POPULATED
 
-    % STOP
-    % PREPROCESSING NEEDS TO BE DONE ** WITHIN ** EACH KFCV FOLD
-    % Unless... we call this function WITHIN KFCV TLM
-    % That probably makes more sense... let's do it
-    % 
-
     % -- Extract desired subset of CMAPSS data -- 
     rawDataset = cmapssData.(runPlan.cmapssSubset);
 
     % -- Run k-fold cross-validation to tune hyperparameters --
+    bestHyperparameters = runKFoldCrossValidation(rawDataset, runPlan);
 
-    % -- Step 1: Apply preprocessing transforms to dataset --
-    dataset = applyPreprocessingTransformsForPipelineRun(dataset, runPlan);
+    % -- Train full model using best hyperparameters -- 
+    fullTrainingSet = windowTrainingDataset(rawDataset.engines, runPlan.windowSize);
 
-    % -- Step 2: 
+    finalModelSpec = struct( ...
+        'modelName', runPlan.modelSpec.modelName, ...
+        'hyperparameters', bestHyperparameters ...
+    );
 
-
-    % -- Step 2: Run k-fold cross-validation  --
-    % This will produce a trained model
-
-    % -- Step 3: Pass trained model through reporting suite --
-    % To be implemented
-    % Important architectural question: how does this get propagated upward
-    % to report general experiment results? Presumably we don't want the
-    % experimenter having to amalgamate a bunch of pipeline-level report
-    % files, so perhaps the best choice is to build a reporting struct from
-    % the pipeline run and propagate it upward to the experiment runner,
-    % which will in turn call some suite like reportExperimentResults.m
-    % that compiles whatever analytics we want and presents them cleanly
+    trainedModel = trainModel(fullTrainingSet, finalModelSpec);
 end

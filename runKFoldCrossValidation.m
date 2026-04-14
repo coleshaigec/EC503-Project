@@ -1,4 +1,4 @@
-function kfcvResult = runKFoldCrossValidation(cmapssSubset, runPlan)
+function bestHyperparameters = runKFoldCrossValidation(cmapssSubset, runPlan)
     % RUNKFOLDCROSSVALIDATION Runs group k-fold cross-validation to tune hyperparameters for a specified model.
     %
     % INPUTS
@@ -35,7 +35,8 @@ function kfcvResult = runKFoldCrossValidation(cmapssSubset, runPlan)
     %      .warningHorizons (positive scalar array)  - classes for classification
     %      .windowSize (positive integer)            - for dataset windowing
     %
-
+    % OUTPUT
+    %  bestHyperparameters (struct with model-specific fields)
 
     % -- Build cross-validation folds --
     folds = buildCrossValidationFolds(cmapssSubset, runPlan.windowSize);
@@ -56,11 +57,4 @@ function kfcvResult = runKFoldCrossValidation(cmapssSubset, runPlan)
 
     % -- Chose optimal hyperparameter values from tuning results
     bestHyperparameters = chooseBestHyperparameters(tuningResults, runPlan.modelSpec.taskType);
-
-
-
-    
 end
-
-
-% Another global constant: CROSS_VALIDATION_FOLDS
