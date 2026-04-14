@@ -1,88 +1,21 @@
-function kfcvResult = runKFoldCrossValidation(rawCMAPSSData, runPlan)
+function kfcvResult = runKFoldCrossValidation(cmapssSubset, runPlan)
     % RUNKFOLDCROSSVALIDATION Runs group k-fold cross-validation to tune hyperparameters for a specified model.
     %
     % INPUTS
-    %  cmapssData struct with fields 
-    %      .FD001 struct with fields
-    %          .train struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .test struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .name (string)
-    %      .FD002 struct with fields
-    %          .train struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .test struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .name (string)
-    %      .FD003 struct with fields
-    %          .train struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .test struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .name (string)
-    %      .FD004 struct with fields
-    %          .train struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .test struct with fields
-    %              .engines (array of structs with fields)
-    %                  .unitNumber (double)
-    %                  .timestamps (maxTimestamp x 1 double)
-    %                  .maxTimestamp (double)
-    %                  .operatingConditions (maxTimestamp x 3 double)
-    %                  .RUL (maxTimestamp x 3 double)
-    %              .numEngines (double)
-    %              .numRecords (double)
-    %          .name (string)
+    %  cmapssSubset struct with fields
+    %      .train struct with fields
+    %          .engines (array of structs with fields)
+    %              .sensorReadings (ntrain x d double)
+    %              .RUL (ntrain x 1 double)
+    %          .numEngines (double)
+    %          .numRecords (double)
+    %      .test struct with fields
+    %          .engines (array of structs with fields)
+    %              .sensorReadings (n x d double)
+    %              .RULFinal (double)
+    %          .numEngines (double)
+    %          .numRecords (double)
+    %      .name (string)
     %  runPlan struct with fields
     %      .pcaSpec struct with fields
     %          .enabled (boolean)
@@ -96,6 +29,7 @@ function kfcvResult = runKFoldCrossValidation(rawCMAPSSData, runPlan)
     %      .modelSpec struct with fields
     %          .modelName (string)
     %          .hyperparameterGrid (struct with model-specific fields)
+    %          .taskType (string)   - 'classification' or 'regression'
     %
     %      .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %      .warningHorizons (positive scalar array)  - classes for classification
@@ -103,12 +37,25 @@ function kfcvResult = runKFoldCrossValidation(rawCMAPSSData, runPlan)
     %
 
 
-    % STOP
-    % This has to be done at the EXPERIMENT LEVEL
+    % -- Build cross-validation folds --
+    folds = buildCrossValidationFolds(cmapssSubset, runPlan.windowSize);
 
-    % -- Step 1: split raw data into k folds at engine level --
-    chosenSubset = rawCMAPSSData.(runPlan.cmapssSubset);
-    rawFoldIndices = randperm(chosenSubset.train.numEngines);
+    % -- Run core KFCV loop --
+    templateTuningResultStruct = buildTemplateTuningResultStruct();
+    tuningResults = repmat(templateTuningResultStruct, numel(folds), 1);
+
+    for i = 1 : numel(folds)
+        tuningResults(i) = tuneHyperparameters( ...
+            folds(i).train, ...
+            folds(i).validation, ...
+            runPlan.modelSpec.modelName, ...
+            runPlan.modelSpec.hyperparameterGrid, ...
+            runPlan.modelSpec.taskType ...
+        );
+    end
+
+    % -- Chose optimal hyperparameter values from tuning results
+    bestHyperparameters = chooseBestHyperparameters(tuningResults, runPlan.modelSpec.taskType);
 
 
 

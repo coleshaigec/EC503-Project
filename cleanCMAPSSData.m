@@ -2,6 +2,156 @@ function cleanedCMAPSSData = cleanCMAPSSData(rawCMAPSSData)
     % CLEANCMAPSSDATA Strips extraneous information from raw CMAPSS dataset.
     %
     % AUTHOR: Cole H. Shaigec
+    %
+    % INPUTS
+    %  cmapssData struct with fields
+    %      .FD001 struct with fields
+    %          .train struct with fields
+    %              .engines (array of structs with fields)
+    %                  .unitNumber (double)
+    %                  .timestamps (maxTimestamp x 1 double)
+    %                  .maxTimestamp (double)
+    %                  .operatingConditions (maxTimestamp x 3 double)
+    %                  .sensorReadings (maxTimestamp x 21 double) 
+    %                  .RUL (maxTimestamp x 1 double) 
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .test struct with fields
+    %              .engines (array of structs with fields)
+    %                  .unitNumber (double)
+    %                  .timestamps (maxTimestamp x 1 double)
+    %                  .maxTimestamp (double)
+    %                  .operatingConditions (maxTimestamp x 3 double)
+    %                  .sensorReadings (maxTimestamp x 21 double) 
+    %                  .RULFinal (double) 
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .name (string)
+    %      .FD002 struct with fields
+    %          .train struct with fields
+    %              .engines (array of structs with fields)
+    %                  .unitNumber (double)
+    %                  .timestamps (maxTimestamp x 1 double)
+    %                  .maxTimestamp (double)
+    %                  .operatingConditions (maxTimestamp x 3 double)
+    %                  .sensorReadings (maxTimestamp x 21 double) 
+    %                  .RUL (maxTimestamp x 1 double) 
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .test struct with fields
+    %              .engines (array of structs with fields)
+    %                  .unitNumber (double)
+    %                  .timestamps (maxTimestamp x 1 double)
+    %                  .maxTimestamp (double)
+    %                  .operatingConditions (maxTimestamp x 3 double)
+    %                  .sensorReadings (maxTimestamp x 21 double) 
+    %                  .RULFinal (double) 
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .name (string)
+    %      .FD003 struct with fields
+    %          .train struct with fields
+    %              .engines (array of structs with fields)
+    %                  .unitNumber (double)
+    %                  .timestamps (maxTimestamp x 1 double)
+    %                  .maxTimestamp (double)
+    %                  .operatingConditions (maxTimestamp x 3 double)
+    %                  .sensorReadings (maxTimestamp x 21 double) 
+    %                  .RUL (maxTimestamp x 1 double) 
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .test struct with fields
+    %              .engines (array of structs with fields)
+    %                  .unitNumber (double)
+    %                  .timestamps (maxTimestamp x 1 double)
+    %                  .maxTimestamp (double)
+    %                  .operatingConditions (maxTimestamp x 3 double)
+    %                  .sensorReadings (maxTimestamp x 21 double) 
+    %                  .RULFinal (double) 
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .name (string)
+    %      .FD004 struct with fields
+    %          .train struct with fields
+    %              .engines (array of structs with fields)
+    %                  .unitNumber (double)
+    %                  .timestamps (maxTimestamp x 1 double)
+    %                  .maxTimestamp (double)
+    %                  .operatingConditions (maxTimestamp x 3 double)
+    %                  .sensorReadings (maxTimestamp x 21 double) 
+    %                  .RUL (maxTimestamp x 1 double) 
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .test struct with fields
+    %              .engines (array of structs with fields)
+    %                  .unitNumber (double)
+    %                  .timestamps (maxTimestamp x 1 double)
+    %                  .maxTimestamp (double)
+    %                  .operatingConditions (maxTimestamp x 3 double)
+    %                  .sensorReadings (maxTimestamp x 21 double) 
+    %                  .RULFinal (double) 
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .name (string)
+    %
+    % OUTPUT
+    %  cleanedCMAPSSData struct with fields
+    %      .FD001 struct with fields
+    %          .train struct with fields
+    %              .engines (array of structs with fields)
+    %                  .sensorReadings (ntrain x d double)
+    %                  .RUL (ntrain x 1 double)
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .test struct with fields
+    %              .engines (array of structs with fields)
+    %                  .sensorReadings (n x d double)
+    %                  .RULFinal (double)
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .name (string)
+    %      .FD002 struct with fields
+    %          .train struct with fields
+    %              .engines (array of structs with fields)
+    %                  .sensorReadings (ntrain x d double)
+    %                  .RUL (ntrain x 1 double)
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .test struct with fields
+    %              .engines (array of structs with fields)
+    %                  .sensorReadings (n x d double)
+    %                  .RULFinal (double)
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .name (string)
+    %      .FD003 struct with fields
+    %          .train struct with fields
+    %              .engines (array of structs with fields)
+    %                  .sensorReadings (ntrain x d double)
+    %                  .RUL (ntrain x 1 double)
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .test struct with fields
+    %              .engines (array of structs with fields)
+    %                  .sensorReadings (n x d double)
+    %                  .RULFinal (double)
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .name (string)
+    %      .FD004 struct with fields
+    %          .train struct with fields
+    %              .engines (array of structs with fields)
+    %                  .sensorReadings (ntrain x d double)
+    %                  .RUL (ntrain x 1 double)
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .test struct with fields
+    %              .engines (array of structs with fields)
+    %                  .sensorReadings (n x d double)
+    %                  .RULFinal (double)
+    %              .numEngines (double)
+    %              .numRecords (double)
+    %          .name (string)
 
     % Define subset names locally to avoid global dependencies
     CMAPSS_SUBSETS = {'FD001', 'FD002', 'FD003', 'FD004'};

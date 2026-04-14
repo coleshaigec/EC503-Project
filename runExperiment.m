@@ -14,33 +14,52 @@ function experimentResult = runExperiment(experimentSpec)
     % OUTPUTS
     %  experimentResult struct with fields
 
-
     % -- Input validation --
     validateExperimentSpec(experimentSpec);
 
     % -- Unpack experimentSpec and generate runPlans --
     runPlans = buildRunPlansFromExperimentSpec(experimentSpec);
+    numRuns = numel(runPlans);
 
-    % -- Ingest CMAPSS data and build cross-validation folds for each chosen subset --
+    % -- Ingest and clean CMAPSS data --
     rawCMAPSSData = readCMAPSSData();
+    cleanedCMAPSSData = cleanCMAPSSData(rawCMAPSSData);
+
+    % -- Carry out pipeline runs --
+    templateRunResult = buildTemplateRunResultStruct();
+    runResults = repmat(templateRunResult, numRuns, 1);
+
+    for i = 1 : numRuns
+        runResults(i) = runPipeline(cleanedCMAPSSData, runPlans(i));
+    end
+
+
+    % BELOW GOES INTO PIPELINE RUNNER!
+    % -- Build CV folds for each chosen subset --
     numChosenSubsets = numel(experimentSpec.cmapssSubsets);
-
-    % -- IGNORE BELOW, CV WILL BE PUT INTO ITS OWN FUNCTIONS -- 
-    crossValidationFolds = buildCrossValidationFolds();
-
-
-    templateCVFold = struct( ...
-        'X', [], ...
-        'y', []...
-    );
-
-    cvFolds = repmat(templateCVFold, CROSS_VALIDATION_FOLDS, numChosenSubsets);
+    crossValidationFolds = struct();
 
     for i = 1 : numChosenSubsets
         currentSubsetName = experimentSpec.cmapssSubsets{i};
-        currentSubset = rawCMAPSSData.(currentSubsetName);
-        currentSubsetFolds = buildCrossValidationFolds(currentSubset);
+        cleanedCurrentSubset = cleanedCMAPSSData.(currentSubsetName);
+        crossValidationFolds.(currentSubsetName) = buildCrossValidationFolds(cleanedCurrentSubset, experimentSpec.windowSize);
     end
 
-    % -- 
+
+
+    % 
+    % % -- Run k-fold cross-validation for each subset --
+    % kfcvResult = runKFoldCrossValidation(crossValidationFolds, runPlans);
+    % 
+    % % -- Run pipeline for each runPlan in the experiment --
+    % templateRunResult = buildTemplateRunResultStruct();
+    % 
+    % for i = 1 : numRuns
+    %     currentRunPlan = runPlans(i);
+    %     runResult = runPipeline
+    % end
+
+
+
+
 end

@@ -1,30 +1,20 @@
-function folds = buildCrossValidationFolds(foldIndices, cleanedCMAPSSSubset, windowSize)
+function folds = buildCrossValidationFolds(cmapssSubset, windowSize)
     % BUILDCROSSVALIDATIONFOLDS Constructs train/validation splits for each k-fold cross-validation combination.
     %
     % AUTHOR: Cole H. Shaigec
     %
     % INPUTS
-    %  foldIndices (1 x CROSS_VALIDATION_FOLDS cell) - each cell contains a
-    %  row vector of engine indices assigned to one validation fold
-    %
     %  cleanedCMAPSSSubset struct with fields
     %      .train struct with fields
     %          .engines (array of structs with fields)
-    %              .unitNumber (double)
-    %              .timestamps (maxTimestamp x 1 double)
-    %              .sensorReadings FIX THIS - MISSING FROM MANY DOCSTRINGS
-    %              .maxTimestamp (double)
-    %              .operatingConditions (maxTimestamp x 3 double)
-    %              .RUL (maxTimestamp x 3 double)
+    %              .sensorReadings (ntrain x d double)
+    %              .RUL (ntrain x 1 double)
     %          .numEngines (double)
     %          .numRecords (double)
     %      .test struct with fields
     %          .engines (array of structs with fields)
-    %              .unitNumber (double)
-    %              .timestamps (maxTimestamp x 1 double)
-    %              .maxTimestamp (double)
-    %              .operatingConditions (maxTimestamp x 3 double)
-    %              .RUL (maxTimestamp x 3 double)
+    %              .sensorReadings (n x d double)
+    %              .RULFinal (double)
     %          .numEngines (double)
     %          .numRecords (double)
     %      .name (string)
@@ -34,6 +24,9 @@ function folds = buildCrossValidationFolds(foldIndices, cleanedCMAPSSSubset, win
     % OUTPUTS
     %
     %
+
+    % -- Extract indices of engines in each fold --
+    foldIndices = buildEngineIndicesForCrossValidationFolds(cmapssSubset);
 
     % -- Build windowed X-y matrices for each fold --
     templateRawFold = struct( ...
@@ -45,7 +38,7 @@ function folds = buildCrossValidationFolds(foldIndices, cleanedCMAPSSSubset, win
 
     for i = 1 : CROSS_VALIDATION_FOLDS
         currentFoldEngineIndices = foldIndices{i};
-        currentFoldEngines = cleanedCMAPSSSubset.train.engines(currentFoldEngineIndices);
+        currentFoldEngines = cmapssSubset.train.engines(currentFoldEngineIndices);
         rawFolds(i) = windowTrainingDataset(currentFoldEngines, windowSize);
     end
 

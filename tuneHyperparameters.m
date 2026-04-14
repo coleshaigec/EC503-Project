@@ -28,6 +28,7 @@ function tuningResult = tuneHyperparameters(trainData, validationData, modelName
     %              .hyperparameterValues (struct)
     %              .runScore
     %      .searchGrid (struct)
+    %      .numRuns (double)
     %
     % NOTES
     %  - runScore is a 75/25 weighted average of macro F1 and accuracy for
@@ -109,4 +110,5 @@ function tuningResult = tuneHyperparameters(trainData, validationData, modelName
     tuningResult.bestRunScore = bestRunScore;
     tuningResult.allRunRecords = allRunRecords;
     tuningResult.searchGrid = searchGrid;
+    tuningResult.numRuns = numTuningRuns;
 end

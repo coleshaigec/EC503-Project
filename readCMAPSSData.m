@@ -1,4 +1,4 @@
-function cmapssData = readCMAPSSData()
+function rawCMAPSSData = readCMAPSSData()
     % READCMAPSSDATA Extracts raw CMAPSS data from text files
     %
     % AUTHOR: Cole H. Shaigec
@@ -94,11 +94,12 @@ function cmapssData = readCMAPSSData()
     %              .numRecords (double)
     %          .name (string)
 
+    % -- Read raw data from file --
     cmapssDataFolderPath = './dataCMAPSS/CMAPSSData/';
-    cmapssData = struct();
+    rawCMAPSSData = struct();
 
-    cmapssData.FD001 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD001');
-    cmapssData.FD002 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD002');
-    cmapssData.FD003 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD003');
-    cmapssData.FD004 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD004'); 
+    rawCMAPSSData.FD001 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD001');
+    rawCMAPSSData.FD002 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD002');
+    rawCMAPSSData.FD003 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD003');
+    rawCMAPSSData.FD004 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD004'); 
 end
