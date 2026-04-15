@@ -1,25 +1,14 @@
-function performanceMetrics = computeRegressionPerformanceMetricsForReporting(model, dataset)
-    % COMPUTEREGRESSIONPERFORMANCEMETRICSFORREPORTING Computes full suite of performance metrics for trained regression model against full test and train datasets. 
+function performanceMetrics = computeRegressionPerformanceMetricsForReporting(yHatTrain, yHatTest, ytrain, ytest)
+    % COMPUTEREGRESSIONPERFORMANCEMETRICSFORREPORTING Computes full suite of performance metrics for trained regression model. 
     %
     % INPUTS
-    %  model struct with fields
-    %      .model (struct)             - trained model
-    %      .modelName (string)         - model type to be analyzed
-    %      .taskType  (string)         - 'classification' or 'regression'
-    %      .hyperparameters (struct)   - hyperparameters used in training
-    %  
-    %  dataset struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
-    %      .Xtest  (nTest x d double)  - test feature matrix
-    %      .ytest  (nTest x 1 double)  - test label vector
-    %      .ntrain (int)               - training dataset size
-    %      .ntest  (int)               - test dataset size
-    %      .d      (int)               - dataset dimension
+    %  yHatTrain (nTrain x 1 double)  - predicted train labels
+    %  yHatTest  (nTest x 1 double)   - predicted test labels
+    %  ytrain    (nTrain x 1 double)  - true train labels
+    %  ytest     (nTest x 1 double)   - true test labels
     %
     % OUTPUTS
     %  performanceMetrics struct with fields
-    %     .modelName (string)
     %     .train struct with fields
     %         .RMSE (double)                 
     %         .MAE (double)                  
@@ -28,23 +17,19 @@ function performanceMetrics = computeRegressionPerformanceMetricsForReporting(mo
     %         .RMSE (double)                  
     %         .MAE (double)                   
     %         .R2 (double in [-1,1])   
-    
-    % -- Compute predictions --
-    predictionResult = computePredictions(model, dataset);
-
+   
     % -- Compute train metrics --
-    trainRMSE = computeRMSE(predictionResult.yHatTrain, dataset.ytrain);
-    trainMAE = computeMAE(predictionResult.yHatTrain, dataset.ytrain);
-    trainR2 = computeR2(predictionResult.yHatTrain, dataset.ytrain);
+    trainRMSE = computeRMSE(yHatTrain, ytrain);
+    trainMAE = computeMAE(yHatTrain, ytrain);
+    trainR2 = computeR2(yHatTrain, ytrain);
     
     % -- Compute test metrics --
-    testRMSE = computeRMSE(predictionResult.yHatTest, dataset.ytest);
-    testMAE = computeMAE(predictionResult.yHatTest, dataset.ytest);
-    testR2 = computeR2(predictionResult.yHatTest, dataset.ytest);
+    testRMSE = computeRMSE(yHatTest, ytest);
+    testMAE = computeMAE(yHatTest, ytest);
+    testR2 = computeR2(yHatTest, ytest);
 
     % -- Populate output struct --
     performanceMetrics = struct();
-    performanceMetrics.modelName = model.modelName;
     performanceMetrics.train = struct();
     performanceMetrics.test = struct();
 
