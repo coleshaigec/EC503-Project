@@ -80,8 +80,40 @@ function runReport = runPipeline(cmapssData, runPlan)
     %      .warningHorizons (positive scalar array)  - classes for classification
     %      .windowSize (positive integer)            - for dataset windowing
     %
-    %
-    % DOCSTRING TO BE POPULATED
+    % OUTPUT
+    %  runReport struct with fields
+    %      .train struct with fields
+    %          .yHat   - predicted labels
+    %          .yTrue  - true labels
+    %          .performanceMetrics struct with model-dependent fields
+    %      .test
+    %          .yHat   - predicted labels
+    %          .yTrue  - true labels
+    %          .performanceMetrics struct with model-dependent fields
+    %      .trainedModel struct with fields
+    %          .model (struct)             - trained model
+    %          .modelName (string)         - model type to be trained
+    %          .taskType  (string)         - 'classification' or 'regression'
+    %          .hyperparameters            - hyperparameters used in training
+    %      .runPlan struct with fields
+    %          .runNumber (positive integer)
+    %          .experimentId (matches experimentSpec.id)
+    %          .pcaSpec struct with fields
+    %              .enabled (boolean)
+    %              .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
+    %              .varianceThreshold (double in [0,1]) - 
+    %              .fixedNumComponents (int > 0) - number of principal components to compute 
+    %    
+    %          .missingnessSpec struct with fields
+    %              TBD FOR NOW
+    %    
+    %          .modelSpec struct with fields
+    %              .modelName (string)
+    %              .hyperparameterGrid (struct with model-specific fields)
+    %    
+    %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
+    %          .warningHorizons (positive scalar array)  - classes for classification
+    %          .windowSize (positive integer)            - for dataset windowing
 
     % -- Extract desired subset of CMAPSS data -- 
     rawDataset = cmapssData.(runPlan.cmapssSubset);
@@ -91,6 +123,7 @@ function runReport = runPipeline(cmapssData, runPlan)
 
     % -- Train full model using best hyperparameters -- 
     fullTrainingSet = windowTrainingDataset(rawDataset.engines, runPlan.windowSize);
+    fullTestSet = windowTestDataset(cmapssData.(runPlan.cmapssSubset).engines, runPlan.windowSize);
 
     finalModelSpec = struct( ...
         'modelName', runPlan.modelSpec.modelName, ...
@@ -100,5 +133,5 @@ function runReport = runPipeline(cmapssData, runPlan)
     trainedModel = trainModel(fullTrainingSet, finalModelSpec);
 
     % -- Build run report --
-    runReport = buildSingleRunReport();
+    runReport = buildSingleRunReport(trainedModel, fullTrainingSet, fullTestSet, runPlan);
 end

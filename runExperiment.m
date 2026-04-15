@@ -1,5 +1,7 @@
-function experimentResult = runExperiment(experimentSpec)
+function experimentReport = runExperiment(experimentSpec)
     % RUNEXPERIMENT Runs entire experiment pipeline end-to-end in accordance with provided spec
+    %
+    % AUTHOR: Cole H. Shaigec
     %
     % INPUTS
     %  experimentSpec struct with fields
@@ -13,6 +15,9 @@ function experimentResult = runExperiment(experimentSpec)
     %
     % OUTPUTS
     %  experimentResult struct with fields
+    %
+    % SIDE EFFECTS ?
+    % Maybe we write outputs to a file...
 
     % -- Input validation --
     validateExperimentSpec(experimentSpec);
@@ -26,15 +31,16 @@ function experimentResult = runExperiment(experimentSpec)
     cleanedCMAPSSData = cleanCMAPSSData(rawCMAPSSData);
 
     % -- Carry out pipeline runs --
-    templateRunResult = buildTemplateRunResultStruct();
-    runResults = repmat(templateRunResult, numRuns, 1);
+    templateRunReport = buildTemplateRunResultStruct();
+    runReports = repmat(templateRunReport, numRuns, 1);
 
     for i = 1 : numRuns
-        runResults(i) = runPipeline(cleanedCMAPSSData, runPlans(i));
+        runReports(i) = runPipeline(cleanedCMAPSSData, runPlans(i));
     end
 
     % -- Pass pipeline runs through reporting utility --
-
+    experimentReport
+    
 
 
 

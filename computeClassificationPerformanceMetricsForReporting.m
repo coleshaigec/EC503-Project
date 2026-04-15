@@ -60,7 +60,4 @@ function performanceMetrics = computeClassificationPerformanceMetricsForReportin
     performanceMetrics.test.recall = testRecall;
     performanceMetrics.test.AUC_ROC = testAUC_ROC;
     performanceMetrics.test.confusionMatrix = testConfusionMatrix;
-       
-    % -- Validate result -- 
-    validateClassificationPerformanceMetricsForReporting(model, performanceMetrics);
 end

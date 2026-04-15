@@ -1,5 +1,7 @@
-function runReport = buildSingleRunReport(trainedModel, trainingData, testData)
+function runReport = buildSingleRunReport(trainedModel, trainingData, testData, runPlan)
     % BUILDSINGLERUNREPORT Computes predictions and performance metrics for the trained model from a single pipeline run.
+    %
+    % AUTHOR: Cole H. Shaigec
     %
     % INPUTS
     %  trainedModel struct with fields
@@ -29,6 +31,26 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData)
     %          .modelName (string)         - model type to be trained
     %          .taskType  (string)         - 'classification' or 'regression'
     %          .hyperparameters            - hyperparameters used in training
+    %      .runPlan struct with fields
+    %      .runPlan struct with fields
+    %          .runNumber (positive integer)
+    %          .experimentId (matches experimentSpec.id)
+    %          .pcaSpec struct with fields
+    %              .enabled (boolean)
+    %              .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
+    %              .varianceThreshold (double in [0,1]) - 
+    %              .fixedNumComponents (int > 0) - number of principal components to compute 
+    %    
+    %          .missingnessSpec struct with fields
+    %              TBD FOR NOW
+    %    
+    %          .modelSpec struct with fields
+    %              .modelName (string)
+    %              .hyperparameterGrid (struct with model-specific fields)
+    %    
+    %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
+    %          .warningHorizons (positive scalar array)  - classes for classification
+    %          .windowSize (positive integer)            - for dataset windowing
 
     % -- Compute predictions using trained model --
     trainPredictionResult = computePredictions(trainingData, trainedModel);
@@ -61,4 +83,6 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData)
     runReport.test.performanceMetrics = performanceMetrics.test;
 
     runReport.trainedModel = trainedModel;
+
+    runReport.runPlan = runPlan;
 end

@@ -1,4 +1,4 @@
-function [XTest, yTest] = windowTestDataset(testSubset, windowSize)
+function testSet = windowTestDataset(testSubset, windowSize)
     % WINDOWTESTDATASET Applies rectangular history windowing to the
     % test data in a CMAPSS subset.
 
@@ -19,4 +19,8 @@ function [XTest, yTest] = windowTestDataset(testSubset, windowSize)
         Xcells{i} = [operatingConditionsCurrentEngine, windowedSensorReadings];
     end
     XTest = vertcat(Xcells{:});
+
+    testSet = struct();
+    testSet.X = XTest;
+    testSet.y = yTest;
 end

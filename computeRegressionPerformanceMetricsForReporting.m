@@ -1,6 +1,8 @@
 function performanceMetrics = computeRegressionPerformanceMetricsForReporting(yHatTrain, yHatTest, ytrain, ytest)
     % COMPUTEREGRESSIONPERFORMANCEMETRICSFORREPORTING Computes full suite of performance metrics for trained regression model. 
     %
+    % AUTHOR: Cole H. Shaigec
+    % 
     % INPUTS
     %  yHatTrain (nTrain x 1 double)  - predicted train labels
     %  yHatTest  (nTest x 1 double)   - predicted test labels
@@ -40,8 +42,5 @@ function performanceMetrics = computeRegressionPerformanceMetricsForReporting(yH
     performanceMetrics.test.RMSE = testRMSE;
     performanceMetrics.test.MAE = testMAE;
     performanceMetrics.test.R2 = testR2;
-
-    % -- Validate output struct --
-    validateRegressionPerformanceMetricsForReporting(performanceMetrics, model, dataset);
 
 end
