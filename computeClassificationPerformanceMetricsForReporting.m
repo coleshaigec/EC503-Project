@@ -1,25 +1,16 @@
-function performanceMetrics = computeClassificationPerformanceMetricsForReporting(model, dataset)
-    % COMPUTECLASSIFICATIONPERFORMANCEMETRICSFORREPORTING Computes full suite of performance metrics for trained classification model against full test and train datasets. 
-
+function performanceMetrics = computeClassificationPerformanceMetricsForReporting(yHatTrain, yHatTest, ytrain, ytest)
+    % COMPUTECLASSIFICATIONPERFORMANCEMETRICSFORREPORTING Computes full suite of performance metrics for trained classification model. 
+    %
+    % AUTHOR: Cole H. Shaigec
+    %
     % INPUTS
-    %  model struct with fields
-    %      .model (struct)             - trained model
-    %      .modelName (string)         - model type to be analyzed
-    %      .taskType  (string)         - 'classification' or 'regression'
-    %      .hyperparameters (struct)   - hyperparameters used in training
-    %  
-    %  dataset struct with fields
-    %      .Xtrain (nTrain x d double) - training feature matrix
-    %      .ytrain (nTrain x 1 double) - training label vector
-    %      .Xtest  (nTest x d double)  - test feature matrix
-    %      .ytest  (nTest x 1 double)  - test label vector
-    %      .ntrain (int)               - training dataset size
-    %      .ntest  (int)               - test dataset size
-    %      .d      (int)               - dataset dimension
+    %  yHatTrain (nTrain x 1 double)  - predicted training labels
+    %  yHatTest  (nTest x 1 double)   - predicted test labels
+    %  ytrain    (nTrain x 1 double)  - true training labels
+    %  ytest     (nTest x 1 double)   - true testing labels
     %
     % OUTPUTS
     %  performanceMetrics struct with fields
-    %      .modelName (string)         - model type to be analyzed
     %      .train struct with fields
     %          .F1 (double in [0,100])        
     %          .accuracy (double in [0,100])  
@@ -36,20 +27,16 @@ function performanceMetrics = computeClassificationPerformanceMetricsForReportin
     %          .confusionMatrix (table)       
     
     performanceMetrics = struct();
-    performanceMetrics.modelName = model.modelName;
     performanceMetrics.train = struct();
     performanceMetrics.test = struct();
 
-    % -- Compute predictions --
-    predictionResult = computePredictions(model, dataset);
-
     % -- Compute training metrics and add to struct -- 
-    trainAccuracy = computeAccuracy(predictionResult.yHatTrain, dataset.ytrain);
-    trainPrecision = computePrecision(predictionResult.yHatTrain, dataset.ytrain);
-    trainRecall = computeRecall(predictionResult.yHatTrain, dataset.ytrain);
+    trainAccuracy = computeAccuracy(yHatTrain, ytrain);
+    trainPrecision = computePrecision(yHatTrain, ytrain);
+    trainRecall = computeRecall(yHatTrain, ytrain);
     trainF1 = computeF1(trainPrecision, trainRecall);
-    trainAUC_ROC = computeAUCROC(predictionResult.yHatTrain, dataset.ytrain);
-    trainConfusionMatrix = computeConfusionMatrix(predictionResult.yHatTrain, dataset.ytrain);
+    trainAUC_ROC = computeAUCROC(yHatTrain, ytrain);
+    trainConfusionMatrix = computeConfusionMatrix(yHatTrain, ytrain);
 
     
     performanceMetrics.train.accuracy = trainAccuracy;
@@ -60,12 +47,12 @@ function performanceMetrics = computeClassificationPerformanceMetricsForReportin
     performanceMetrics.train.confusionMatrix = trainConfusionMatrix;
    
     % -- Compute test metrics and add to struct --         
-    testAccuracy = computeAccuracy(predictionResult.yHatTest, dataset.ytest);
-    testPrecision = computePrecision(predictionResult.yHatTest, dataset.ytest);
-    testRecall = computeRecall(predictionResult.yHatTest, dataset.ytest);
+    testAccuracy = computeAccuracy(yHatTest, ytest);
+    testPrecision = computePrecision(yHatTest, ytest);
+    testRecall = computeRecall(yHatTest, ytest);
     testF1 = computeF1(testPrecision, testRecall);
-    testAUC_ROC = computeAUCROC(predictionResult.yHatTest, dataset.ytest);
-    testConfusionMatrix = computeConfusionMatrix(predictionResult.yHatTest, dataset.ytest);
+    testAUC_ROC = computeAUCROC(yHatTest, ytest);
+    testConfusionMatrix = computeConfusionMatrix(yHatTest, ytest);
     
     performanceMetrics.test.accuracy = testAccuracy;
     performanceMetrics.test.precision = testPrecision;
@@ -75,5 +62,5 @@ function performanceMetrics = computeClassificationPerformanceMetricsForReportin
     performanceMetrics.test.confusionMatrix = testConfusionMatrix;
        
     % -- Validate result -- 
-    validateClassificationPerformanceMetricsForReporting(model, dataset, performanceMetrics);
+    validateClassificationPerformanceMetricsForReporting(model, performanceMetrics);
 end

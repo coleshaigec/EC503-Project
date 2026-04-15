@@ -33,31 +33,14 @@ function experimentResult = runExperiment(experimentSpec)
         runResults(i) = runPipeline(cleanedCMAPSSData, runPlans(i));
     end
 
-
-    % BELOW GOES INTO PIPELINE RUNNER!
-    % -- Build CV folds for each chosen subset --
-    numChosenSubsets = numel(experimentSpec.cmapssSubsets);
-    crossValidationFolds = struct();
-
-    for i = 1 : numChosenSubsets
-        currentSubsetName = experimentSpec.cmapssSubsets{i};
-        cleanedCurrentSubset = cleanedCMAPSSData.(currentSubsetName);
-        crossValidationFolds.(currentSubsetName) = buildCrossValidationFolds(cleanedCurrentSubset, experimentSpec.windowSize);
-    end
+    % -- Pass pipeline runs through reporting utility --
 
 
 
-    % 
-    % % -- Run k-fold cross-validation for each subset --
-    % kfcvResult = runKFoldCrossValidation(crossValidationFolds, runPlans);
-    % 
-    % % -- Run pipeline for each runPlan in the experiment --
-    % templateRunResult = buildTemplateRunResultStruct();
-    % 
-    % for i = 1 : numRuns
-    %     currentRunPlan = runPlans(i);
-    %     runResult = runPipeline
-    % end
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-function trainedModel = runPipeline(cmapssData, runPlan)
+function runReport = runPipeline(cmapssData, runPlan)
     % RUNPIPELINE Executes a single run of the preprocessing + training + reporting pipeline on a single windowed CMAPSS subset. 
     %
     % INPUTS
@@ -98,4 +98,7 @@ function trainedModel = runPipeline(cmapssData, runPlan)
     );
 
     trainedModel = trainModel(fullTrainingSet, finalModelSpec);
+
+    % -- Build run report --
+    runReport = buildSingleRunReport();
 end
