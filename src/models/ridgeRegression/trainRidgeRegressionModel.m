@@ -1,6 +1,8 @@
 function ridgeRegressionModel = trainRidgeRegressionModel(trainingData, ridgeRegressionHyperparameters)
     % TRAINRIDGEREGRESSIONMODEL Fits ridge regression model to training data using specified hyperparameters
     %
+    % AUTHOR: Kelly Falcon
+    %
     % INPUTS
     %  trainingData struct with fields
     %      .X (nTrain x d double)      - training feature matrix

@@ -152,9 +152,7 @@ function cleanedCMAPSSData = cleanCMAPSSData(rawCMAPSSData)
     %              .numEngines (double)
     %              .numRecords (double)
     %          .name (string)
-
-    % Define subset names locally to avoid global dependencies
-    CMAPSS_SUBSETS = {'FD001', 'FD002', 'FD003', 'FD004'};
+    CMAPSS_SUBSETS = getCMAPSSSubsets();
 
     % Trim unwanted sensors first
     trimmedCMAPSSData = trimSensorReadings(rawCMAPSSData);

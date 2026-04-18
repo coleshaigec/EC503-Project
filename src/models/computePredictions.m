@@ -9,7 +9,6 @@ function predictionResult = computePredictions(dataset, model)
     %  model struct with fields
     %      .model (struct)             - trained model
     %      .modelName (string)         - model type to be trained
-    %      .taskType  (string)         - 'classification' or 'regression'
     %      .hyperparameters (struct)   - hyperparameters used in training
     %
     % OUTPUT
@@ -19,14 +18,10 @@ function predictionResult = computePredictions(dataset, model)
 
     % -- Parse model and call appropriate model predictor --
     switch model.modelName
-        case 'logisticRegression'
-            predictionResult = computeKNNPredictions(dataset, model);
         case 'kernelSVM'
             predictionResult = computeKernelSVMPredictions(dataset, model);
         case 'randomForest'
             predictionResult = computeRandomForestPredictions(dataset, model);
-        case 'gradientBoostingClassifier'
-            predictionResult = computeGradientBoostingClassifierPredictions(dataset, model);
         case 'gradientBoostingRegression'
             predictionResult = computeGradientBoostingRegressionPredictions(dataset, model);
         case 'naiveBayes'

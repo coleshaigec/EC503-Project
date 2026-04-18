@@ -52,12 +52,12 @@ function folds = buildCrossValidationFolds(cmapssSubset, windowSize, numFolds)
     
     folds = repmat(templateFinalFold, numFolds, 1);
 
-    for i = 1 : CROSS_VALIDATION_FOLDS
+    for i = 1 : numFolds
         % Split one set at a time off as validation
         validationSet = rawFolds(i);
 
         % Amalgamate the remainder into a single training set
-        trainFoldMask = true(1, CROSS_VALIDATION_FOLDS);
+        trainFoldMask = true(1, numFolds);
         trainFoldMask(i) = false;
         rawTrainSet = rawFolds(trainFoldMask);
         trainSetX = vertcat(rawTrainSet.X);

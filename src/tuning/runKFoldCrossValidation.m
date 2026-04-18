@@ -26,7 +26,6 @@ function bestHyperparameters = runKFoldCrossValidation(cmapssSubset, runPlan)
     %      .modelSpec struct with fields
     %          .modelName (string)
     %          .hyperparameterGrid (struct with model-specific fields)
-    %          .taskType (string)   - 'classification' or 'regression'
     %
     %      .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %      .warningHorizons (positive scalar array)  - classes for classification
@@ -49,10 +48,10 @@ function bestHyperparameters = runKFoldCrossValidation(cmapssSubset, runPlan)
             folds(i).validation, ...
             runPlan.modelSpec.modelName, ...
             runPlan.modelSpec.hyperparameterGrid, ...
-            runPlan.modelSpec.taskType ...
+            getTaskTypeFromModelName(runPlan.modelSpec.modelName) ...
         );
     end
 
     % -- Chose optimal hyperparameter values from tuning results
-    bestHyperparameters = chooseBestHyperparameters(tuningResults, runPlan.modelSpec.taskType);
+    bestHyperparameters = chooseBestHyperparameters(tuningResults, getTaskTypeFromModelName(runPlan.modelSpec.modelName));
 end

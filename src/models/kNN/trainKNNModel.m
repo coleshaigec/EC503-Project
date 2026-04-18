@@ -1,5 +1,7 @@
 function knnModel = trainKNNModel(trainingData, knnHyperparameters)
-    % TRAINKNNMODEL Fits k-Nearest Neighbors classification model to training data using specified hyperparameters
+    % TRAINKNNMODEL Fits k-Nearest Neighbors classification model on training data using specified hyperparameters
+    %
+    % AUTHOR: Youwei Chen 
     %
     % INPUTS
     %  trainingData struct with fields

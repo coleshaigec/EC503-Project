@@ -81,10 +81,6 @@ function validateTrainedModel(trainedModel)
                 'Unsupported model name: %s', modelName);
     end
 
-    assert(strcmp(taskType, expectedTaskType), ...
-        'validateTrainedModel:TaskTypeMismatch', ...
-        'trainedModel.taskType is inconsistent with trainedModel.modelName.');
-
     % -- Validate inner model fields according to model family --
     switch modelName
         case 'logisticRegression'

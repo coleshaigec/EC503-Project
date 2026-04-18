@@ -10,13 +10,13 @@ function testSet = windowTestDataset(testSubset, windowSize)
     for i = 1:numEngines
         currentEngine = testSubset.engines(i);
         sensorReadingsCurrentEngine = currentEngine.sensorReadings;
-        operatingConditionsCurrentEngine = currentEngine.operatingConditions(end, :);
+        % operatingConditionsCurrentEngine = currentEngine.operatingConditions(end, :);
         
         numSensorReadings = size(sensorReadingsCurrentEngine, 1);
         assert(windowSize <= numSensorReadings, 'Window size exceeds engine trajectory length.');
         stackedWindowMatrix = sensorReadingsCurrentEngine(numSensorReadings - windowSize + 1 : end, :);
         windowedSensorReadings = stackedWindowMatrix(:).';
-        Xcells{i} = [operatingConditionsCurrentEngine, windowedSensorReadings];
+        Xcells{i} =  windowedSensorReadings;
     end
     XTest = vertcat(Xcells{:});
 
