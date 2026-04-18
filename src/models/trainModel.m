@@ -28,17 +28,11 @@ function trainedModel = trainModel(trainingData, modelSpec)
 
     % -- Parse modelSpec and call appropriate model trainer --
     switch modelSpec.modelName
-        case 'logisticRegression'
-            trainedModel.model = trainLogisticRegressionModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.taskType = 'classification';
         case 'kernelSVM'
             trainedModel.model = trainKernelSVMModel(trainingData, modelSpec.hyperparameters);
             trainedModel.taskType = 'classification';
         case 'randomForest'
             trainedModel.model = trainRandomForestModel(trainingData, modelSpec.hyperparameters);
-            trainedModel.taskType = 'classification';
-        case 'gradientBoostingClassifier'
-            trainedModel.model = trainGradientBoostingClassificationModel(trainingData, modelSpec.hyperparameters);
             trainedModel.taskType = 'classification';
         case 'gradientBoostingRegression'
             trainedModel.model = trainGradientBoostingRegressionModel(trainingData, modelSpec.hyperparameters);
