@@ -95,7 +95,7 @@ function rawCMAPSSData = readCMAPSSData()
     %          .name (string)
 
     % -- Read raw data from file --
-    cmapssDataFolderPath = './dataCMAPSS/CMAPSSData/';
+    cmapssDataFolderPath = getCMAPSSDataFolderPath();
     rawCMAPSSData = struct();
 
     rawCMAPSSData.FD001 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD001');
