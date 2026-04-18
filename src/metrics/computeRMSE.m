@@ -1,6 +1,8 @@
 function RMSE = computeRMSE(yHat, yTrue)
     % COMPUTERMSE Computes RMSE for labels predicted by a trained regression model.
     %
+    % AUTHOR: Cole H. Shaigec
+    %
     % INPUTS
     %  yHat (n x 1 double)   - predicted labels
     %  yTrue (n x 1 double)  - true labels

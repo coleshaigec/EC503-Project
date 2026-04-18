@@ -1,26 +1,22 @@
-function yRemapped = remapLabels(yOriginal, warningHorizons)
-    % REMAPLABELS Maps RUL labels in raw dataset to specified failure hazard bins to facilitate classification learning
+function yRemapped = remapLabels(yOriginal, warningHorizon)
+    % REMAPLABELS Maps RUL labels in raw dataset to specified failure hazard bins to facilitate classification learning.
+    %
+    % AUTHOR: Cole H. Shaigec
     %
     % INPUTS
-    %  yOriginal (n x 1 double)         - vector of original labels
-    %  warningHorizons (m x 1 double)   - upper limits for warning horizon bins
+    %  yOriginal (n x 1 double)           - vector of original labels
+    %  warningHorizon (positive integer)  - TTF threshold
     %
     % OUTPUTS
-    %  yRemapped (n x 1 double)         - vector of remapped labels
+    %  yRemapped (n x 1 double)           - vector of remapped labels
+    %
+    % NOTES
+    %  If the RUL in y is less than or equal to the warningHorizon, the
+    %  sample is mapped to +1. Otherwise, it is mapped to -1.
 
-    % -- Validate warning horizons --
-    WARNING_HORIZON_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'double', 'positive'};
-    warningHorizons = sort(unique(warningHorizons), 'ascend');
-    validateattributes(warningHorizons, {'numeric'}, WARNING_HORIZON_ATTRIBUTES, ...
-        mfilename, 'warningHorizons');
-
-    m = numel(warningHorizons);
     n = numel(yOriginal);
 
     % -- Remap labels to appropriate bins --
     yRemapped = ones(n, 1);
-
-    for i = 1:m
-        yRemapped(yOriginal > warningHorizons(i)) = i + 1;
-    end
+    yRemapped(yOriginal > warningHorizon) = -1;
 end
