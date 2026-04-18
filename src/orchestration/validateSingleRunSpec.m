@@ -32,11 +32,6 @@ function validateSingleRunSpec(spec)
             'singleRunSpec must have a ''pcaSpec'' field.');
     end
 
-    if ~isfield(spec, 'imbalanceSpec')
-        error('validateSingleRunSpec:MissingField', ...
-            'singleRunSpec must have an ''imbalanceSpec'' field.');
-    end
-
     if ~isfield(spec, 'modelSpec')
         error('validateSingleRunSpec:MissingField', ...
             'singleRunSpec must have a ''modelSpec'' field.');
@@ -67,7 +62,6 @@ function validateSingleRunSpec(spec)
     %  Validate pipeline specification structs  %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     validatePCASpec(spec.pcaSpec);
-    validateImbalanceSpec(spec.imbalanceSpec);
     validateModelSpec(spec.modelSpec);
     validateDatasetSpec(spec.datasetSpec);
 end
