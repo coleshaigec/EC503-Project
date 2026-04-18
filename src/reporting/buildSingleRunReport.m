@@ -34,7 +34,6 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     %      .runPlan struct with fields
     %      .runPlan struct with fields
     %          .runNumber (positive integer)
-    %          .experimentId (matches experimentSpec.id)
     %          .pcaSpec struct with fields
     %              .enabled (boolean)
     %              .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'

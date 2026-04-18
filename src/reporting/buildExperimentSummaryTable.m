@@ -18,7 +18,6 @@ function summaryTable = buildExperimentSummaryTable(runReports)
     %          .hyperparameters            - hyperparameters used in training
     %      .runPlan struct with fields
     %          .runNumber (positive integer)
-    %          .experimentId (matches experimentSpec.id)
     %          .pcaSpec struct with fields
     %              .enabled (boolean)
     %              .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
@@ -31,6 +30,7 @@ function summaryTable = buildExperimentSummaryTable(runReports)
     %
     %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %          .windowSize (positive integer)            - for dataset windowing
+    %          .numFolds (positive integer)              - number of CV folds
     %
     % OUTPUTS
     %  summaryTable table

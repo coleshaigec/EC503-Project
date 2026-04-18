@@ -5,17 +5,16 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
     %
     % INPUTS
     %  experimentSpec struct with fields
-    %      .id         (positive integer)
     %      .modelSpecs (array of modelSpec structs - see OUTPUTS)
     %      .pcaSpecs   (array of pcaSpec structs - see OUTPUTS)
     %      .warningHorizons (nonempty cell array; each cell contains a positive numeric vector)
     %      .cmapssSubsets (nonempty cell array of subset names: 'FD001', 'FD002', 'FD003', or 'FD004')
     %      .windowSizes (array of positive integers)
+    %      .numFolds (positive integer)
     %
     % OUTPUTS
     %  runPlans array of runPlan structs, each with fields
     %      .runNumber (positive integer)
-    %      .experimentId (matches experimentSpec.id)
     %      .pcaSpec struct with fields
     %          .enabled (boolean)
     %          .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
@@ -27,7 +26,7 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
     %          .hyperparameterGrid (struct with model-specific fields)
     %
     %      .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
-    %      .warningHorizons (positive scalar array)  - classes for classification
+    %      .warningHorizon (positive scalar array)   - TTF threshold for classification
     %      .windowSize (positive integer)            - for dataset windowing
 
     % -- Validate experimentSpec --
@@ -43,15 +42,7 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
     numRuns = numWindowSizes * numPCASpecs * numModels * numCMAPSSSubsets * numWarningHorizons;
 
     % -- Build template runPlan and preallocate output --
-    templateRunPlan = struct();
-    templateRunPlan.runNumber = [];
-    templateRunPlan.experimentId = [];
-    templateRunPlan.windowSize = [];
-    templateRunPlan.pcaSpec = [];
-    templateRunPlan.modelSpec = [];
-    templateRunPlan.cmapssSubset = [];
-    templateRunPlan.warningHorizons = [];
-
+    templateRunPlan = buildTemplateRunPlanStruct();
     runPlans = repmat(templateRunPlan, numRuns, 1);
 
     % -- Enumerate Cartesian product of run specifications --
@@ -73,18 +64,18 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
         currentRunPlan = templateRunPlan;
         currentWindowSize = unpackedExperimentSpec{i, 1};
         currentPCASpec = unpackedExperimentSpec{i, 2};
-        currentModelSpec = unpackedExperimentSpec{i, 4};
-        currentCMAPSSSubset = unpackedExperimentSpec{i, 5};
-        currentWarningHorizons = unpackedExperimentSpec{i, 6};
+        currentModelSpec = unpackedExperimentSpec{i, 3};
+        currentCMAPSSSubset = string(unpackedExperimentSpec{i, 4});
+        currentWarningHorizon = unpackedExperimentSpec{i, 5};
 
         % Populate run plan
         currentRunPlan.runNumber = i;
-        currentRunPlan.experimentId = experimentSpec.id;
         currentRunPlan.windowSize = currentWindowSize;
         currentRunPlan.pcaSpec = currentPCASpec;
         currentRunPlan.modelSpec = currentModelSpec;
         currentRunPlan.cmapssSubset = currentCMAPSSSubset;
-        currentRunPlan.warningHorizons = currentWarningHorizons;
+        currentRunPlan.warningHorizon = currentWarningHorizon;
+        currentRunPlan.numFolds = experimentSpec.numFolds;
 
         % Add run plan to output struct array
         runPlans(i) = currentRunPlan;

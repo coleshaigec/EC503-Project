@@ -5,11 +5,11 @@ function templateModelSpec = buildTemplateModelSpecStruct()
     %
     % OUTPUT
     %  templateModelSpec struct with fields
-    %      .modelName (string)         - model type to be trained
-    %      .hyperparameters (struct)   - hyperparameters for use in training
+    %      .modelName (string)            - model type to be trained
+    %      .hyperparameterGrid (struct)   - hyperparameter search grid for training
 
     templateModelSpec = struct( ...
         'modelName', "", ...
-        'hyperparameters', [] ...
+        'hyperparameterGrid', [] ...
     );
 end

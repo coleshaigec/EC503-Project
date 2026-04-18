@@ -31,12 +31,13 @@ function bestHyperparameters = runKFoldCrossValidation(cmapssSubset, runPlan)
     %      .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %      .warningHorizons (positive scalar array)  - classes for classification
     %      .windowSize (positive integer)            - for dataset windowing
+    %      .numFolds (positive integer)              - number of CV folds
     %
     % OUTPUT
     %  bestHyperparameters (struct with model-specific fields)
 
     % -- Build cross-validation folds --
-    folds = buildCrossValidationFolds(cmapssSubset, runPlan.windowSize);
+    folds = buildCrossValidationFolds(cmapssSubset, runPlan.windowSize, runPlan.numFolds);
 
     % -- Run core KFCV loop --
     templateTuningResultStruct = buildTemplateTuningResultStruct();

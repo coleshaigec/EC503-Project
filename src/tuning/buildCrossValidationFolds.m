@@ -1,4 +1,4 @@
-function folds = buildCrossValidationFolds(cmapssSubset, windowSize)
+function folds = buildCrossValidationFolds(cmapssSubset, windowSize, numFolds)
     % BUILDCROSSVALIDATIONFOLDS Constructs train/validation splits for each k-fold cross-validation combination.
     %
     % AUTHOR: Cole H. Shaigec
@@ -18,15 +18,17 @@ function folds = buildCrossValidationFolds(cmapssSubset, windowSize)
     %          .numEngines (double)
     %          .numRecords (double)
     %      .name (string)
+    %  
+    %  windowSize (positive integer)  - size of window to be applied to dataset
     %
-    %  windowSize (scalar)  - size of window to be applied to dataset
+    %  numFolds (positive integer)
     % 
     % OUTPUTS
     %
     %
 
     % -- Extract indices of engines in each fold --
-    foldIndices = buildEngineIndicesForCrossValidationFolds(cmapssSubset);
+    foldIndices = buildEngineIndicesForCrossValidationFolds(cmapssSubset, numFolds);
 
     % -- Build windowed X-y matrices for each fold --
     templateRawFold = struct( ...
@@ -34,9 +36,9 @@ function folds = buildCrossValidationFolds(cmapssSubset, windowSize)
         'y', [] ...
     );
 
-    rawFolds = repmat(templateRawFold, CROSS_VALIDATION_FOLDS, 1);
+    rawFolds = repmat(templateRawFold, numFolds, 1);
 
-    for i = 1 : CROSS_VALIDATION_FOLDS
+    for i = 1 : numFolds
         currentFoldEngineIndices = foldIndices{i};
         currentFoldEngines = cmapssSubset.train.engines(currentFoldEngineIndices);
         rawFolds(i) = windowTrainingDataset(currentFoldEngines, windowSize);
@@ -48,7 +50,7 @@ function folds = buildCrossValidationFolds(cmapssSubset, windowSize)
         'validation', [] ...
     );
     
-    folds = repmat(templateFinalFold, CROSS_VALIDATION_FOLDS, 1);
+    folds = repmat(templateFinalFold, numFolds, 1);
 
     for i = 1 : CROSS_VALIDATION_FOLDS
         % Split one set at a time off as validation

@@ -24,6 +24,7 @@ function dataset = applyPreprocessingTransformsForPipelineRun(rawDataset, runPla
     %      .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %      .warningHorizons (positive scalar array)  - classes for classification
     %      .windowSize (positive integer)            - for dataset windowing
+    %      .numFolds (positive integer)              - number of CV folds
     %
     % OUTPUTS
 

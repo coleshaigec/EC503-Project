@@ -17,7 +17,6 @@ function templateRunReport = buildTemplateRunReportStruct()
     %           .hyperparameters            - hyperparameters used in training
     %       .runPlan struct with fields
     %           .runNumber (positive integer)
-    %           .experimentId (matches experimentSpec.id)
     %           .pcaSpec struct with fields
     %               .enabled (boolean)
     %               .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'

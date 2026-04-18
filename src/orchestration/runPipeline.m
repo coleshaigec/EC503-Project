@@ -62,7 +62,6 @@ function runReport = runPipeline(cmapssData, runPlan)
     % 
     %  runPlan struct with fields
     %      .runNumber (positive integer)
-    %      .experimentId (matches experimentSpec.id)
     %      .pcaSpec struct with fields
     %          .enabled (boolean)
     %          .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
@@ -94,7 +93,6 @@ function runReport = runPipeline(cmapssData, runPlan)
     %          .hyperparameters            - hyperparameters used in training
     %      .runPlan struct with fields
     %          .runNumber (positive integer)
-    %          .experimentId (matches experimentSpec.id)
     %          .pcaSpec struct with fields
     %              .enabled (boolean)
     %              .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
@@ -108,8 +106,10 @@ function runReport = runPipeline(cmapssData, runPlan)
     %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %          .warningHorizons (positive scalar array)  - classes for classification
     %          .windowSize (positive integer)            - for dataset windowing
+    %          .numFolds (positive integer)              - number of cross-validation folds
 
     % -- Extract desired subset of CMAPSS data -- 
+    runPlan.cmapssSubset
     rawDataset = cmapssData.(runPlan.cmapssSubset);
 
     % -- Run k-fold cross-validation to tune hyperparameters --

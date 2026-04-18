@@ -3,6 +3,7 @@ function pipelineQueue = generateRunSpecsFromExperimentSpec(experimentSpec)
     %   validated experimentSpec into atomic pipeline runs.
     %   Returns: pipelineQueue (array of singleRunSpec structs)
 
+    fprintf('RUNSPEC FUNCTION HAS BEEN CALLED!');
 
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%%% IMPORTANT NOTE %%%%

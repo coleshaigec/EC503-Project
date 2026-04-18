@@ -20,7 +20,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %          .hyperparameters            - hyperparameters used in training
     %      .runPlan struct with fields
     %          .runNumber (positive integer)
-    %          .experimentId (matches experimentSpec.id)
     %          .pcaSpec struct with fields
     %              .enabled (boolean)
     %              .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
@@ -34,6 +33,7 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %          .warningHorizons (positive scalar array)  - classes for classification
     %          .windowSize (positive integer)            - for dataset windowing
+    %          .numFolds (positive integer)              - number of CV folds
     %
     %  templateRow struct with fields
     %      See buildTemplateSummaryTableRow for the full template-row schema.

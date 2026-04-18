@@ -1,5 +1,7 @@
 function validateModelSpec(modelSpec, modelSpecIndex)
     % VALIDATEMODELSPEC Validates a single model specification.
+    %
+    % AUTHOR: Cole H. Shaigec
 
     assert(isstruct(modelSpec) && isscalar(modelSpec), ...
         'Each modelSpec must be a scalar struct. Failed at index %d.', ...

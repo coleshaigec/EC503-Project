@@ -1,4 +1,4 @@
-function foldIndices = buildEngineIndicesForCrossValidationFolds(cmapssSubset)
+function foldIndices = buildEngineIndicesForCrossValidationFolds(cmapssSubset, numFolds)
     % BUILDCROSSVALIDATIONFOLDS Defines indices that randomly partition a CMAPSS subset into k folds for cross-validation.
     %
     % INPUTS 
@@ -23,18 +23,20 @@ function foldIndices = buildEngineIndicesForCrossValidationFolds(cmapssSubset)
     %          .numRecords (double)
     %      .name (string)
     %
+    %  numFolds (positive integer)
+    %
     % OUTPUTS
-    %  foldIndices (1 x CROSS_VALIDATION_FOLDS cell) - each cell contains a
+    %  foldIndices (1 x numFolds cell) - each cell contains a
     %  row vector of engine indices assigned to one validation fold
     
     % -- Construct random engine indices for each fold --
     rawFoldIndices = randperm(cmapssSubset.train.numEngines);
 
-    if mod(cmapssSubset.train.numEngines, CROSS_VALIDATION_FOLDS) ~= 0
+    if mod(cmapssSubset.train.numEngines, numFolds) ~= 0
          error('buildEngineIndicesForCrossValidationFolds:InvalidFieldValue', ...
-            'cmapssSubset.train.numEngines = %i must be evenly divisible by CROSS_VALIDATION_FOLDS = %i', cmapssSubset.train.numEngines, CROSS_VALIDATION_FOLDS);
+            'cmapssSubset.train.numEngines = %i must be evenly divisible by numFolds = %i', cmapssSubset.train.numEngines, numFolds);
     end
 
-    numEnginesPerFold = cmapssSubset.train.numEngines / CROSS_VALIDATION_FOLDS;
-    foldIndices = mat2cell(rawFoldIndices, 1, numEnginesPerFold * ones(1, CROSS_VALIDATION_FOLDS));
+    numEnginesPerFold = cmapssSubset.train.numEngines / numFolds;
+    foldIndices = mat2cell(rawFoldIndices, 1, numEnginesPerFold * ones(1, numFolds));
 end

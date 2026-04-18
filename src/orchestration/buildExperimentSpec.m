@@ -5,12 +5,12 @@ function experimentSpec = buildExperimentSpec()
     %
     % OUTPUT
     %  experimentSpec struct with fields
-    %      .id         (positive integer)
     %      .modelSpecs (array of modelSpec structs)
     %      .pcaSpecs   (array of pcaSpec structs)
     %      .warningHorizons (nonempty cell array; each cell contains a positive numeric vector)
     %      .cmapssSubsets (nonempty cell array of subset names: 'FD001', 'FD002', 'FD003', or 'FD004')
     %      .windowSizes (array of positive integers)
+    %      .numFolds (positive integer)
     %
     %
     % NOTES
@@ -26,7 +26,7 @@ function experimentSpec = buildExperimentSpec()
     % This may be removed/replaced later
     modelSpecs(1) = struct( ...
         'modelName', 'naiveBayes', ...
-        'hyperparameters', struct( ...
+        'hyperparameterGrid', struct( ...
              'alpha', 0.1 : 0.1 : 1 ...
          ) ...
     );
@@ -57,7 +57,7 @@ function experimentSpec = buildExperimentSpec()
     );
 
     % -- Add warning horizons --
-    warningHorizons = mat2cell(1 : 5 : 16);
+    warningHorizons = {1, 4, 6, 8, 10, 15, 20};
 
     % -- Choose CMAPSS subsets -- 
     cmapssSubsets = {'FD001', 'FD003'};
@@ -65,14 +65,17 @@ function experimentSpec = buildExperimentSpec()
     % -- Choose window sizes --
     windowSizes = 1:1:5;
 
+    % -- Set cross-validation fold policy --
+    numFolds = 5;
+
     % -- Populate output struct --
     experimentSpec = struct();
-    experimentSpec.id = 1;
     experimentSpec.modelSpecs = modelSpecs;
     experimentSpec.pcaSpecs = pcaSpecs;
     experimentSpec.warningHorizons = warningHorizons;
     experimentSpec.cmapssSubsets = cmapssSubsets;
     experimentSpec.windowSizes = windowSizes;
+    experimentSpec.numFolds = numFolds;
 
     % -- Validate experimentSpec --
     validateExperimentSpec(experimentSpec);
