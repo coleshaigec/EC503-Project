@@ -13,12 +13,13 @@ function recall = computeRecall(yHat, yTrue, warningHorizon)
 
     % -- Actual positives --
     actualPositives = (yTrue <= warningHorizon);
+    numActualPositives = sum(actualPositives);
 
     % -- Predicted positives --
     predictedPositives = (yHat == 1);
 
     % -- Handle edge case cleanly --
-    if sum(actualPositives) == 0
+    if numActualPositives == 0
         recall = 0;
         return;
     end
@@ -27,6 +28,6 @@ function recall = computeRecall(yHat, yTrue, warningHorizon)
     truePositives = predictedPositives & actualPositives;
 
     % -- Compute recall --
-    recall = sum(truePositives) / (sum(actualPositives));
+    recall = sum(truePositives) / numActualPositives;
 
 end
