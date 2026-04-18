@@ -30,5 +30,6 @@ function specificity = computeSpecificity(yHat, yTrue, warningHorizon)
     trueNegatives = actualNegatives & predictedNegatives;
     numTrueNegatives = sum(trueNegatives);
 
+    % -- Compute specificity --
     specificity = numTrueNegatives / numActualNegatives;
 end
