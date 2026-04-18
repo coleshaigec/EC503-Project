@@ -1,5 +1,5 @@
 function yRemapped = remapLabels(yOriginal, warningHorizon)
-    % REMAPLABELS Maps RUL labels in raw dataset to specified failure hazard bins to facilitate classification learning.
+    % REMAPLABELS Maps RUL labels in raw dataset to binary failure-within-horizon labels.
     %
     % AUTHOR: Cole H. Shaigec
     %
