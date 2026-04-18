@@ -1,0 +1,2 @@
+This folder exists to temporarily house files accumulated during production whose purpose/usefulness is uncertain. 
+Once the project is done, this folder and its contents will be deleted.
