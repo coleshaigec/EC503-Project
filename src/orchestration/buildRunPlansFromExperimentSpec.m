@@ -8,7 +8,6 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
     %      .id         (positive integer)
     %      .modelSpecs (array of modelSpec structs - see OUTPUTS)
     %      .pcaSpecs   (array of pcaSpec structs - see OUTPUTS)
-    %      .missingnessSpecs (array of missingnessSpec structs -- see OUTPUTS)
     %      .warningHorizons (nonempty cell array; each cell contains a positive numeric vector)
     %      .cmapssSubsets (nonempty cell array of subset names: 'FD001', 'FD002', 'FD003', or 'FD004')
     %      .windowSizes (array of positive integers)
@@ -22,9 +21,6 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
     %          .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
     %          .varianceThreshold (double in [0,1]) - 
     %          .fixedNumComponents (int > 0) - number of principal components to compute 
-    %
-    %      .missingnessSpec struct with fields
-    %          TBD FOR NOW
     %
     %      .modelSpec struct with fields
     %          .modelName (string)
@@ -41,11 +37,10 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
     numWindowSizes = numel(experimentSpec.windowSizes);
     numWarningHorizons = numel(experimentSpec.warningHorizons);
     numPCASpecs = numel(experimentSpec.pcaSpecs);
-    numMissingnessSpecs = numel(experimentSpec.missingnessSpecs);
     numModels = numel(experimentSpec.modelSpecs);
     numCMAPSSSubsets = numel(experimentSpec.cmapssSubsets);
     
-    numRuns = numWindowSizes * numPCASpecs * numMissingnessSpecs * numModels * numCMAPSSSubsets * numWarningHorizons;
+    numRuns = numWindowSizes * numPCASpecs * numModels * numCMAPSSSubsets * numWarningHorizons;
 
     % -- Build template runPlan and preallocate output --
     templateRunPlan = struct();
@@ -53,7 +48,6 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
     templateRunPlan.experimentId = [];
     templateRunPlan.windowSize = [];
     templateRunPlan.pcaSpec = [];
-    templateRunPlan.missingnessSpec = [];
     templateRunPlan.modelSpec = [];
     templateRunPlan.cmapssSubset = [];
     templateRunPlan.warningHorizons = [];
@@ -64,7 +58,6 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
     unpackedExperimentSpec = combinations( ...
         experimentSpec.windowSizes, ...
         experimentSpec.pcaSpecs, ...
-        experimentSpec.missingnessSpecs, ...
         experimentSpec.modelSpecs, ...
         experimentSpec.cmapssSubsets, ...
         experimentSpec.warningHorizons ...
@@ -80,7 +73,6 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
         currentRunPlan = templateRunPlan;
         currentWindowSize = unpackedExperimentSpec{i, 1};
         currentPCASpec = unpackedExperimentSpec{i, 2};
-        currentMissingnessSpec = unpackedExperimentSpec{i, 3};
         currentModelSpec = unpackedExperimentSpec{i, 4};
         currentCMAPSSSubset = unpackedExperimentSpec{i, 5};
         currentWarningHorizons = unpackedExperimentSpec{i, 6};
@@ -90,7 +82,6 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
         currentRunPlan.experimentId = experimentSpec.id;
         currentRunPlan.windowSize = currentWindowSize;
         currentRunPlan.pcaSpec = currentPCASpec;
-        currentRunPlan.missingnessSpec = currentMissingnessSpec;
         currentRunPlan.modelSpec = currentModelSpec;
         currentRunPlan.cmapssSubset = currentCMAPSSSubset;
         currentRunPlan.warningHorizons = currentWarningHorizons;

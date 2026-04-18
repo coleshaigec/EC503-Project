@@ -27,9 +27,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %              .varianceThreshold (double in [0,1]) -
     %              .fixedNumComponents (int > 0) - number of principal components to compute
     %
-    %          .missingnessSpec struct with fields
-    %              TBD FOR NOW
-    %
     %          .modelSpec struct with fields
     %              .modelName (string)
     %              .hyperparameterGrid (struct with model-specific fields)
@@ -53,7 +50,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %      .pcaEnabled (boolean)
     %      .pcaSelectionMode (string)
     %      .pcaVarianceThreshold (double)
-    %      .MISSINGNESS____ (boolean) - MISSINGNESS NOT YET ARCHITECTED!
     %      .modelName (string)
     %      .boostingRegressionT (double)
     %      .knnK (double)
@@ -111,9 +107,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
             tableRow.pcaVarianceThreshold = runReport.runPlan.pcaSpec.varianceThreshold;
         end
     end
-
-    % -- Missingness placeholder field --
-    % Intentionally left as placeholder unless architecture is later defined.
 
     % -- Fill in model-specific hyperparameters --
     if isfield(runReport, 'trainedModel') && isfield(runReport.trainedModel, 'hyperparameters') ...

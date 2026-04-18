@@ -25,9 +25,6 @@ function summaryTable = buildExperimentSummaryTable(runReports)
     %              .varianceThreshold (double in [0,1]) -
     %              .fixedNumComponents (int > 0) - number of principal components to compute
     %
-    %          .missingnessSpec struct with fields
-    %              TBD FOR NOW
-    %
     %          .modelSpec struct with fields
     %              .modelName (string)
     %              .hyperparameterGrid (struct with model-specific fields)

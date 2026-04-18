@@ -8,7 +8,6 @@ function validateExperimentSpec(experimentSpec)
     %      .id
     %      .modelSpecs
     %      .pcaSpecs
-    %      .missingnessSpecs
     %      .warningHorizons
     %      .windowSizes
     %      .cmapssSubsets
@@ -25,7 +24,6 @@ function validateExperimentSpec(experimentSpec)
         'id', ...
         'modelSpecs', ...
         'pcaSpecs', ...
-        'missingnessSpecs', ...
         'warningHorizons', ...
         'windowSizes', ...
         'cmapssSubsets' ...
@@ -103,15 +101,6 @@ function validateExperimentSpec(experimentSpec)
         validatePCASpec(experimentSpec.pcaSpecs(i), i);
     end
 
-    % -- Validate missingnessSpecs --
-    assert(isstruct(experimentSpec.missingnessSpecs) ...
-        && ~isempty(experimentSpec.missingnessSpecs), ...
-        'experimentSpec.missingnessSpecs must be a nonempty struct array.');
-
-    for i = 1:numel(experimentSpec.missingnessSpecs)
-        validateMissingnessSpec(experimentSpec.missingnessSpecs(i), i);
-    end
-
     % -- Validate modelSpecs --
     assert(isstruct(experimentSpec.modelSpecs) && ~isempty(experimentSpec.modelSpecs), ...
         'experimentSpec.modelSpecs must be a nonempty struct array.');
@@ -158,18 +147,4 @@ function validatePCASpec(pcaSpec, pcaSpecIndex)
         && pcaSpec.fixedNumComponents > 0 ...
         && mod(pcaSpec.fixedNumComponents, 1) == 0, ...
         'pcaSpec(%d).fixedNumComponents must be a positive integer scalar.', pcaSpecIndex);
-end
-
-
-function validateMissingnessSpec(missingnessSpec, missingnessSpecIndex)
-    % VALIDATEMISSINGNESSSPEC Validates a single missingness specification.
-    %
-    % NOTE:
-    %  Missingness spec schema is still evolving. This validator currently
-    %  enforces only that each entry is a scalar struct. Tighten this later
-    %  once the schema is finalized.
-
-    assert(isstruct(missingnessSpec) && isscalar(missingnessSpec), ...
-        'Each missingnessSpec must be a scalar struct. Failed at index %d.', ...
-        missingnessSpecIndex);
 end

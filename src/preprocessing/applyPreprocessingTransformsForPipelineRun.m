@@ -17,9 +17,6 @@ function dataset = applyPreprocessingTransformsForPipelineRun(rawDataset, runPla
     %          .varianceThreshold (double in [0,1]) - 
     %          .fixedNumComponents (int > 0) - number of principal components to compute 
     %
-    %      .missingnessSpec struct with fields
-    %          TBD FOR NOW
-    %
     %      .modelSpec struct with fields
     %          .modelName (string)
     %          .hyperparameterGrid (struct with model-specific fields)
@@ -45,11 +42,6 @@ function dataset = applyPreprocessingTransformsForPipelineRun(rawDataset, runPla
         % Overwrite originals
         dataset.train.y = yTrainRemapped;
         dataset.validation.y = yValidationRemapped;
-    end
-
-    % -- If missingness is enabled, inject it --
-    if runPlan.missingnessSpec.enabled
-        error('buildDatasetForPipelineRun:MissingnessNotImplemented', 'Missingness injection is not yet implemented.');
     end
 
     % -- Normalize data --
