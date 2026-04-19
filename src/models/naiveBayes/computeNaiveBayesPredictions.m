@@ -24,11 +24,40 @@ function naiveBayesResult = computeNaiveBayesPredictions(dataset, naiveBayesMode
     %          .classLabels (K x 1 double)        - class labels corresponding to score columns
     %          .varianceSmoothing (double >= 0)   - echoed variance regularization term
 
+    % -- Initialize and preallocate --
+    [n, ~] = size(dataset.X);
+    numClasses = numel(naiveBayesModel.classLabels);
+    logPosteriorScores = zeros(n, numClasses);
+
+    % -- Compute log posterior scores --
+    for i = 1:numClasses
+        currentMeans = naiveBayesModel.classFeatureMeans(i, :);
+        currentVariances = naiveBayesModel.classFeatureVariances(i, :);
+
+        quadraticTerms = ((dataset.X - currentMeans) .^ 2) ./ currentVariances;
+        logNormalizationTerm = sum(log(2 * pi * currentVariances));
+        quadraticPenalty = sum(quadraticTerms, 2);
+
+        logPosteriorScores(:, i) = naiveBayesModel.logClassPriors(i) ...
+            - 0.5 * (logNormalizationTerm + quadraticPenalty);
+    end
+
+    % -- Form predictions --
+    [~, idxBestScores] = max(logPosteriorScores, [], 2);
+    yHat = naiveBayesModel.classLabels(idxBestScores);
+
+    % -- Populate output struct --
     naiveBayesResult = struct();
+    naiveBayesResult.yHat = yHat;
+    naiveBayesResult.metadata = struct();
+    naiveBayesResult.metadata.logPosteriorScores = logPosteriorScores;
+    naiveBayesResult.metadata.classLabels = naiveBayesModel.classLabels;
+    naiveBayesResult.metadata.varianceSmoothing = naiveBayesModel.varianceSmoothing;
 
     % -- Output validation - PLEASE DO NOT REMOVE --
     validateNaiveBayesResult( ...
         naiveBayesResult, ...
         dataset, ...
         naiveBayesModel);
+
 end
