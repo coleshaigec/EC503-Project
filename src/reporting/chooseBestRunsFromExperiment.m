@@ -44,6 +44,8 @@ function bestRuns = chooseBestRunsFromExperiment(summaryTable, numRunsToSelect)
     bestRuns.classification = classificationRuns([],:);
     bestRuns.regression = regressionRuns([],:);
     bestRuns.indices = struct();
+    bestRuns.indices.classification = [];
+    bestRuns.indices.regression = [];
 
     % -- Classification: select runs with highest 0.75 * testF1 + 0.25 * testAccuracy --
     if height(classificationRuns) > 0
@@ -81,6 +83,4 @@ function bestRuns = chooseBestRunsFromExperiment(summaryTable, numRunsToSelect)
             bestRuns.indices.regression = bestRuns.regression.runNumber;
         end
     end
-
-
 end

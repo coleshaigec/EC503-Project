@@ -52,5 +52,9 @@ function analyzeBestRuns(bestRuns, bestRunReports)
     % 
     % Show confusion matrices for the best runs if classification
     % Feed best run info to policy analysis utility
-    % 
+    % Different workflows for classification and regression
+    % Need to architecture first or you'll be refactoring hard later!
+    % List all functionality that is needed, split appropriately, and
+    % execute
+    % Where do the plots go?
 end
