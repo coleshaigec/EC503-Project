@@ -1,9 +1,10 @@
 function bestHyperparameters = chooseBestHyperparameters(tuningResults)
-    % CHOOSEBESTHYPERPARAMETERS Chooses the best-performing hyperparameter
-    % values (on average) from a k-fold cross-validation run.
+    % CHOOSEBESTHYPERPARAMETERS Chooses the best-performing hyperparameter values (on average) from a k-fold cross-validation run.
+    %
+    % AUTHOR: Cole H. Shaigec
     %
     % INPUTS
-    %  tuningResults (1 x CROSS_VALIDATION_FOLDS struct array) with fields:
+    %  tuningResults (1 x numFolds struct array) with fields:
     %      .modelName
     %      .taskType
     %      .bestModel
@@ -35,7 +36,7 @@ function bestHyperparameters = chooseBestHyperparameters(tuningResults)
     meanScores = mean(runScores, 2);
 
     % -- Select best hyperparameter configuration -- 
-    switch lower(tuningResults.taskType)
+    switch lower(tuningResults(1).taskType)
         case 'classification'
             % Higher score is better (weighted F1/accuracy)
             [~, bestIdx] = max(meanScores);

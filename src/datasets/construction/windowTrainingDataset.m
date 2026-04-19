@@ -54,6 +54,4 @@ function windowedEngines = windowTrainingDataset(engines, windowSize)
     windowedEngines = struct();
     windowedEngines.X = X;
     windowedEngines.y = y;
-
-    fprintf('Training dataset windowed successfully.\n');
 end

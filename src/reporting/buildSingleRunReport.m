@@ -32,7 +32,6 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     %          .taskType  (string)         - 'classification' or 'regression'
     %          .hyperparameters            - hyperparameters used in training
     %      .runPlan struct with fields
-    %      .runPlan struct with fields
     %          .runNumber (positive integer)
     %          .pcaSpec struct with fields
     %              .enabled (boolean)
@@ -45,7 +44,7 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     %              .hyperparameterGrid (struct with model-specific fields)
     %    
     %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
-    %          .warningHorizons (positive scalar array)  - classes for classification
+    %          .warningHorizon (positive integer)        - TTF classification threshold
     %          .windowSize (positive integer)            - for dataset windowing
 
     % -- Compute predictions using trained model --
@@ -57,7 +56,7 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
 
     % -- Compute run-level performance metrics --
     if strcmp(trainedModel.taskType, 'classification')
-        performanceMetrics = computeClassificationPerformanceMetricsForReporting(yHatTrain, yHatTest, trainingData.y, testData.y);
+        performanceMetrics = computeClassificationPerformanceMetricsForReporting(yHatTrain, yHatTest, trainingData.y, testData.y, str2double(string(runPlan.warningHorizon)));
     elseif strcmp(trainedModel.taskType, 'regression')
         performanceMetrics = computeRegressionPerformanceMetricsForReporting(yHatTrain, yHatTest, trainingData.y, testData.y);
     else

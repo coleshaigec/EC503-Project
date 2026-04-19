@@ -1,5 +1,5 @@
-function accuracy = computeClassifierAccuracy(yHat, yTrue)
-    % COMPUTECLASSIFIERACCURACY Computes accuracy for a trained classification model.
+function accuracy = computeAccuracy(yHat, yTrue)
+    % COMPUTEACCURACY Computes accuracy for a trained classification model.
     %
     % AUTHOR: Cole H. Shaigec
     %

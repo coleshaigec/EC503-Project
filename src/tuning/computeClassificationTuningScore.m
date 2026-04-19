@@ -26,8 +26,8 @@ function runScore = computeClassificationTuningScore(validationData, trainedMode
     yHat = predictions.yHat;
 
     % Compute classifier accuracy
-    accuracy = computeClassifierAccuracy(yHat, validationData.y);
-    F1 = computeF1Score(yHat, validationData.y);
+    accuracy = computeAccuracy(yHat, validationData.y);
+    F1 = computeF1(yHat, validationData.y);
 
     % Return score
     runScore = 0.75 * F1 + 0.25 * accuracy;

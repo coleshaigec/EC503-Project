@@ -19,17 +19,17 @@ function predictionResult = computePredictions(dataset, model)
     % -- Parse model and call appropriate model predictor --
     switch model.modelName
         case 'kernelSVM'
-            predictionResult = computeKernelSVMPredictions(dataset, model);
+            predictionResult = computeKernelSVMPredictions(dataset, model.model);
         case 'randomForest'
-            predictionResult = computeRandomForestPredictions(dataset, model);
+            predictionResult = computeRandomForestPredictions(dataset, model.model);
         case 'gradientBoostingRegression'
-            predictionResult = computeGradientBoostingRegressionPredictions(dataset, model);
+            predictionResult = computeGradientBoostingRegressionPredictions(dataset, model.model);
         case 'naiveBayes'
-            predictionResult = computeNaiveBayesPredictions(dataset, model);
+            predictionResult = computeNaiveBayesPredictions(dataset, model.model);
         case 'ridgeRegression'
-            predictionResult = computeRidgeRegressionPredictions(dataset, model);
+            predictionResult = computeRidgeRegressionPredictions(dataset, model.model);
         case 'kNN'
-            predictionResult = computeKNNPredictions(dataset, model);
+            predictionResult = computeKNNPredictions(dataset, model.model);
         otherwise
             error('computePredictions:InvalidModelName', 'Unsupported model name: %s', modelSpec.modelName);
     end

@@ -1,6 +1,8 @@
 function runReport = runPipeline(cmapssData, runPlan)
     % RUNPIPELINE Executes a single run of the preprocessing + training + reporting pipeline on a single windowed CMAPSS subset. 
     %
+    % AUTHOR: Cole H. Shaigec
+    %
     % INPUTS
     %  cmapssData struct with fields
     %      .FD001 struct with fields
@@ -73,7 +75,7 @@ function runReport = runPipeline(cmapssData, runPlan)
     %          .hyperparameterGrid (struct with model-specific fields)
     %
     %      .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
-    %      .warningHorizons (positive scalar array)  - classes for classification
+    %      .warningHorizon (positive integer)        - TTF threshold for classification
     %      .windowSize (positive integer)            - for dataset windowing
     %
     % OUTPUT
@@ -104,7 +106,7 @@ function runReport = runPipeline(cmapssData, runPlan)
     %              .hyperparameterGrid (struct with model-specific fields)
     %    
     %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
-    %          .warningHorizons (positive scalar array)  - classes for classification
+    %          .warningHorizon (positive integer)        - TTF threshold for classification
     %          .windowSize (positive integer)            - for dataset windowing
     %          .numFolds (positive integer)              - number of cross-validation folds
 
@@ -114,15 +116,20 @@ function runReport = runPipeline(cmapssData, runPlan)
     % -- Run k-fold cross-validation to tune hyperparameters --
     bestHyperparameters = runKFoldCrossValidation(rawDataset, runPlan);
 
-    % -- Train full model using best hyperparameters -- 
-    fullTrainingSet = windowTrainingDataset(rawDataset.engines, runPlan.windowSize);
-    fullTestSet = windowTestDataset(cmapssData.(runPlan.cmapssSubset).engines, runPlan.windowSize);
-
+    % -- Build full datasets for final model run -- 
     finalModelSpec = struct( ...
         'modelName', runPlan.modelSpec.modelName, ...
         'hyperparameters', bestHyperparameters ...
     );
 
+    fullTrainingSet = windowTrainingDataset(rawDataset.train.engines, runPlan.windowSize);
+    fullTestSet = windowTestDataset(cmapssData.(runPlan.cmapssSubset).test, runPlan.windowSize);
+
+    if strcmp(getTaskTypeFromModelName(finalModelSpec.modelName), 'classification')
+        fullTrainingSet.y = remapLabels(fullTrainingSet.y, str2double(string(runPlan.warningHorizon)));
+        fullTestSet.y = remapLabels(fullTestSet.y, str2double(string(runPlan.warningHorizon)));
+    end
+    
     trainedModel = trainModel(fullTrainingSet, finalModelSpec);
 
     % -- Build run report --

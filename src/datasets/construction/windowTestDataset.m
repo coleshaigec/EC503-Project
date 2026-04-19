@@ -1,6 +1,8 @@
 function testSet = windowTestDataset(testSubset, windowSize)
     % WINDOWTESTDATASET Applies rectangular history windowing to the
     % test data in a CMAPSS subset.
+    %
+    % AUTHOR: Cole H. Shaigec
 
     % One sample from each engine -- end of life
     numEngines = numel(testSubset.engines);
@@ -23,5 +25,4 @@ function testSet = windowTestDataset(testSubset, windowSize)
     testSet = struct();
     testSet.X = XTest;
     testSet.y = yTest;
-    fprintf('Test dataset windowed successfully.\n');
 end

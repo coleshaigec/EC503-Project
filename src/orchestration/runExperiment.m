@@ -40,7 +40,8 @@ function experimentReport = runExperiment(experimentSpec)
     for i = 1 : numRuns
         fprintf('\n-- Commencing pipeline run %i --\n', i);
         runReports(i) = runPipeline(cleanedCMAPSSData, runPlans(i));
-        fprintf('-- Pipeline run %i completed --\n', i);
+        bestAccuracy = runReports(i).test.performanceMetrics.accuracy;
+        fprintf('-- Pipeline run %i completed. Best accuracy: %.3f --\n', i, bestAccuracy);
     end
 
     % -- Pass pipeline runs through reporting utility --
