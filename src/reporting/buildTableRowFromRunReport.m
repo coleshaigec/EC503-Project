@@ -54,7 +54,9 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %      .boostingRegressionT (double)
     %      .knnK (double)
     %      .naiveBayesVarianceSmoothing (double)
-    %      .randomForestNumTrees
+    %      .randomForestNumTrees (double)
+    %      .randomForestMinLeafSize (double)
+    %      .randomForestNumPredictorsToSample (double)
     %      .ridgeRegressionLambda (double)
     %      .trainAccuracy (double)
     %      .trainF1 (double)
@@ -105,10 +107,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
         modelNameLower = lower(string(runReport.trainedModel.modelName));
 
         switch modelNameLower
-            case "boostingregression"
-                if isfield(hyperparameters, 'T') && ~isempty(hyperparameters.T)
-                    tableRow.boostingRegressionT = hyperparameters.T;
-                end
 
             case "knn"
                 if isfield(hyperparameters, 'k') && ~isempty(hyperparameters.k)
@@ -119,13 +117,26 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
                 if isfield(hyperparameters, 'lambda') && ~isempty(hyperparameters.lambda)
                     tableRow.ridgeRegressionLambda = hyperparameters.lambda;
                 end
+
             case "naivebayes"
                 if isfield(hyperparameters, 'varianceSmoothing') && ~isempty(hyperparameters.varianceSmoothing)
                     tableRow.naiveBayesVarianceSmoothing = hyperparameters.varianceSmoothing;
                 end
+
             case "qda"
                 if isfield(hyperparameters, 'regularizationStrength') && ~isempty(hyperparameters.regularizationStrength)
                     tableRow.qdaRegularizationStrength = hyperparameters.regularizationStrength;
+                end
+                
+            case "randomforest"
+                if isfield(hyperparameters, 'numTrees') && ~isempty(hyperparameters.numTrees)
+                    tableRow.randomForestNumTrees = hyperparameters.numTrees;
+                end
+                if isfield(hyperparameters, 'minLeafSize') && ~isempty(hyperparameters.minLeafSize)
+                    tableRow.randomForestMinLeafSize = hyperparameters.minLeafSize;
+                end
+                if isfield(hyperparameters, 'numPredictorsToSample') && ~isempty(hyperparameters.numPredictorsToSample)
+                    tableRow.randomForestNumPredictorsToSample = hyperparameters.numPredictorsToSample;
                 end
 
             otherwise
