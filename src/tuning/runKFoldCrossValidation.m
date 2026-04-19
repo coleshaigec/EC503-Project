@@ -38,7 +38,7 @@ function bestHyperparameters = runKFoldCrossValidation(cmapssSubset, runPlan)
     %  bestHyperparameters (struct with model-specific fields)
 
     % -- Build cross-validation folds --
-    folds = buildCrossValidationFolds(cmapssSubset, runPlan.windowSize, runPlan.numFolds, getTaskTypeFromModelName(runPlan.modelSpec.modelName), str2double(string(runPlan.warningHorizon)));
+    folds = buildCrossValidationFolds(cmapssSubset, runPlan.windowSize, runPlan.numFolds, getTaskTypeFromModelName(runPlan.modelSpec.modelName), runPlan.warningHorizon);
 
     % -- Run core KFCV loop --
     templateTuningResultStruct = buildTemplateTuningResultStruct();

@@ -56,7 +56,7 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
 
     % -- Compute run-level performance metrics --
     if strcmp(trainedModel.taskType, 'classification')
-        performanceMetrics = computeClassificationPerformanceMetricsForReporting(yHatTrain, yHatTest, trainingData.y, testData.y, str2double(string(runPlan.warningHorizon)));
+        performanceMetrics = computeClassificationPerformanceMetricsForReporting(yHatTrain, yHatTest, trainingData.y, testData.y, runPlan.warningHorizon);
     elseif strcmp(trainedModel.taskType, 'regression')
         performanceMetrics = computeRegressionPerformanceMetricsForReporting(yHatTrain, yHatTest, trainingData.y, testData.y);
     else

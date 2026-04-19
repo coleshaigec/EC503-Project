@@ -66,7 +66,7 @@ function runPlans = buildRunPlansFromExperimentSpec(experimentSpec)
         currentPCASpec = unpackedExperimentSpec{i, 2};
         currentModelSpec = unpackedExperimentSpec{i, 3};
         currentCMAPSSSubset = string(unpackedExperimentSpec{i, 4});
-        currentWarningHorizon = unpackedExperimentSpec{i, 5};
+        currentWarningHorizon = str2double(string(unpackedExperimentSpec{i, 5}));
 
         % Populate run plan
         currentRunPlan.runNumber = i;

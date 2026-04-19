@@ -16,7 +16,7 @@ function analyzeAndReportExperimentResults(runReports)
 
     % -- Build summary table --
     summaryTable = buildExperimentSummaryTable(runReports);
-    writeSummaryTableToFile(summaryTable, 'result.csv');
+    writeSummaryTableToFile(summaryTable, 'result2.csv');
     bestRuns = chooseBestRunsFromExperiment(summaryTable, 3);
 
     

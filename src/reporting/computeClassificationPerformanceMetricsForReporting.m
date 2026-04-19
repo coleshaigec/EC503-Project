@@ -28,7 +28,6 @@ function performanceMetrics = computeClassificationPerformanceMetricsForReportin
     %          .balancedAccuracy (double in [0,100])
     %          .specificity (double in [0,100])
     %          .confusionMatrix (table)       
-    
     performanceMetrics = struct();
     performanceMetrics.train = struct();
     performanceMetrics.test = struct();

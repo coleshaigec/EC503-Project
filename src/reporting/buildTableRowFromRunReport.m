@@ -31,7 +31,7 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %              .hyperparameterGrid (struct with model-specific fields)
     %
     %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
-    %          .warningHorizons (positive scalar array)  - classes for classification
+    %          .warningHorizon (positive integer)        - TTF threshold for classification
     %          .windowSize (positive integer)            - for dataset windowing
     %          .numFolds (positive integer)              - number of CV folds
     %
@@ -86,12 +86,7 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     tableRow.taskType = string(runReport.trainedModel.taskType);
     tableRow.windowSize = runReport.runPlan.windowSize;
     tableRow.modelName = string(runReport.trainedModel.modelName);
-
-    % warningHorizons is an array in runPlan, but table schema currently
-    % exposes a scalar warningHorizon field. Populate only if unambiguous.
-    if isfield(runReport.runPlan, 'warningHorizons') && numel(runReport.runPlan.warningHorizons) == 1
-        tableRow.warningHorizon = runReport.runPlan.warningHorizons;
-    end
+    tableRow.warningHorizon = runReport.runPlan.warningHorizon;
 
     % -- Fill in PCA metadata --
     if isfield(runReport.runPlan, 'pcaSpec') && ~isempty(runReport.runPlan.pcaSpec)
@@ -126,25 +121,18 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
                     tableRow.knnK = hyperparameters.k;
                 end
 
-            case "logisticregression"
-                if isfield(hyperparameters, 'lambda') && ~isempty(hyperparameters.lambda)
-                    tableRow.logisticRegressionLambda = hyperparameters.lambda;
-                end
-                if isfield(hyperparameters, 'maxIter') && ~isempty(hyperparameters.maxIter)
-                    tableRow.logisticRegressionMaxIter = hyperparameters.maxIter;
-                end
-                if isfield(hyperparameters, 'solver') && ~isempty(hyperparameters.solver)
-                    tableRow.logisticRegressionSolver = string(hyperparameters.solver);
-                end
-
             case "ridgeregression"
                 if isfield(hyperparameters, 'lambda') && ~isempty(hyperparameters.lambda)
                     tableRow.ridgeRegressionLambda = hyperparameters.lambda;
                 end
+            case "naivebayes"
+                if isfield(hyperparameters, 'varianceSmoothing') && ~isempty(hyperparameters.varianceSmoothing)
+                    tableRow.naiveBayesVarianceSmoothing = hyperparameters.varianceSmoothing;
+                end
 
             otherwise
-                % Leave model-specific placeholders untouched for models that
-                % are not yet architected into the summary schema.
+                error('buildTableRowFromRunReport:InvalidFieldValue', ...
+                    'Hyperparameters have not been specified for model %s.', modelNameLower)
         end
     end
 
