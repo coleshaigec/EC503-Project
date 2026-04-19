@@ -1,6 +1,8 @@
 function tuningResult = tuneHyperparameters(trainData, validationData, modelName, searchGrid, taskType)
     % TUNEHYPERPARAMETERS Runs grid search to tune hyperparameters for specified model
     %
+    % AUTHOR: Cole H. Shaigec
+    %
     % INPUTS
     %  trainData struct with fields
     %      .X (nTrain x d double)           - training features

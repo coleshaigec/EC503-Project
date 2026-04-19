@@ -1,6 +1,8 @@
 function bestHyperparameters = runKFoldCrossValidation(cmapssSubset, runPlan)
     % RUNKFOLDCROSSVALIDATION Runs group k-fold cross-validation to tune hyperparameters for a specified model.
     %
+    % AUTHOR: Cole H. Shaigec
+    %
     % INPUTS
     %  cmapssSubset struct with fields
     %      .train struct with fields
