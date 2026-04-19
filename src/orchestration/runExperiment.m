@@ -18,7 +18,6 @@ function experimentReport = runExperiment(experimentSpec)
     % SIDE EFFECTS ?
     % Maybe we write outputs to a file...
 
-
     % NOTE TO SELF
     % This function shouldn't return anything! Side effects only
 
@@ -45,6 +44,7 @@ function experimentReport = runExperiment(experimentSpec)
     end
 
     % -- Pass pipeline runs through reporting utility --
+    analyzeAndReportExperimentResults(runReports);
     experimentReport = struct();
     fprintf('Pipeline run complete.\n');
     

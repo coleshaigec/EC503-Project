@@ -1,5 +1,7 @@
-function dataset = applyPreprocessingTransformsForPipelineRun(rawDataset, runPlan)
-    % APPLYPREPROCESSINGTRANSFORMSFORPIPELINERUN Applies preprocessing transforms for a single pipeline run.
+function dataset = fitAndApplyPreprocessingForCVFold(rawDataset, runPlan)
+    % FITANDAPPLYPREPROCESSINGFORCVFOLD Applies preprocessing transforms for a single cross-validation run.
+    %
+    % AUTHOR: Cole H. Shaigec
     % 
     % INPUTS 
     %  rawDataset struct with fields
@@ -22,7 +24,7 @@ function dataset = applyPreprocessingTransformsForPipelineRun(rawDataset, runPla
     %          .hyperparameterGrid (struct with model-specific fields)
     %
     %      .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
-    %      .warningHorizons (positive scalar array)  - classes for classification
+    %      .warningHorizon (positive integer)        - TTF threshold for classification
     %      .windowSize (positive integer)            - for dataset windowing
     %      .numFolds (positive integer)              - number of CV folds
     %
@@ -33,17 +35,6 @@ function dataset = applyPreprocessingTransformsForPipelineRun(rawDataset, runPla
         'train', [], ...
         'validation', [] ...
     );
-
-    % -- Remap labels for classification --
-    if ismember(runPlan.modelSpec.modelName, CLASSIFICATION_MODELS)
-        % Remap labels
-        yTrainRemapped = remapLabels(rawDataset.train.y, runPlan.warningHorizons);
-        yValidationRemapped = remapLabels(rawDataset.validation.y, runPlan.warningHorizons);
-        
-        % Overwrite originals
-        dataset.train.y = yTrainRemapped;
-        dataset.validation.y = yValidationRemapped;
-    end
 
     % -- Normalize data --
     normalizationParameters = fitNormalizationTransform(rawDataset.train.X);
@@ -57,4 +48,7 @@ function dataset = applyPreprocessingTransformsForPipelineRun(rawDataset, runPla
         dataset.validation.X = applyPCATransform(dataset.validation.X, pcaTransform);
     end
 
+    % -- Add labels onto final result --
+    dataset.train.y = rawDataset.train.y;
+    dataset.validation.y = rawDataset.validation.y;
 end

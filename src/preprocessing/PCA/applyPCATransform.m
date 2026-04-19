@@ -30,11 +30,29 @@ function Xtransformed = applyPCATransform(X, pcaTransform)
     %  5. Do not recompute quantities already stored in pcaTransform.
     %  6. Assume X has already been normalized upstream if normalization is
     %     enabled in the pipeline.
+    %  7. This skeleton has been implemented as an identity function (i.e.,
+    %  it doesn't do anything except return the input in its original
+    %  form). This was done so that the pipeline just ignores it and keeps
+    %  going until PCA is implemented. 
+    %  8. When you're finished, get rid of everything in the output
+    %  validation block except the call to validateAppliedPCATransform
+    %  (i.e., delete the if/else block and the Xtransformed = X line).
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % -- YOUR IMPLEMENTATION HERE -- %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    
+
+    
+    
+
 
     % -- Output validation - PLEASE DO NOT REMOVE --
-    validateAppliedPCATransform(Xtransformed, X, pcaTransform);
+    implemented = false; % get rid of this if statement when you're done
+    if implemented
+        validateAppliedPCATransform(Xtransformed, X, pcaTransform);
+    else 
+        Xtransformed = X;
+    end
 end

@@ -40,9 +40,9 @@ function pcaTransform = fitPCATransform(X, pcaSpec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % -- YOUR IMPLEMENTATION HERE -- %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
     pcaTransform = struct();
 
     % -- Output validation - PLEASE DO NOT REMOVE --
-    validatePCATransform(pcaTransform, X);
+    % Uncomment the line below to check your work when you're finished
+    % validatePCATransform(pcaTransform, X); 
 end

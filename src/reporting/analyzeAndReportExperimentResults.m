@@ -1,6 +1,7 @@
-function analyzeAndReportExperimentResults()
+function analyzeAndReportExperimentResults(runReports)
     %
     %
+    % AUTHOR: Cole H. Shaigec
 
     % Tasks of this utility
     % 1. Build summary table of all run results
@@ -14,6 +15,9 @@ function analyzeAndReportExperimentResults()
     % models
 
     % -- Build summary table --
-    summaryTable = buildExperimentSummaryTable();
+    summaryTable = buildExperimentSummaryTable(runReports);
+    writeSummaryTableToFile(summaryTable, 'result.csv');
+    bestRuns = chooseBestRunsFromExperiment(summaryTable, 3);
+
     
 end
