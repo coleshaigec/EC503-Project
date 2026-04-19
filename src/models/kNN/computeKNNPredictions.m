@@ -1,6 +1,8 @@
 function knnResult = computeKNNPredictions(dataset, knnModel)
     % COMPUTEKNNPREDICTIONS Computes predictions of k-Nearest Neighbors classification model on dataset.
     %
+    % AUTHORS: Youwei Chen, Cole H. Shaigec
+    %
     % INPUT 
     %  dataset struct with fields
     %      .X (n x d double) - feature matrix

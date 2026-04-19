@@ -13,6 +13,7 @@ function naiveBayesModel = trainNaiveBayesModel(trainingData, naiveBayesHyperpar
     %
     % OUTPUTS
     %  naiveBayesModel struct with fields
+    naiveBayesModel = struct();
 
 
 end

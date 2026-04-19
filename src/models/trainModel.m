@@ -17,10 +17,6 @@ function trainedModel = trainModel(trainingData, modelSpec)
     %      .taskType  (string)         - 'classification' or 'regression'
     %      .hyperparameters            - hyperparameters used in training
 
-    
-    % -- Validate modelSpec --
-    validateModelSpec(modelSpec); % Validator to be written
-
     % -- Construct output struct --
     trainedModel = struct();
     trainedModel.modelName = modelSpec.modelName;
