@@ -53,7 +53,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %      .modelName (string)
     %      .boostingRegressionT (double)
     %      .knnK (double)
-    %      .KERNELSVMHYPERPARAMETERS____ - KERNEL SVM NOT YET ARCHITECTED!
     %      .logisticRegressionLambda (double)
     %      .logisticRegressionMaxIter (double)
     %      .logisticRegressionSolver (string)
@@ -128,6 +127,10 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
             case "naivebayes"
                 if isfield(hyperparameters, 'varianceSmoothing') && ~isempty(hyperparameters.varianceSmoothing)
                     tableRow.naiveBayesVarianceSmoothing = hyperparameters.varianceSmoothing;
+                end
+            case "qda"
+                if isfield(hyperparameters, 'regularizationStrength') && ~isempty(hyperparameters.regularizationStrength)
+                    tableRow.qdaRegularizationStrength = hyperparameters.regularizationStrength;
                 end
 
             otherwise

@@ -6,5 +6,5 @@ function classificationModels = getClassificationModels()
     % OUTPUT
     %  classificationModels (string array)
 
-    classificationModels = ["naiveBayes", "kernelSVM", "randomForest", "kNN"];
+    classificationModels = ["naiveBayes", "QDA", "randomForest", "kNN"];
 end

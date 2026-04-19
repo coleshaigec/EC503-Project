@@ -67,37 +67,14 @@ function validateTrainedModel(trainedModel)
             'trainedModel.model must be a struct.');
     end
 
-    % -- Validate consistency between modelName and taskType --
-    switch modelName
-        case {'logisticRegression', 'kernelSVM', 'randomForest', ...
-              'gradientBoostingClassifier', 'naiveBayes', 'kNN'}
-            expectedTaskType = 'classification';
-
-        case {'gradientBoostingRegression', 'ridgeRegression'}
-            expectedTaskType = 'regression';
-
-        otherwise
-            error('validateTrainedModel:UnsupportedModelName', ...
-                'Unsupported model name: %s', modelName);
-    end
-
     % -- Validate inner model fields according to model family --
     switch modelName
-        case 'logisticRegression'
-            requiredInnerFields = {'modelObject', 'classLabels', 'numClasses'};
-
-        case 'kernelSVM'
+        case 'QDA'
             requiredInnerFields = {};
 
         case 'randomForest'
             requiredInnerFields = {};
-
-        case 'gradientBoostingClassifier'
-            requiredInnerFields = {};
-
-        case 'gradientBoostingRegression'
-            requiredInnerFields = {};
-
+            
         case 'naiveBayes'
             requiredInnerFields = {};
 
@@ -122,19 +99,6 @@ function validateTrainedModel(trainedModel)
 
     % -- Validate selected model-specific semantics --
     switch modelName
-        case 'logisticRegression'
-            validateattributes(trainedModel.model.classLabels, {'double'}, ...
-                {'vector', 'real', 'nonempty', 'finite'}, ...
-                mfilename, 'trainedModel.model.classLabels');
-
-            validateattributes(trainedModel.model.numClasses, {'numeric'}, ...
-                {'scalar', 'real', 'finite', 'positive', 'integer'}, ...
-                mfilename, 'trainedModel.model.numClasses');
-
-            assert(numel(trainedModel.model.classLabels) == trainedModel.model.numClasses, ...
-                'validateTrainedModel:InvalidNumClasses', ...
-                'trainedModel.model.numClasses must equal numel(trainedModel.model.classLabels).');
-
         case 'ridgeRegression'
             validateattributes(trainedModel.model.coeff, {'double'}, ...
                 {'vector', 'real', 'nonempty', 'finite'}, ...

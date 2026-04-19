@@ -18,12 +18,12 @@ function predictionResult = computePredictions(dataset, model)
 
     % -- Parse model and call appropriate model predictor --
     switch model.modelName
-        case 'kernelSVM'
-            predictionResult = computeKernelSVMPredictions(dataset, model.model);
+        case 'QDA'
+            predictionResult = computeQDAPredictions(dataset, model.model);
         case 'randomForest'
             predictionResult = computeRandomForestPredictions(dataset, model.model);
-        case 'gradientBoostingRegression'
-            predictionResult = computeGradientBoostingRegressionPredictions(dataset, model.model);
+        case 'WLS'
+            predictionResult = computeWLSPredictions(dataset, model.model);
         case 'naiveBayes'
             predictionResult = computeNaiveBayesPredictions(dataset, model.model);
         case 'ridgeRegression'

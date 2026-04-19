@@ -24,14 +24,14 @@ function trainedModel = trainModel(trainingData, modelSpec)
 
     % -- Parse modelSpec and call appropriate model trainer --
     switch modelSpec.modelName
-        case 'kernelSVM'
-            trainedModel.model = trainKernelSVMModel(trainingData, modelSpec.hyperparameters);
+        case 'QDA'
+            trainedModel.model = trainQDAModel(trainingData, modelSpec.hyperparameters);
             trainedModel.taskType = 'classification';
         case 'randomForest'
             trainedModel.model = trainRandomForestModel(trainingData, modelSpec.hyperparameters);
             trainedModel.taskType = 'classification';
-        case 'gradientBoostingRegression'
-            trainedModel.model = trainGradientBoostingRegressionModel(trainingData, modelSpec.hyperparameters);
+        case 'WLS'
+            trainedModel.model = trainWLSModel(trainingData, modelSpec.hyperparameters);
             trainedModel.taskType = 'regression';
         case 'naiveBayes'
             trainedModel.model = trainNaiveBayesModel(trainingData, modelSpec.hyperparameters);
