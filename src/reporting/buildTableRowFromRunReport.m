@@ -53,17 +53,13 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %      .modelName (string)
     %      .boostingRegressionT (double)
     %      .knnK (double)
-    %      .logisticRegressionLambda (double)
-    %      .logisticRegressionMaxIter (double)
-    %      .logisticRegressionSolver (string)
-    %      .NAIVEBAYESHYPERPARAMETERS____ - NAIVE BAYES NOT YET ARCHITECTED!
-    %      .RANDOMFORESTHYPERPARAMETERS___ - RANDOM FOREST NOT YET ARCHITECTED!
+    %      .naiveBayesVarianceSmoothing (double)
+    %      .randomForestNumTrees
     %      .ridgeRegressionLambda (double)
     %      .trainAccuracy (double)
     %      .trainF1 (double)
     %      .trainPrecision (double)
     %      .trainRecall (double)
-    %      .trainAUC_ROC (double)
     %      .trainRMSE (double)
     %      .trainMAE (double)
     %      .trainR2 (double)
@@ -71,7 +67,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %      .testF1 (double)
     %      .testPrecision (double)
     %      .testRecall (double)
-    %      .testAUC_ROC (double)
     %      .testRMSE (double)
     %      .testMAE (double)
     %      .testR2 (double)
@@ -157,9 +152,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
         if isfield(trainMetrics, 'recall') && ~isempty(trainMetrics.recall)
             tableRow.trainRecall = trainMetrics.recall;
         end
-        if isfield(trainMetrics, 'AUC_ROC') && ~isempty(trainMetrics.AUC_ROC)
-            tableRow.trainAUC_ROC = trainMetrics.AUC_ROC;
-        end
         if isfield(trainMetrics, 'RMSE') && ~isempty(trainMetrics.RMSE)
             tableRow.trainRMSE = trainMetrics.RMSE;
         end
@@ -188,9 +180,6 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
         end
         if isfield(testMetrics, 'recall') && ~isempty(testMetrics.recall)
             tableRow.testRecall = testMetrics.recall;
-        end
-        if isfield(testMetrics, 'AUC_ROC') && ~isempty(testMetrics.AUC_ROC)
-            tableRow.testAUC_ROC = testMetrics.AUC_ROC;
         end
         if isfield(testMetrics, 'RMSE') && ~isempty(testMetrics.RMSE)
             tableRow.testRMSE = testMetrics.RMSE;

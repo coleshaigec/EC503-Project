@@ -4,6 +4,7 @@ function pipelineQueue = generateRunSpecsFromExperimentSpec(experimentSpec)
     %   Returns: pipelineQueue (array of singleRunSpec structs)
 
     fprintf('RUNSPEC FUNCTION HAS BEEN CALLED!');
+    error('FUNCTION FROM QUARANTINE HAS BEEN CALLED')
 
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%%% IMPORTANT NOTE %%%%

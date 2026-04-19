@@ -17,14 +17,15 @@ function templateRow = buildTemplateSummaryTableRow()
     %      .boostingRegressionT (double)
     %      .knnK (double)
     %      .qdaRegularizationStrength (double)
-    %      .naiveBayesVarianceSmoothing (scalar)
-    %      .RANDOMFORESTHYPERPARAMETERS___ - RANDOM FOREST NOT YET ARCHITECTED!
+    %      .naiveBayesVarianceSmoothing (double)
+    %      .randomForestNumTrees (double)
+    %      .randomForestMinLeafSize (double)
+    %      .randomForestNumPredictorsToSample (double)
     %      .ridgeRegressionLambda (double)
     %      .trainAccuracy (double)
     %      .trainF1 (double)
     %      .trainPrecision (double)
     %      .trainRecall (double)
-    %      .trainAUC_ROC (double)
     %      .trainRMSE (double)
     %      .trainMAE (double)
     %      .trainR2 (double)
@@ -32,7 +33,6 @@ function templateRow = buildTemplateSummaryTableRow()
     %      .testF1 (double)
     %      .testPrecision (double)
     %      .testRecall (double)
-    %      .testAUC_ROC (double)
     %      .testRMSE (double)
     %      .testMAE (double)
     %      .testR2 (double)
@@ -40,10 +40,9 @@ function templateRow = buildTemplateSummaryTableRow()
     % ---------------------------------------------------------------------
     % Type-appropriate placeholders
     % ---------------------------------------------------------------------
-    numericPlaceholder  = NaN;                % For numeric/double fields
-    stringPlaceholder   = string(missing);    % For string fields
+    numericPlaceholder  = "";                % For numeric/double fields
+    stringPlaceholder   = "";    % For string fields
     logicalPlaceholder  = false;              % For logical/boolean fields
-    structPlaceholder   = struct();           % For future hyperparameter structs
 
     % ---------------------------------------------------------------------
     % Build template row with fixed schema
@@ -60,10 +59,11 @@ function templateRow = buildTemplateSummaryTableRow()
         'modelName', stringPlaceholder, ...
         'boostingRegressionT', numericPlaceholder, ...
         'knnK', numericPlaceholder, ...
-        'qdaRegularizationStrength', structPlaceholder, ...
-        'naiveBayesVarianceSmoothing', structPlaceholder, ...
-        'WLSHYPERPARAMETERS', [], ... %FIX
-        'RANDOMFORESTHYPERPARAMETERS___', structPlaceholder, ...
+        'qdaRegularizationStrength', numericPlaceholder, ...
+        'naiveBayesVarianceSmoothing', numericPlaceholder, ...
+        'randomForestNumTrees', numericPlaceholder, ...
+        'randomForestMinLeafSize', numericPlaceholder, ...
+        'randomForestNumPredictorsToSample', numericPlaceholder, ...
         'ridgeRegressionLambda', numericPlaceholder, ...
         'trainAccuracy', numericPlaceholder, ...
         'trainF1', numericPlaceholder, ...

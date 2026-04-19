@@ -24,9 +24,6 @@ function knnModel = trainKNNModel(trainingData, knnHyperparameters)
     % is called downstream in the pipeline.
     % All kNN implementation assumptions are documented in that function.
 
-    % -- Validate hyperparameters -- 
-    % validateKNNHyperparameters(knnHyperparameters);
-
     % -- Construct kNN model struct --
     knnModel = struct();
     knnModel.Xtrain = trainingData.X;

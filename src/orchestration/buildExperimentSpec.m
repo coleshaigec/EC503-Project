@@ -57,10 +57,10 @@ function experimentSpec = buildExperimentSpec()
     );
 
     % -- Add warning horizons --
-    warningHorizons = {1, 4, 6, 8, 10, 15, 20};
+    warningHorizons = {3, 5, 7, 10, 12, 15, 20, 25, 30};
 
     % -- Choose CMAPSS subsets -- 
-    cmapssSubsets = {'FD001', 'FD003'};
+    cmapssSubsets = {'FD001'};
 
     % -- Choose window sizes --
     windowSizes = 1:1:5;
