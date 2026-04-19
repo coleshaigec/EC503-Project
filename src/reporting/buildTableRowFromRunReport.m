@@ -62,16 +62,24 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
     %      .trainF1 (double)
     %      .trainPrecision (double)
     %      .trainRecall (double)
+    %      .trainSpecificity (double)
+    %      .trainBalancedAccuracy (double)
     %      .trainRMSE (double)
     %      .trainMAE (double)
+    %      .trainMedAE (double)
     %      .trainR2 (double)
+    %      .trainBias (double)
     %      .testAccuracy (double)
     %      .testF1 (double)
     %      .testPrecision (double)
     %      .testRecall (double)
+    %      .testSpecificity (double)
+    %      .testBalancedAccuracy (double)
     %      .testRMSE (double)
     %      .testMAE (double)
+    %      .testMedAE (double)
     %      .testR2 (double)
+    %      .testBias (double)
 
     % -- Build row as copy of template --
     tableRow = templateRow;
@@ -163,14 +171,26 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
         if isfield(trainMetrics, 'recall') && ~isempty(trainMetrics.recall)
             tableRow.trainRecall = trainMetrics.recall;
         end
+        if isfield(trainMetrics, 'specificity') && ~isempty(trainMetrics.specificity)
+            tableRow.trainSpecificity = trainMetrics.specificity;
+        end
+        if isfield(trainMetrics, 'balancedAccuracy') && ~isempty(trainMetrics.balancedAccuracy)
+            tableRow.trainBalancedAccuracy = trainMetrics.balancedAccuracy;
+        end
         if isfield(trainMetrics, 'RMSE') && ~isempty(trainMetrics.RMSE)
             tableRow.trainRMSE = trainMetrics.RMSE;
         end
         if isfield(trainMetrics, 'MAE') && ~isempty(trainMetrics.MAE)
             tableRow.trainMAE = trainMetrics.MAE;
         end
+        if isfield(trainMetrics, 'MedAE') && ~isempty(trainMetrics.MedAE)
+            tableRow.testMedAE = trainMetrics.MedAE;
+        end
         if isfield(trainMetrics, 'R2') && ~isempty(trainMetrics.R2)
             tableRow.trainR2 = trainMetrics.R2;
+        end
+        if isfield(trainMetrics, 'bias') && ~isempty(trainMetrics.bias)
+            tableRow.trainBias = trainMetrics.bias;
         end
     end
 
@@ -192,14 +212,26 @@ function tableRow = buildTableRowFromRunReport(runReport, templateRow)
         if isfield(testMetrics, 'recall') && ~isempty(testMetrics.recall)
             tableRow.testRecall = testMetrics.recall;
         end
+        if isfield(testMetrics, 'specificity') && ~isempty(testMetrics.specificity)
+            tableRow.testSpecificity = testMetrics.specificity;
+        end
+        if isfield(testMetrics, 'balancedAccuracy') && ~isempty(testMetrics.balancedAccuracy)
+            tableRow.testBalancedAccuracy = testMetrics.balancedAccuracy;
+        end
         if isfield(testMetrics, 'RMSE') && ~isempty(testMetrics.RMSE)
             tableRow.testRMSE = testMetrics.RMSE;
         end
         if isfield(testMetrics, 'MAE') && ~isempty(testMetrics.MAE)
             tableRow.testMAE = testMetrics.MAE;
         end
+        if isfield(testMetrics, 'MedAE') && ~isempty(testMetrics.MedAE)
+            tableRow.testMedAE = testMetrics.MedAE;
+        end
         if isfield(testMetrics, 'R2') && ~isempty(testMetrics.R2)
             tableRow.testR2 = testMetrics.R2;
+        end
+        if isfield(testMetrics, 'bias') && ~isempty(testMetrics.bias)
+            tableRow.testBias = testMetrics.bias;
         end
     end
 

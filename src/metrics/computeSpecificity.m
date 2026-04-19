@@ -1,4 +1,4 @@
-function specificity = computeSpecificity(yHat, yTrue, warningHorizon)
+function specificity = computeSpecificity(yHat, yTrue)
     % COMPUTESPECIFICITY Computes specificity for classification model.
     %
     % AUTHOR: Cole H. Shaigec
@@ -14,7 +14,7 @@ function specificity = computeSpecificity(yHat, yTrue, warningHorizon)
     % specificity = TN / (TN + FP)
 
     % -- Actual negatives --
-    actualNegatives = yTrue > warningHorizon;
+    actualNegatives = yTrue == -1;
     
     % -- Handle edge case cleanly --
     numActualNegatives = sum(actualNegatives);

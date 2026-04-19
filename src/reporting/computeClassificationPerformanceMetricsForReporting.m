@@ -1,4 +1,4 @@
-function performanceMetrics = computeClassificationPerformanceMetricsForReporting(yHatTrain, yHatTest, ytrain, ytest, warningHorizon)
+function performanceMetrics = computeClassificationPerformanceMetricsForReporting(yHatTrain, yHatTest, ytrain, ytest)
     % COMPUTECLASSIFICATIONPERFORMANCEMETRICSFORREPORTING Computes full suite of performance metrics for trained classification model. 
     %
     % AUTHOR: Cole H. Shaigec
@@ -8,7 +8,6 @@ function performanceMetrics = computeClassificationPerformanceMetricsForReportin
     %  yHatTest  (nTest x 1 double)       - predicted test labels
     %  ytrain    (nTrain x 1 double)      - true training labels
     %  ytest     (nTest x 1 double)       - true testing labels
-    %  warningHorizon (positive integer)  - TTF threshold for classification
     %
     % OUTPUTS
     %  performanceMetrics struct with fields
@@ -34,11 +33,11 @@ function performanceMetrics = computeClassificationPerformanceMetricsForReportin
 
     % -- Compute training metrics and add to struct -- 
     trainAccuracy = computeAccuracy(yHatTrain, ytrain);
-    trainPrecision = computePrecision(yHatTrain, ytrain, warningHorizon);
-    trainRecall = computeRecall(yHatTrain, ytrain, warningHorizon);
-    trainF1 = computeF1(trainPrecision, trainRecall);
-    trainSpecificity = computeSpecificity(yHatTrain, ytrain, warningHorizon);
-    trainBalancedAccuracy = computeBalancedAccuracy(yHatTrain, ytrain, warningHorizon);
+    trainPrecision = computePrecision(yHatTrain, ytrain);
+    trainRecall = computeRecall(yHatTrain, ytrain);
+    trainF1 = computeF1(yHatTrain, ytrain);
+    trainSpecificity = computeSpecificity(yHatTrain, ytrain);
+    trainBalancedAccuracy = computeBalancedAccuracy(yHatTrain, ytrain);
     trainConfusionMatrix = computeConfusionMatrix(yHatTrain, ytrain);
 
     performanceMetrics.train.accuracy = trainAccuracy;
@@ -51,11 +50,11 @@ function performanceMetrics = computeClassificationPerformanceMetricsForReportin
    
     % -- Compute test metrics and add to struct --         
     testAccuracy = computeAccuracy(yHatTest, ytest);
-    testPrecision = computePrecision(yHatTest, ytest, warningHorizon);
-    testRecall = computeRecall(yHatTest, ytest, warningHorizon);
-    testF1 = computeF1(testPrecision, testRecall);
-    testSpecificity = computeSpecificity(yHatTest, ytest, warningHorizon);
-    testBalancedAccuracy = computeBalancedAccuracy(yHatTest, ytest, warningHorizon);
+    testPrecision = computePrecision(yHatTest, ytest);
+    testRecall = computeRecall(yHatTest, ytest);
+    testF1 = computeF1(yHatTest, ytest);
+    testSpecificity = computeSpecificity(yHatTest, ytest);
+    testBalancedAccuracy = computeBalancedAccuracy(yHatTest, ytest);
     testConfusionMatrix = computeConfusionMatrix(yHatTest, ytest);
     
     performanceMetrics.test.accuracy = testAccuracy;

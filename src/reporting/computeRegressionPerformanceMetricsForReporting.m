@@ -23,12 +23,16 @@ function performanceMetrics = computeRegressionPerformanceMetricsForReporting(yH
     % -- Compute train metrics --
     trainRMSE = computeRMSE(yHatTrain, ytrain);
     trainMAE = computeMAE(yHatTrain, ytrain);
+    trainMedAE = computeMedianAbsoluteError(yHatTrain, ytrain);
     trainR2 = computeR2(yHatTrain, ytrain);
+    trainBias = computeBias(yHatTrain, ytrain);
     
     % -- Compute test metrics --
     testRMSE = computeRMSE(yHatTest, ytest);
     testMAE = computeMAE(yHatTest, ytest);
+    testMedAE = computeMedianAbsoluteError(yHatTest, ytest);
     testR2 = computeR2(yHatTest, ytest);
+    testBias = computeBias(yHatTest, ytest);
 
     % -- Populate output struct --
     performanceMetrics = struct();
@@ -37,10 +41,15 @@ function performanceMetrics = computeRegressionPerformanceMetricsForReporting(yH
 
     performanceMetrics.train.RMSE = trainRMSE;
     performanceMetrics.train.MAE = trainMAE;
+    performanceMetrics.train.MedAE = trainMedAE;
     performanceMetrics.train.R2 = trainR2;
+    performanceMetrics.train.bias = trainBias;
+
 
     performanceMetrics.test.RMSE = testRMSE;
     performanceMetrics.test.MAE = testMAE;
+    performanceMetrics.test.MedAE = testMedAE;
     performanceMetrics.test.R2 = testR2;
+    performanceMetrics.test.bias = testBias;
 
 end

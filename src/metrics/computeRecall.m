@@ -1,4 +1,4 @@
-function recall = computeRecall(yHat, yTrue, warningHorizon)
+function recall = computeRecall(yHat, yTrue)
     % COMPUTERECALL Computes recall for classification model.
     %
     % AUTHOR: Cole H. Shaigec
@@ -12,7 +12,7 @@ function recall = computeRecall(yHat, yTrue, warningHorizon)
     %  recall (double)
 
     % -- Actual positives --
-    actualPositives = (yTrue <= warningHorizon);
+    actualPositives = (yTrue == 1);
     numActualPositives = sum(actualPositives);
 
     % -- Predicted positives --

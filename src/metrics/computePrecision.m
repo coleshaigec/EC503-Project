@@ -1,4 +1,4 @@
-function precision = computePrecision(yHat, yTrue, warningHorizon)
+function precision = computePrecision(yHat, yTrue)
     % COMPUTEPRECISION Computes precision for classification model.
     %
     % AUTHOR: Cole H. Shaigec
@@ -12,7 +12,7 @@ function precision = computePrecision(yHat, yTrue, warningHorizon)
     %  precision (double)
 
     % -- Actual positives --
-    actualPositives = (yTrue <= warningHorizon);
+    actualPositives = (yTrue == 1);
 
     % -- Predicted positives --
     predictedPositives = (yHat == 1);

@@ -9,5 +9,5 @@ function confusionMatrix = computeConfusionMatrix(yHat, yTrue)
     %
     % OUTPUTS
     %  confusionMatrix (confusion matrix)
-    confusionMatrix = confusionmat(yHat, yTrue);
+    confusionMatrix = confusionmat(yTrue, yHat);
 end
