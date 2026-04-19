@@ -1,17 +1,80 @@
-function kernelSVMModel = trainKernelSVMModel(trainingData, kernelSVMHyperparameters)
-    % TRAINKERNELSVMMODEL Trains kernel SVM model on specified dataset. 
+function qdaModel = trainQDAModel(trainingData, qdaHyperparameters)
+    % TRAINQDAMODEL Trains regularized QDA model on specified dataset. 
     %
-    % AUTHORS: Kelly Falcon, Cole H. Shaigec
+    % AUTHORS: [Youwei Chen/Kelly Falcon], Cole H. Shaigec
     %
     % INPUTS
     %  trainingData struct with fields
     %      .X (nTrain x d double) - training feature matrix
     %      .y (nTrain x 1 double) - training label vector
     %
-    %  kernelSVMHyperparameters struct with fields
+    %  qdaHyperparameters struct with fields
+    %      .regularizationStrength (double >= 0) - covariance regularization strength
     %
     % OUTPUT
-    %  kernelSVMModel struct with fields
+    %  qdaModel struct with fields
+    %      .classLabels (2 x 1 double)              - class labels, expected to be [-1; 1]
+    %      .classPriors (2 x 1 double)              - empirical class prior probabilities
+    %      .logClassPriors (2 x 1 double)           - log class prior probabilities
+    %      .classMeans (2 x d double)               - class-conditional means
+    %      .classCovariances (2 x 1 cell)           - regularized class covariance matrices, each d x d double
+    %      .classCovarianceInverses (2 x 1 cell)    - inverses of regularized class covariance matrices, each d x d double
+    %      .logDetCovariances (2 x 1 double)        - log determinants of regularized class covariance matrices
+    %      .regularizationStrength (double >= 0)    - covariance regularization strength
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % NOTES FOR IMPLEMENTATION %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % 1. Please do not delete the docstring above.
+    % 2. This function must train a CLASSIFICATION QDA model, not a regression model.
+    % 3. This implementation is binary-classification only. Training labels are
+    %    expected to be exactly -1 and +1. Do not implement multiclass logic.
+    % 4. Training labels are assumed to have already been prepared correctly by the pipeline.
+    %    Do not remap labels inside this function.
+    % 5. Do not normalize features inside this function. Any normalization and/or PCA
+    %    has already been handled upstream by the pipeline when required.
+    % 6. This model must be implemented as REGULARIZED QDA. Do not fit unregularized
+    %    class covariance matrices and store them directly.
+    % 7. Compute class labels using unique(trainingData.y) and ensure they are exactly
+    %    [-1; 1] in that order. All class-specific quantities must use this exact ordering.
+    % 8. For each class k, estimate the class mean vector mu_k and class covariance matrix Sigma_k
+    %    using only the samples belonging to that class.
+    % 9. Regularize each class covariance matrix as:
+    %         SigmaReg_k = Sigma_k + lambda * eye(d)
+    %    where lambda = qdaHyperparameters.regularizationStrength.
+    % 10. The regularization strength must be treated as a nonnegative scalar.
+    %     It must be stored unchanged in qdaModel.regularizationStrength.
+    % 11. Compute and store class priors as empirical frequencies:
+    %         prior_k = n_k / nTrain
+    %     and also store their logs in .logClassPriors.
+    % 12. Store class means as a 2 x d matrix whose i-th row corresponds to the i-th class
+    %     in qdaModel.classLabels.
+    % 13. Store each regularized covariance matrix in qdaModel.classCovariances{i}.
+    %     Each cell entry must be a d x d double matrix.
+    % 14. Also precompute and store the inverse of each regularized covariance matrix in
+    %     qdaModel.classCovarianceInverses{i} and the corresponding log determinant in
+    %     qdaModel.logDetCovariances(i). This avoids repeated expensive recomputation
+    %     during prediction.
+    % 15. Be careful with numerical stability when computing log determinants and inverses.
+    %     Do not silently proceed with singular or non-finite covariance quantities.
+    % 16. The regularized covariance matrices should be symmetric. If small floating-point
+    %     asymmetries arise from computation, it is acceptable to symmetrize using:
+    %         SigmaReg = (SigmaReg + SigmaReg.') / 2
+    %     before storing downstream quantities.
+    % 17. Prefer stable linear algebra. Do not recompute matrix inverses or determinants
+    %     repeatedly inside loops when the result can be computed once and stored.
+    % 18. Do not store redundant copies of the full training matrix X or label vector y
+    %     inside qdaModel.
+    % 19. This function is performance-critical. Avoid unnecessary temporary arrays,
+    %     repeated passes over large matrices, or expensive recomputation.
+    % 20. The implementation should fail loudly if a valid regularized covariance model
+    %     cannot be constructed. Do not silently continue with malformed outputs.
+    % 21. The final output struct must satisfy validateQDAModel exactly.
 
+    % -- YOUR IMPLEMENTATION HERE --
+    qdaModel = struct();
+
+    % -- Output validation - PLEASE DO NOT REMOVE --
+    validateQDAModel(qdaModel, trainingData, qdaHyperparameters);
 
 end
