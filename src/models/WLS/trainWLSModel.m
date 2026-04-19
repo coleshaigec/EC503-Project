@@ -1,4 +1,4 @@
-function wlsModel = trainWLSModel(trainingData, gradientBoostingRegressionHyperparameters)
+function wlsModel = trainWLSModel(trainingData, wlsHyperparameters)
     % TRAINWLSMODEL Fits weighted least squares model to training data using specified hyperparameters
     %
     % AUTHOR: Cole H. Shaigec
@@ -10,7 +10,6 @@ function wlsModel = trainWLSModel(trainingData, gradientBoostingRegressionHyperp
     %
     % 
   
-
     wlsModel = struct();
 
     % -- Output validation - PLEASE DO NOT REMOVE --

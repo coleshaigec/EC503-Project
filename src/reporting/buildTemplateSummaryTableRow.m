@@ -18,7 +18,6 @@ function templateRow = buildTemplateSummaryTableRow()
     %      .knnK (double)
     %      .qdaRegularizationStrength (double)
     %      .naiveBayesVarianceSmoothing (scalar)
-    %      .WLSHYPERPARAMETERS (WLS not yet architected)
     %      .RANDOMFORESTHYPERPARAMETERS___ - RANDOM FOREST NOT YET ARCHITECTED!
     %      .ridgeRegressionLambda (double)
     %      .trainAccuracy (double)
