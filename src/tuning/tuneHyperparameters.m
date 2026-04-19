@@ -66,7 +66,9 @@ function tuningResult = tuneHyperparameters(trainData, validationData, modelName
     allRunRecords = repmat(templateRunRecord, numTuningRuns, 1);
 
     % Loop over hyperparameter grids, train model, and evaluate performance
+    tic;
     for i = 1 : numTuningRuns
+        fprintf('Commencing tuning run %i. Current bestRunScore = %.3f\n', i, bestRunScore);
         isCurrentRunBest = false;
 
         % Extract current hyperparameters
@@ -99,7 +101,12 @@ function tuningResult = tuneHyperparameters(trainData, validationData, modelName
         allRunRecords(i) = templateRunRecord;
         allRunRecords(i).hyperparameterValues = currentHyperparameters;
         allRunRecords(i).runScore = runScore;
+
+        fprintf('Tuning run %i completed. RunScore: %.3f.\n', i, runScore);
     end
+    
+    fprintf('Tuning completed.');
+    toc
 
     % Populate output struct
     tuningResult = struct();

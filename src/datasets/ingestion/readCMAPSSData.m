@@ -102,4 +102,6 @@ function rawCMAPSSData = readCMAPSSData()
     rawCMAPSSData.FD002 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD002');
     rawCMAPSSData.FD003 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD003');
     rawCMAPSSData.FD004 = readSubsetFromCMAPSS(cmapssDataFolderPath, 'FD004'); 
+
+    fprintf('CMAPSS data read successfully.\n');
 end

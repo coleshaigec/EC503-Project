@@ -196,4 +196,5 @@ function cleanedCMAPSSData = cleanCMAPSSData(rawCMAPSSData)
 
         cleanedCMAPSSData.(subsetName).name = rawSubset.name;
     end
+    fprintf('CMAPSS data cleaned successfully.\n');
 end

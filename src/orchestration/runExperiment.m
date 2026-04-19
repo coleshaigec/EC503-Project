@@ -38,7 +38,9 @@ function experimentReport = runExperiment(experimentSpec)
     runReports = repmat(templateRunReport, numRuns, 1);
 
     for i = 1 : numRuns
+        fprintf('\n-- Commencing pipeline run %i --\n', i);
         runReports(i) = runPipeline(cleanedCMAPSSData, runPlans(i));
+        fprintf('-- Pipeline run %i completed --\n', i);
     end
 
     % -- Pass pipeline runs through reporting utility --

@@ -109,7 +109,6 @@ function runReport = runPipeline(cmapssData, runPlan)
     %          .numFolds (positive integer)              - number of cross-validation folds
 
     % -- Extract desired subset of CMAPSS data -- 
-    runPlan.cmapssSubset
     rawDataset = cmapssData.(runPlan.cmapssSubset);
 
     % -- Run k-fold cross-validation to tune hyperparameters --

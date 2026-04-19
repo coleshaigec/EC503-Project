@@ -35,6 +35,8 @@ function bestHyperparameters = runKFoldCrossValidation(cmapssSubset, runPlan)
     % OUTPUT
     %  bestHyperparameters (struct with model-specific fields)
 
+    fprintf('Commencing %i-fold cross-validation on model %s.\n', runPlan.numFolds, runPlan.modelSpec.modelName);
+
     % -- Build cross-validation folds --
     folds = buildCrossValidationFolds(cmapssSubset, runPlan.windowSize, runPlan.numFolds);
 

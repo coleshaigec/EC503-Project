@@ -23,4 +23,5 @@ function testSet = windowTestDataset(testSubset, windowSize)
     testSet = struct();
     testSet.X = XTest;
     testSet.y = yTest;
+    fprintf('Test dataset windowed successfully.\n');
 end
