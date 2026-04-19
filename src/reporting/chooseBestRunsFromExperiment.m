@@ -22,6 +22,10 @@ function bestRuns = chooseBestRunsFromExperiment(summaryTable, numRunsToSelect)
     %      .regression table
     %          Top regression runs ranked by testRMSE, ascending.
     %          Empty table if no valid regression runs exist.
+    %
+    %      .indices struct with fields
+    %          .classification (vector)
+    %          .regression (vector)
 
     % -- Validate scalar input --
     if ~isscalar(numRunsToSelect) || ~isnumeric(numRunsToSelect) || ...
@@ -39,6 +43,7 @@ function bestRuns = chooseBestRunsFromExperiment(summaryTable, numRunsToSelect)
     bestRuns = struct();
     bestRuns.classification = classificationRuns([],:);
     bestRuns.regression = regressionRuns([],:);
+    bestRuns.indices = struct();
 
     % -- Classification: select runs with highest 0.75 * testF1 + 0.25 * testAccuracy --
     if height(classificationRuns) > 0
@@ -59,6 +64,7 @@ function bestRuns = chooseBestRunsFromExperiment(summaryTable, numRunsToSelect)
 
             numClassificationRuns = min(numRunsToSelect, height(classificationRuns));
             bestRuns.classification = classificationRuns(1:numClassificationRuns, :);
+            bestRuns.indices.classification = bestRuns.classification.runNumber;
         end
     end
 
@@ -72,6 +78,9 @@ function bestRuns = chooseBestRunsFromExperiment(summaryTable, numRunsToSelect)
 
             numRegressionRuns = min(numRunsToSelect, height(regressionRuns));
             bestRuns.regression = regressionRuns(1:numRegressionRuns, :);
+            bestRuns.indices.regression = bestRuns.regression.runNumber;
         end
     end
+
+
 end
