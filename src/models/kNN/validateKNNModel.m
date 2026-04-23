@@ -49,9 +49,6 @@ function validateKNNModel(knnModel, trainingData, hyperparameters)
         {'scalar', 'integer', 'positive', 'finite'}, ...
         mfilename, 'knnModel.k');
 
-    % -- Validate hyperparameters in data context --
-    validateKNNHyperparameters(hyperparameters, trainingData);
-
     % -- Validate dimensional consistency --
     nTrain = size(trainingData.X, 1);
     d = size(trainingData.X, 2);
