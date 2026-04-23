@@ -11,6 +11,7 @@ function policyCostResult = computePolicyCost(policyMetrics, costModel)
     %      .numTimelyMaintenanceJobs (nonnegative integer)
     %      .numMissedFailures (nonnegative integer)
     %      .numCorrectDeferments (nonnegative integer)
+    %      .lostRULFromPrematureMaintenance (nonnegative integer)
     %
     %  costModel struct with fields
     %      .name (string)
@@ -26,10 +27,16 @@ function policyCostResult = computePolicyCost(policyMetrics, costModel)
     %      .totalPrematureMaintenanceCost (double)
     %      .totalPolicyCost (double)
 
+    % -- Compute costs --
     totalDirectMaintenanceCost = costModel.directMaintenanceCost * policyMetrics.totalMaintenanceJobs;
     totalFailureCost = costModel.failureCost * policyMetrics.numMissedFailures;
+    totalPrematureMaintenanceCost = costModel.alphaRUL * policyMetrics.lostRULFromPrematureMaintenance;
+    totalPolicyCost = totalDirectMaintenanceCost + totalFailureCost + totalPrematureMaintenanceCost;
 
-    
-
-
+    % -- Populate output struct -- 
+    policyCostResult = struct();
+    policyCostResult.totalDirectMaintenanceCost = totalDirectMaintenanceCost;
+    policyCostResult.totalFailureCost = totalFailureCost;
+    policyCostResult.totalPrematureMaintenanceCost = totalPrematureMaintenanceCost;
+    policyCostResult.totalPolicyCost = totalPolicyCost;
 end
