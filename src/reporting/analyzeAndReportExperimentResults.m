@@ -5,6 +5,7 @@ function analyzeAndReportExperimentResults(runReports)
 
     % Tasks of this utility
     % GAME PLAN HAS CHANGED!
+    % NO POLICY ANALYSIS HERE!
     % - Drop plotting
     % - Don't worry about best runs, let Excel handle it
     % - Don't worry about plotting, let Excel handle it
@@ -21,7 +22,6 @@ function analyzeAndReportExperimentResults(runReports)
     % models
 
     % -- Build summary table --
-    policyAnalysisResults = runPolicyAnalysis(runReports);
     summaryTable = buildExperimentSummaryTable(runReports);
     writeSummaryTableToFile(summaryTable, getCSVOutFileName());
 

@@ -1,10 +1,10 @@
-function templateRunReportStruct = buildTemplateRunResultStruct()
+function templateRunResultStruct = buildTemplateRunResultStruct()
     % BUILDTEMPLATERUNRESULTSTRUCT Builds template runResult struct for preallocation.
     %
     % AUTHOR: Cole H. Shaigec
     %
     % OUTPUT
-    %  templateRunReport struct with fields
+    %  templateRunResult struct with fields
     %      .train struct with fields
     %          .yHat   - predicted labels
     %          .yTrue  - true labels
@@ -35,9 +35,9 @@ function templateRunReportStruct = buildTemplateRunResultStruct()
     %          .windowSize (positive integer)            - for dataset windowing
     %          .numFolds (positive integer)              - number of CV folds
 
-    templateRunReportStruct = struct();
-    templateRunReportStruct.train = [];
-    templateRunReportStruct.test = [];
-    templateRunReportStruct.trainedModel = [];
-    templateRunReportStruct.runPlan = [];
+    templateRunResultStruct = struct();
+    templateRunResultStruct.train = [];
+    templateRunResultStruct.test = [];
+    templateRunResultStruct.trainedModel = [];
+    templateRunResultStruct.runPlan = [];
 end

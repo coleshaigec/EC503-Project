@@ -30,10 +30,12 @@ function templateRunReport = buildTemplateRunReportStruct()
     %           .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %           .warningHorizon (positive integer)        - TTF threshold for classification
     %           .windowSize (positive integer)            - for dataset windowing
+    %       .policyAnalysisResult struct with fields
 
     templateRunReport = struct();
     templateRunReport.train = [];
     templateRunReport.test = [];
     templateRunReport.trainedModel = [];
     templateRunReport.runPlan = [];
+    templateRunReport.policyAnalysisResult = [];
 end

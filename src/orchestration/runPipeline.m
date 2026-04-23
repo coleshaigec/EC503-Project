@@ -125,13 +125,15 @@ function runReport = runPipeline(cmapssData, runPlan)
     fullTrainingSet = windowTrainingDataset(rawDataset.train.engines, runPlan.windowSize);
     fullTestSet = windowTestDataset(cmapssData.(runPlan.cmapssSubset).test, runPlan.windowSize);
 
+    trueRULs = fullTestSet.y;
+
     if strcmp(getTaskTypeFromModelName(finalModelSpec.modelName), 'classification')
         fullTrainingSet.y = remapLabels(fullTrainingSet.y, runPlan.warningHorizon);
-        fullTestSet.y = remapLabels(fullTestSet.y, runPlan.warningHorizon);
+        fullTestSet.y = remapLabels(trueRULs, runPlan.warningHorizon);
     end
     
     trainedModel = trainModel(fullTrainingSet, finalModelSpec);
 
     % -- Build run report --
-    runReport = buildSingleRunReport(trainedModel, fullTrainingSet, fullTestSet, runPlan);
+    runReport = buildSingleRunReport(trainedModel, fullTrainingSet, fullTestSet, runPlan, trueRULs);
 end
