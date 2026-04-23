@@ -1,4 +1,4 @@
-function runReport = buildSingleRunReport(trainedModel, trainingData, testData, runPlan)
+function runReport = buildSingleRunReport(trainedModel, trainingData, testData, runPlan, trueRULs)
     % BUILDSINGLERUNREPORT Computes predictions and performance metrics for the trained model from a single pipeline run.
     %
     % AUTHOR: Cole H. Shaigec
@@ -14,7 +14,8 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     %      .y (ntrain x 1 double)  - train labels
     %  testData struct with fields
     %      .X (ntest x d double)   - train features
-    %      .y (ntest x 1 double)   - test labls
+    %      .y (ntest x 1 double)   - test labels
+    %  trueRULs (n x 1 double)     - true RUL values for test engines in chosen CMAPSS subset
     %
     % OUTPUTS
     %  runReport struct with fields
@@ -46,6 +47,26 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     %          .cmapssSubset (string)                    - 'FD001', 'FD002', 'FD003', or 'FD004'
     %          .warningHorizon (positive integer)        - TTF classification threshold
     %          .windowSize (positive integer)            - for dataset windowing
+    %       .policyAnalysisResult struct with fields
+    %           .costModel struct with fields
+    %               .name (string)
+    %               .directMaintenanceCost (positive double) - cost of performing maintenance
+    %               .failureCost (positive double) - cost of engine failure
+    %               .alphaRUL (positive double) - scaling factor to price residual
+    %               life wasted by premature maintenance
+    %           .policyMetrics struct with fields
+    %               .totalNumEngines (nonnegative integer)
+    %               .totalMaintenanceJobs (nonnegative integer)
+    %               .numPrematureMaintenanceJobs (nonnegative integer)
+    %               .numTimelyMaintenanceJobs (nonnegative integer)
+    %               .numMissedFailures (nonnegative integer)
+    %               .numCorrectDeferments (nonnegative integer)
+    %               .lostRULFromPrematureMaintenance (nonnegative integer)
+    %           .policyCosts struct with fields
+    %               .totalDirectMaintenanceCost (double)
+    %               .totalFailureCost (double)
+    %               .totalPrematureMaintenanceCost (double)
+    %               .totalPolicyCost (double)   
 
     % -- Compute predictions using trained model --
     trainPredictionResult = computePredictions(trainingData, trainedModel);
@@ -64,6 +85,9 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
             'trainedModel.taskType must be ''classification'' or ''regression''.');
     end
 
+    % -- Run policy analysis --
+    policyAnalysisResult = runPolicyAnalysis(yHatTest, trueRULs, runPlan.warningHorizon, trainedModel.taskType);
+
     % -- Populate output struct --
     runReport = struct();
     runReport.train = struct();
@@ -80,4 +104,6 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     runReport.trainedModel = trainedModel;
 
     runReport.runPlan = runPlan;
+    
+    runReport.policyAnalysisResult = policyAnalysisResult;
 end
