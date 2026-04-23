@@ -1,14 +1,16 @@
-function policyCostResult = computePolicyCost(policyOutcomes, costModel)
+function policyCostResult = computePolicyCost(policyMetrics, costModel)
     % COMPUTEPOLICYCOST Determine the cost of the policy induced by model predictions.
     %
     % AUTHOR: Cole H. Shaigec
     %
     % INPUTS
-    %  policyOutcomes struct with fields
-    %      .timelyMaintenance (n x 1 logical)
-    %      .prematureMaintenance (n x 1 logical)
-    %      .missedFailure (n x 1 logical)
-    %      .correctDeferment (n x 1 logical)
+    %  policyMetrics struct with fields
+    %      .totalNumEngines (nonnegative integer)
+    %      .totalMaintenanceJobs (nonnegative integer)
+    %      .numPrematureMaintenanceJobs (nonnegative integer)
+    %      .numTimelyMaintenanceJobs (nonnegative integer)
+    %      .numMissedFailures (nonnegative integer)
+    %      .numCorrectDeferments (nonnegative integer)
     %
     %  costModel struct with fields
     %      .name (string)
@@ -24,8 +26,10 @@ function policyCostResult = computePolicyCost(policyOutcomes, costModel)
     %      .totalPrematureMaintenanceCost (double)
     %      .totalPolicyCost (double)
 
-    totalEnginesWithMaintenance = sum(policyOutcomes.timelyMaintenance) + sum(policyOutcomes.prematureMaintenance);
-    totalDirectMaintenanceCost = 
+    totalDirectMaintenanceCost = costModel.directMaintenanceCost * policyMetrics.totalMaintenanceJobs;
+    totalFailureCost = costModel.failureCost * policyMetrics.numMissedFailures;
+
+    
 
 
 end

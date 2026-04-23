@@ -18,6 +18,7 @@ function policyMetrics = computePolicyMetrics(policyOutcomes)
     %      .numTimelyMaintenanceJobs (nonnegative integer)
     %      .numMissedFailures (nonnegative integer)
     %      .numCorrectDeferments (nonnegative integer)
+    %      .lostRULFromPrematureMaintenance (nonnegative integer)
 
     % -- Compute metrics --
     numTimelyMaintenanceJobs = sum(policyOutcomes.timelyMaintenance);
