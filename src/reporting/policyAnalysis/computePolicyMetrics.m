@@ -1,4 +1,4 @@
-function policyMetrics = computePolicyMetrics(policyOutcomes)
+function policyMetrics = computePolicyMetrics(policyOutcomes, warningHorizon, trueRUL)
     % COMPUTEPOLICYMETRICS Computes KPIs from policy outcomes.
     %
     % AUTHOR: Cole H. Shaigec
@@ -9,6 +9,10 @@ function policyMetrics = computePolicyMetrics(policyOutcomes)
     %      .prematureMaintenance (n x 1 logical)
     %      .missedFailure (n x 1 logical)
     %      .correctDeferment (n x 1 logical)
+    %
+    %  trueRUL (n x 1 double) - true RUL for each engine
+    %
+    %  warningHorizon (positive integer) - TTF decision threshold
     %
     % OUTPUTS
     %  policyMetrics struct with fields
@@ -26,6 +30,7 @@ function policyMetrics = computePolicyMetrics(policyOutcomes)
     totalMaintenanceJobs = numTimelyMaintenanceJobs + numPrematureMaintenanceJobs;
     numMissedFailures = sum(policyOutcomes.missedFailure);
     numCorrectDeferments = sum(policyOutcomes.correctDeferment);
+    lostRULFromPrematureMaintenance = computeLostRULFromPrematureMaintenance(trueRUL, policyOutcomes, warningHorizon);
 
     % -- Populate output struct --
     policyMetrics = struct();
@@ -35,4 +40,5 @@ function policyMetrics = computePolicyMetrics(policyOutcomes)
     policyMetrics.numTimelyMaintenanceJobs = numTimelyMaintenanceJobs;
     policyMetrics.numMissedFailures = numMissedFailures;
     policyMetrics.numCorrectDeferments = numCorrectDeferments;
+    policyMetrics.lostRULFromPrematureMaintenance = lostRULFromPrematureMaintenance;
 end
