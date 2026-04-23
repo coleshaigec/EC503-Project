@@ -1,11 +1,11 @@
-function policyOutcomes = determinePolicyOutcomes(policy, yTrue, warningHorizon)
+function policyOutcomes = determinePolicyOutcomes(policy, trueRUL, warningHorizon)
     % DETERMINEPOLICYOUTCOMES Determines outcomes of an induced maintenance policy.
     %
     % AUTHOR: Cole H. Shaigec
     %
     % INPUTS
     %  policy (n x 1 logical)              - 1 if maintenance is triggered, 0 otherwise
-    %  yTrue (n x 1 double)                - true RUL values
+    %  trueRUL (n x 1 double)                - true RUL values
     %  warningHorizon (positive integer)   - TTF threshold defining the danger zone
     %
     % OUTPUTS
@@ -22,8 +22,8 @@ function policyOutcomes = determinePolicyOutcomes(policy, yTrue, warningHorizon)
     %   3. missedFailure: True RUL <= warningHorizon AND policy = 0
     %   4. correctDeferment: True RUL > warningHorizon AND policy = 0
 
-    actualPositives = yTrue <= warningHorizon;
-    actualNegatives = yTrue > warningHorizon;
+    actualPositives = trueRUL <= warningHorizon;
+    actualNegatives = trueRUL > warningHorizon;
 
     maintenanceTriggered = policy == 1;
     maintenanceDeferred = policy == 0;

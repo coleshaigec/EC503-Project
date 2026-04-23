@@ -22,7 +22,7 @@ function policyMetrics = computePolicyMetrics(policyOutcomes, warningHorizon, tr
     %      .numTimelyMaintenanceJobs (nonnegative integer)
     %      .numMissedFailures (nonnegative integer)
     %      .numCorrectDeferments (nonnegative integer)
-    %      .lostRULFromPrematureMaintenance (nonnegative integer)
+    %      .lostRULFromPrematureMaintenance (nonnegative double)
 
     % -- Compute metrics --
     numTimelyMaintenanceJobs = sum(policyOutcomes.timelyMaintenance);
