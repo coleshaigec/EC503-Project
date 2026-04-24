@@ -11,5 +11,6 @@ function csvOutFileName =  getCSVOutFileName()
     % results of each experiment to a file with a standardized,
     % experiment-specific name.
 
-    csvOutFileName = strcat('EXPERIMENT_RESULT_', string(datetime("now")), '.csv');
+    timestamp = datetime('now', 'Format', 'yyyy-MM-dd_HH-mm-ss');
+    csvOutFileName = "EXPERIMENT_RESULT_" + string(timestamp) + ".csv";
 end

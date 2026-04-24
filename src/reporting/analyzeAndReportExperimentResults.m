@@ -23,17 +23,5 @@ function analyzeAndReportExperimentResults(runReports)
 
     % -- Build summary table --
     summaryTable = buildExperimentSummaryTable(runReports);
-    writeSummaryTableToFile(summaryTable, getCSVOutFileName());
-
-    % -- Choose best runs and analyze them in more depth --
-    % bestRuns = chooseBestRunsFromExperiment(summaryTable, 3);
-    % bestRunReportsClassification = runReports(bestRuns.indices.classification);
-    % bestRunReportsRegression = runReports(bestRuns.indices.regression);
-    % bestRunReports = struct();
-    % bestRunReports.classification = bestRunReportsClassification;
-    % bestRunReports.regression = bestRunReportsRegression;
-    % 
-    % % bestRunReports = runReports();
-
-    
+    writeSummaryTableToFile(summaryTable, getCSVOutFileName());    
 end
