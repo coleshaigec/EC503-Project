@@ -15,5 +15,6 @@ function writeSummaryTableToFile(summaryTable, outFileName)
     %  writes to file in outputs folder.
 
     targetPath = getOutputPath(outFileName);
+    disp(targetPath);
     writetable(summaryTable, targetPath);
 end
