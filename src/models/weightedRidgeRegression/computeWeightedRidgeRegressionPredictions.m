@@ -1,5 +1,5 @@
-function gradientBoostingRegressionResult = computeGradientBoostingRegressionPredictions(dataset, gradientBoostingRegressionModel)
-% COMPUTEGRADIENTBOOSTINGREGRESSIONPREDICTIONS Computes predictions of gradient boosting regression model on dataset.
+function weightedRidgeRegressionResult = computeWeightedRidgeRegressionPredictions(dataset, weightedRidgeRegressionModel)
+% COMPUTEWEIGHTEDRIDGEREGRESSIONPREDICTIONS Computes predictions of weighted ridge regression model on dataset.
     %
     % AUTHOR: Cole H. Shaigec
     %
@@ -8,25 +8,34 @@ function gradientBoostingRegressionResult = computeGradientBoostingRegressionPre
     %      .X (n x d double) - feature matrix
     %      .y (n x 1 double) - response vector
     %
-    %  gradientBoostingRegressionModel struct with fields
-    %      .ensemble (CompactRegressionEnsemble) - trained boosted regression ensemble
-    %      .T (positive integer)                 - number of learners
-    %      .learningRate (double > 0)            - shrinkage parameter
-    %      .maxNumSplits (nonnegative integer)   - tree complexity control
+    %  weightedRidgeRegressionModel struct with fields
+    %      .coeff (d x 1 double) - ridge regression coefficients
+    %      .bias (double)        - intercept term
+    %      .gamma (n x 1 double) - weights
+    %      .lambda (double > 0)  - regularization penalty
+    %      .eta (double > 0)     - temporal weighting parameter
+    %      .tau (double > 0)     - RUL decay constant
     %
     % OUTPUT
-    %  gradientBoostingRegressionResult struct with fields
+    %  weightedRidgeRegressionResult struct with fields
     %      .yHat (n x 1 double)
     %      .metadata struct with fields
-    %          .T (positive integer)
-    %          .learningRate (double > 0)
-    %          .maxNumSplits (nonnegative integer)
+    %          .coeff (d x 1 double) - ridge regression coefficients
+    %          .bias (double)        - intercept term
+    %          .lambda (double > 0)  - regularization penalty
+    %          .eta (double > 0)     - temporal weighting parameter
+    %          .tau (double > 0)     - RUL decay constant
 
-    gradientBoostingRegressionResult = struct();
+    % -- Compute predictions --
+    yHat = dataset.X * weightedRidgeRegressionModel.coeff + weightedRidgeRegressionModel.bias;
 
-    % -- Output validation - PLEASE DO NOT REMOVE --
-    validateGradientBoostingRegressionResult( ...
-        gradientBoostingRegressionResult, ...
-        dataset, ...
-        gradientBoostingRegressionModel);
+    % -- Populate output struct --
+    weightedRidgeRegressionResult = struct();
+    weightedRidgeRegressionResult.yHat = yHat;
+    weightedRidgeRegressionResult.metadata = struct();
+    weightedRidgeRegressionResult.metadata.coeff = weightedRidgeRegressionModel.coeff;
+    weightedRidgeRegressionResult.metadata.bias = weightedRidgeRegressionModel.bias;
+    weightedRidgeRegressionResult.metadata.lambda = weightedRidgeRegressionModel.lambda;
+    weightedRidgeRegressionResult.metadata.eta = weightedRidgeRegressionModel.eta;
+    weightedRidgeRegressionResult.metadata.tau = weightedRidgeRegressionModel.tau;
 end
