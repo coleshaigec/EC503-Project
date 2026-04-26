@@ -18,8 +18,7 @@ function policyAnalysisResult = runPolicyAnalysis(yHat, trueRUL, warningHorizon,
     %          .name (string)
     %          .directMaintenanceCost (positive double) - cost of performing maintenance
     %          .failureCost (positive double) - cost of engine failure
-    %          .alphaRUL (positive double) - scaling factor to price residual
-    %          life wasted by premature maintenance
+    %          .alphaRUL (positive double) - scaling factor to price residual life wasted by premature maintenance
     %      .policyMetrics struct with fields
     %          .totalNumEngines (nonnegative integer)
     %          .totalMaintenanceJobs (nonnegative integer)

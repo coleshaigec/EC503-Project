@@ -33,6 +33,12 @@ function validateHyperparameterSearchGrid(searchGrid, modelName)
             expectedFieldNames = {'lambda'};
         case 'naiveBayes'
             expectedFieldNames = {'varianceSmoothing'};
+        case 'randomForest'
+            expectedFieldNames = {'numTrees', 'minLeafSize', 'numPredictors'};
+        case 'weightedRidgeRegression'
+            expectedFieldNames = {'lambda', 'eta', 'tau'};
+        case 'QDA'
+            expectedFieldNames = {'regularizationStrength'};
         otherwise
             error('validateHyperparameterSearchGrid:UnsupportedModel', ...
                 'Unsupported model name: %s', modelName);

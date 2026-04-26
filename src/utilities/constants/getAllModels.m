@@ -6,5 +6,5 @@ function allModels = getAllModels()
     % OUTPUT
     %  allModels (string array)
 
-    allModels = ["naiveBayes", "QDA", "randomForest", "kNN", "WLS", "ridgeRegression"];
+    allModels = ["naiveBayes", "QDA", "randomForest", "kNN", "weightedRidgeRegression", "ridgeRegression"];
 end
