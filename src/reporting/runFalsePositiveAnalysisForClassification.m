@@ -5,7 +5,7 @@ function falsePositiveAnalysisResult = runFalsePositiveAnalysisForClassification
     %
     % INPUTS
     %  yHat (n x 1 double)                - predicted labels (+1 or -1)
-    %  trueRULs (n x 1 double)               - true RUL values
+    %  trueRULs (n x 1 double)            - true RUL values
     %  warningHorizon (positive integer)  - TTF threshold for classification
     %
     % OUTPUTS
@@ -14,7 +14,6 @@ function falsePositiveAnalysisResult = runFalsePositiveAnalysisForClassification
     %      .maxFalsePositiveRUL (double)
     %      .minFalsePositiveRUL (double)
     %      .meanFalsePositiveRUL (double)
-    %  rulsForFalsePositives (numFalsePositives x 1 double)
     %
     % NOTES
     % - +1 indicates failure within warning horizon (positive class)
@@ -30,13 +29,19 @@ function falsePositiveAnalysisResult = runFalsePositiveAnalysisForClassification
     falsePositives = predictedPositives & actualNegatives;
 
     % -- Extract corresponding RULs --
-    rulsForFalsePositives = yTrue(falsePositives);
+    rulsForFalsePositives = trueRULs(falsePositives);
 
     % -- Compute decision-relevant metrics --
     numFalsePositives = sum(falsePositives);
-    meanFalsePositiveRUL = mean(rulsForFalsePositives);
-    maxFalsePositiveRUL = max(rulsForFalsePositives);
-    minFalsePositiveRUL = min(rulsForFalsePositives);
+    if numFalsePositives > 0
+        meanFalsePositiveRUL = mean(rulsForFalsePositives);
+        maxFalsePositiveRUL = max(rulsForFalsePositives);
+        minFalsePositiveRUL = min(rulsForFalsePositives);
+    else
+        meanFalsePositiveRUL = NaN;
+        maxFalsePositiveRUL = NaN;
+        minFalsePositiveRUL = NaN;
+    end
     
     % -- Populate output struct --
     falsePositiveAnalysisResult = struct();

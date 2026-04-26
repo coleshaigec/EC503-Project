@@ -33,9 +33,15 @@ function falseNegativeAnalysisResult = runFalseNegativeAnalysisForClassification
 
     % -- Compute decision-relevant performance metrics --
     numFalseNegatives = sum(falseNegatives);
-    meanFalseNegativeRUL = mean(rulsForFalseNegatives);
-    minFalseNegativeRUL = min(rulsForFalseNegatives);
-    maxFalseNegativeRUL = max(rulsForFalseNegatives);
+    if numFalseNegatives > 0
+        meanFalseNegativeRUL = mean(rulsForFalseNegatives);
+        minFalseNegativeRUL = min(rulsForFalseNegatives);
+        maxFalseNegativeRUL = max(rulsForFalseNegatives);
+    else
+        meanFalseNegativeRUL = NaN;
+        minFalseNegativeRUL = NaN;
+        maxFalseNegativeRUL = NaN;
+    end
 
     % -- Populate output struct --
     falseNegativeAnalysisResult = struct();

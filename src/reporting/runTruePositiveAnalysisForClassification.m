@@ -19,7 +19,7 @@ function truePositiveAnalysisResult = runTruePositiveAnalysisForClassification(y
     % - +1 indicates failure within warning horizon (positive class)
     % - -1 indicates outside warning horizon (negative class)
 
-    % -- Identify true positives (within horizon) --
+    % -- Identify actual positives (within horizon) --
     actualPositives = trueRULs <= warningHorizon;
 
     % -- Identify predicted positives --
@@ -33,10 +33,16 @@ function truePositiveAnalysisResult = runTruePositiveAnalysisForClassification(y
 
     % -- Compute decision-relevant metrics --
     numTruePositives = sum(truePositives);
-    meanTruePositiveRUL = mean(rulsForTruePositives);
-    maxTruePositiveRUL = max(rulsForTruePositives);
-    minTruePositiveRUL = min(rulsForTruePositives);
-
+    if numTruePositives > 0
+        meanTruePositiveRUL = mean(rulsForTruePositives);
+        maxTruePositiveRUL = max(rulsForTruePositives);
+        minTruePositiveRUL = min(rulsForTruePositives);
+    else
+        meanTruePositiveRUL = NaN;
+        maxTruePositiveRUL = NaN;
+        minTruePositiveRUL = NaN;
+    end
+        
     % -- Populate output struct --
     truePositiveAnalysisResult = struct();
     truePositiveAnalysisResult.numTruePositives = numTruePositives;

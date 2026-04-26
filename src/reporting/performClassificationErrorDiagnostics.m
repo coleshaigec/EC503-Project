@@ -1,43 +1,34 @@
-function classificationErrorDiagnostics = performClassificationErrorDiagnostics(yHat, trueRUL, warningHorizon)
+function classificationErrorDiagnostics = performClassificationErrorDiagnostics(yHat, trueRULs, warningHorizon)
     % PERFORMCLASSIFICATIONERRORDIAGNOSTICS Extracts decision-relevant classification error diagnostics.
     %
     % AUTHOR: Cole H. Shaigec
     %
     % INPUTS
     %  yHat (n x 1 double)                - predicted RUL values
-    %  yTrue (n x 1 double)               - true RUL values
+    %  trueRULs (n x 1 double)            - predicted labels (+1 or -1)
     %  warningHorizon (positive integer)  - TTF threshold used for warning analysis
     %
     % OUTPUTS
-    %  regressionErrorDiagnostics struct with fields
-    %      .residuals (n x 1 double)                  - prediction residuals yHat - yTrue
-    %      .lateErrors (numLateErrors x 1 double)     - residuals corresponding to late predictions
-    %      .earlyErrors (numEarlyErrors x 1 double)   - residuals corresponding to early predictions
-    %      .dangerousMissMask (n x 1 logical)         - true where yTrue <= warningHorizon and yHat > warningHorizon
-    %      .prematureWarningMask (n x 1 logical)      - true where yTrue > warningHorizon and yHat <= warningHorizon
-    %      .rulsForDangerousMisses (numDangerousMisses x 1 double)
-    %      .rulsForPrematureWarnings (numPrematureWarnings x 1 double)
-    %      .numDangerousMisses (double)
-    %      .numPrematureWarnings (double)
-    %
-    % NOTES
-    %  
+    %  classificationErrorDiagnostics struct with fields
+    %      .truePositives struct with fields
+    %          .numTruePositives (nonnegative integer)
+    %          .meanTruePositiveRUL (double)
+    %          .maxTruePositiveRUL (double)
+    %          .minTruePositiveRUL (double)
+    %      .falsePositives struct with fields
+    %          .numFalsePositives (nonnegative integer)
+    %          .maxFalsePositiveRUL (double)
+    %          .minFalsePositiveRUL (double)
+    %          .meanFalsePositiveRUL (double)
+    %      .falseNegatives struct with fields
+    %          .numFalseNegatives (nonnegative integer)
+    %          .meanFalseNegativeRUL (double)
+    %          .minFalseNegativeRUL (double)
+    %          .maxFalseNegativeRUL (double)
 
     classificationErrorDiagnostics = struct();
 
-    falsePositiveResult = runFalsePositiveAnalysisForClassification(yHat, trueRUL, warningHorizon);
-    
-
-    classificationErrorDiagnostics.residuals = residuals;
-    classificationErrorDiagnostics.lateErrors = residuals(residuals > 0);
-    classificationErrorDiagnostics.earlyErrors = residuals(residuals < 0);
-
-    classificationErrorDiagnostics.dangerousMissMask = dangerousMissMask;
-    classificationErrorDiagnostics.prematureWarningMask = prematureWarningMask;
-
-    classificationErrorDiagnostics.rulsForDangerousMisses = yTrue(dangerousMissMask);
-    classificationErrorDiagnostics.rulsForPrematureWarnings = yTrue(prematureWarningMask);
-
-    classificationErrorDiagnostics.numDangerousMisses = sum(dangerousMissMask);
-    classificationErrorDiagnostics.numPrematureWarnings = sum(prematureWarningMask);
+    classificationErrorDiagnostics.falsePositives = runFalsePositiveAnalysisForClassification(yHat, trueRULs, warningHorizon);
+    classificationErrorDiagnostics.falseNegatives = runFalseNegativeAnalysisForClassification(yHat, trueRULs, warningHorizon);
+    classificationErrorDiagnostics.truePositives = runTruePositiveAnalysisForClassification(yHat, trueRULs, warningHorizon);
 end
