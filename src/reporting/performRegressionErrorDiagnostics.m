@@ -23,11 +23,12 @@ function regressionErrorDiagnostics = performRegressionErrorDiagnostics(yHat, yT
     % NOTES
     %  Positive residuals indicate late predictions: predicted RUL exceeds true RUL.
     %  Negative residuals indicate early predictions: predicted RUL is less than true RUL.
-
     residuals = yHat - yTrue;
 
     dangerousMissMask = (yTrue <= warningHorizon) & (yHat > warningHorizon);
     prematureWarningMask = (yTrue > warningHorizon) & (yHat <= warningHorizon);
+
+    regressionErrorDiagnostics = struct();
 
     regressionErrorDiagnostics.residuals = residuals;
     regressionErrorDiagnostics.lateErrors = residuals(residuals > 0);

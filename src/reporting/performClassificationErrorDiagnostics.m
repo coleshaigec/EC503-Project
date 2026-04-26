@@ -1,0 +1,43 @@
+function classificationErrorDiagnostics = performClassificationErrorDiagnostics(yHat, trueRUL, warningHorizon)
+    % PERFORMCLASSIFICATIONERRORDIAGNOSTICS Extracts decision-relevant classification error diagnostics.
+    %
+    % AUTHOR: Cole H. Shaigec
+    %
+    % INPUTS
+    %  yHat (n x 1 double)                - predicted RUL values
+    %  yTrue (n x 1 double)               - true RUL values
+    %  warningHorizon (positive integer)  - TTF threshold used for warning analysis
+    %
+    % OUTPUTS
+    %  regressionErrorDiagnostics struct with fields
+    %      .residuals (n x 1 double)                  - prediction residuals yHat - yTrue
+    %      .lateErrors (numLateErrors x 1 double)     - residuals corresponding to late predictions
+    %      .earlyErrors (numEarlyErrors x 1 double)   - residuals corresponding to early predictions
+    %      .dangerousMissMask (n x 1 logical)         - true where yTrue <= warningHorizon and yHat > warningHorizon
+    %      .prematureWarningMask (n x 1 logical)      - true where yTrue > warningHorizon and yHat <= warningHorizon
+    %      .rulsForDangerousMisses (numDangerousMisses x 1 double)
+    %      .rulsForPrematureWarnings (numPrematureWarnings x 1 double)
+    %      .numDangerousMisses (double)
+    %      .numPrematureWarnings (double)
+    %
+    % NOTES
+    %  
+
+    classificationErrorDiagnostics = struct();
+
+    falsePositiveResult = runFalsePositiveAnalysisForClassification(yHat, trueRUL, warningHorizon);
+    
+
+    classificationErrorDiagnostics.residuals = residuals;
+    classificationErrorDiagnostics.lateErrors = residuals(residuals > 0);
+    classificationErrorDiagnostics.earlyErrors = residuals(residuals < 0);
+
+    classificationErrorDiagnostics.dangerousMissMask = dangerousMissMask;
+    classificationErrorDiagnostics.prematureWarningMask = prematureWarningMask;
+
+    classificationErrorDiagnostics.rulsForDangerousMisses = yTrue(dangerousMissMask);
+    classificationErrorDiagnostics.rulsForPrematureWarnings = yTrue(prematureWarningMask);
+
+    classificationErrorDiagnostics.numDangerousMisses = sum(dangerousMissMask);
+    classificationErrorDiagnostics.numPrematureWarnings = sum(prematureWarningMask);
+end

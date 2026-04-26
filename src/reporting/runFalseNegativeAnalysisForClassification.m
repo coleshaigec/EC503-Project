@@ -1,5 +1,5 @@
-function rulsForFalseNegatives = runFalseNegativeAnalysisForClassification(yHat, yTrue, warningHorizon)
-    % RUNFALSENEGATIVEANALYSISFORCLASSIFICATION Extracts RULs for false negatives.
+function falseNegativeAnalysisResult = runFalseNegativeAnalysisForClassification(yHat, trueRULs, warningHorizon)
+    % RUNFALSENEGATIVEANALYSISFORCLASSIFICATION Analyzes false negatives produced by classification model.
     %
     % AUTHOR: Cole H. Shaigec
     %
@@ -9,14 +9,18 @@ function rulsForFalseNegatives = runFalseNegativeAnalysisForClassification(yHat,
     %  warningHorizon (positive integer)  - TTF threshold for classification
     %
     % OUTPUTS
-    %  rulsForFalseNegatives (numFalseNegatives x 1 double)
+    %  falseNegativeAnalysisResult struct with fields
+    %      .numFalseNegatives (nonnegative integer)
+    %      .meanFalseNegativeRUL (double)
+    %      .minFalseNegativeRUL (double)
+    %      .maxFalseNegativeRUL (double)
     %
     % NOTES
     % - +1 indicates failure within warning horizon (positive class)
     % - -1 indicates outside warning horizon (negative class)
 
     % -- Identify true positives (within horizon) --
-    truePositives = yTrue <= warningHorizon;
+    truePositives = trueRULs <= warningHorizon;
 
     % -- Identify predicted negatives --
     predictedNegatives = (yHat == -1);
@@ -25,5 +29,18 @@ function rulsForFalseNegatives = runFalseNegativeAnalysisForClassification(yHat,
     falseNegatives = predictedNegatives & truePositives;
 
     % -- Extract corresponding RULs --
-    rulsForFalseNegatives = yTrue(falseNegatives);
+    rulsForFalseNegatives = trueRULs(falseNegatives);
+
+    % -- Compute decision-relevant performance metrics --
+    numFalseNegatives = sum(falseNegatives);
+    meanFalseNegativeRUL = mean(rulsForFalseNegatives);
+    minFalseNegativeRUL = min(rulsForFalseNegatives);
+    maxFalseNegativeRUL = max(rulsForFalseNegatives);
+
+    % -- Populate output struct --
+    falseNegativeAnalysisResult = struct();
+    falseNegativeAnalysisResult.numFalseNegatives = numFalseNegatives;
+    falseNegativeAnalysisResult.meanFalseNegativeRUL = meanFalseNegativeRUL;
+    falseNegativeAnalysisResult.minFalseNegativeRUL = minFalseNegativeRUL;
+    falseNegativeAnalysisResult.maxFalseNegativeRUL = maxFalseNegativeRUL;
 end
