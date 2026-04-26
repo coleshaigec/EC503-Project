@@ -15,7 +15,7 @@ function ridgeRegressionModel = trainRidgeRegressionModel(trainingData, ridgeReg
     %  ridgeRegressionModel struct with fields
     %      .coeff  (d x 1 double)      - ridge regression coefficients
     %      .bias  (double)             - intercept term
-    %      .lambda (double >= 0)        - regularization penalty
+    %      .lambda (double > 0)        - regularization penalty
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Implementation requirements and notes: %
