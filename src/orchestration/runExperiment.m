@@ -15,11 +15,8 @@ function experimentReport = runExperiment(experimentSpec)
     % OUTPUTS
     %  experimentResult struct with fields
     %
-    % SIDE EFFECTS ?
-    % Maybe we write outputs to a file...
-
-    % NOTE TO SELF
-    % This function shouldn't return anything! Side effects only
+    % SIDE EFFECTS
+    %  Run results written to a CSV file.
 
     % -- Input validation --
     validateExperimentSpec(experimentSpec);
@@ -37,25 +34,15 @@ function experimentReport = runExperiment(experimentSpec)
     runReports = repmat(templateRunReport, numRuns, 1);
 
     for i = 1 : numRuns
-        fprintf('\n-- Commencing pipeline run %i --\n', i);
+        tic
+        fprintf('\nCommencing pipeline run %i/%i\n', i, numRuns);
         runReports(i) = runPipeline(cleanedCMAPSSData, runPlans(i));
-        bestAccuracy = runReports(i).test.performanceMetrics.accuracy;
-        fprintf('-- Pipeline run %i completed. Best accuracy: %.3f --\n', i, bestAccuracy);
+        fprintf('Pipeline run %i/%i completed.\n', i, numRuns);
+        toc;
     end
 
     % -- Pass pipeline runs through reporting utility --
     analyzeAndReportExperimentResults(runReports);
     experimentReport = struct();
     fprintf('Pipeline run complete.\n');
-    
-
-
-
-
-
-
-
-
-
-
 end
