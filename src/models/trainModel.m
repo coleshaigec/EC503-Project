@@ -30,8 +30,8 @@ function trainedModel = trainModel(trainingData, modelSpec)
         case 'randomForest'
             trainedModel.model = trainRandomForestModel(trainingData, modelSpec.hyperparameters);
             trainedModel.taskType = 'classification';
-        case 'WLS'
-            trainedModel.model = trainWLSModel(trainingData, modelSpec.hyperparameters);
+        case 'weightedRidgeRegression'
+            trainedModel.model = trainWeightedRidgeRegressionModel(trainingData, modelSpec.hyperparameters);
             trainedModel.taskType = 'regression';
         case 'naiveBayes'
             trainedModel.model = trainNaiveBayesModel(trainingData, modelSpec.hyperparameters);

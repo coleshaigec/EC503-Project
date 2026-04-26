@@ -22,8 +22,8 @@ function predictionResult = computePredictions(dataset, model)
             predictionResult = computeQDAPredictions(dataset, model.model);
         case 'randomForest'
             predictionResult = computeRandomForestPredictions(dataset, model.model);
-        case 'WLS'
-            predictionResult = computeWLSPredictions(dataset, model.model);
+        case 'weightedRidgeRegression'
+            predictionResult = computeWeightedRidgeRegressionPredictions(dataset, model.model);
         case 'naiveBayes'
             predictionResult = computeNaiveBayesPredictions(dataset, model.model);
         case 'ridgeRegression'

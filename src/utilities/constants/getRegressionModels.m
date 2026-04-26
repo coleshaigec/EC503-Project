@@ -6,5 +6,5 @@ function regressionModels = getRegressionModels()
     % OUTPUT
     %  regressionModels (string array)
 
-    regressionModels = ["WLS", "ridgeRegression"];
+    regressionModels = ["weightedRidgeRegression", "ridgeRegression"];
 end
