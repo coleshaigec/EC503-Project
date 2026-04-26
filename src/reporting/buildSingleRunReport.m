@@ -67,6 +67,7 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     %               .totalFailureCost (double)
     %               .totalPrematureMaintenanceCost (double)
     %               .totalPolicyCost (double)   
+    %       .errorDiagnosticsResult struct with task-specific fields
 
     % -- Compute predictions using trained model --
     trainPredictionResult = computePredictions(trainingData, trainedModel);
@@ -88,6 +89,9 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     % -- Run policy analysis --
     policyAnalysisResult = runPolicyAnalysis(yHatTest, trueRULs, runPlan.warningHorizon, trainedModel.taskType);
 
+    % -- Run error diagnostics --
+    errorDiagnosticsResult = runErrorDiagnostics(yHatTest, trueRULs, runPlan.warningHorizon, trainedModel.taskType);
+
     % -- Populate output struct --
     runReport = struct();
     runReport.train = struct();
@@ -106,4 +110,6 @@ function runReport = buildSingleRunReport(trainedModel, trainingData, testData, 
     runReport.runPlan = runPlan;
     
     runReport.policyAnalysisResult = policyAnalysisResult;
+
+    runReport.errorDiagnosticsResult = errorDiagnosticsResult;
 end
