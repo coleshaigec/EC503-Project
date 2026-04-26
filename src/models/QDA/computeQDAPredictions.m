@@ -81,7 +81,38 @@ function qdaResult = computeQDAPredictions(dataset, qdaModel)
     % 21. The final output struct must satisfy validateQDAResult exactly.
 
     % -- YOUR IMPLEMENTATION HERE --
-    qdaResult = struct();
+X = dataset.X;
+
+n = size(X, 1);
+
+classLabels = qdaModel.classLabels;
+logPosteriorScores = zeros(n, 2);
+
+for i = 1:2
+    mu = qdaModel.classMeans(i, :);
+    SigmaInv = qdaModel.classCovarianceInverses{i};
+    logDetSigma = qdaModel.logDetCovariances(i);
+    logPrior = qdaModel.logClassPriors(i);
+
+    Xcentered = X - mu;
+
+    quadraticTerms = sum((Xcentered * SigmaInv) .* Xcentered, 2);
+
+    logPosteriorScores(:, i) = logPrior ...
+        - 0.5 * logDetSigma ...
+        - 0.5 * quadraticTerms;
+end
+
+[~, predictedIndices] = max(logPosteriorScores, [], 2);
+yHat = classLabels(predictedIndices);
+
+qdaResult = struct();
+qdaResult.yHat = yHat;
+
+qdaResult.metadata = struct();
+qdaResult.metadata.logPosteriorScores = logPosteriorScores;
+qdaResult.metadata.classLabels = classLabels;
+qdaResult.metadata.regularizationStrength = qdaModel.regularizationStrength;
 
     % -- Output validation - PLEASE DO NOT REMOVE --
     validateQDAResult(qdaResult, dataset, qdaModel);
