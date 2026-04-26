@@ -31,6 +31,7 @@ function templateRunReport = buildTemplateRunReportStruct()
     %           .warningHorizon (positive integer)        - TTF threshold for classification
     %           .windowSize (positive integer)            - for dataset windowing
     %       .policyAnalysisResult struct with fields
+    %       .errorDiagnosticsResult struct with fields
 
     templateRunReport = struct();
     templateRunReport.train = [];
@@ -38,4 +39,6 @@ function templateRunReport = buildTemplateRunReportStruct()
     templateRunReport.trainedModel = [];
     templateRunReport.runPlan = [];
     templateRunReport.policyAnalysisResult = [];
+    templateRunReport.errorDiagnosticsResult = [];
+
 end
