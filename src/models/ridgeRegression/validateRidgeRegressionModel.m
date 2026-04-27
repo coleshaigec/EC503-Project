@@ -35,9 +35,6 @@ function validateRidgeRegressionModel(ridgeRegressionModel, trainingData, ridgeR
             'ridgeRegressionModel must have a ''lambda'' field.');
     end
 
-    % -- Re-validate hyperparameters and training data context --
-    validateRidgeRegressionHyperparameters(trainingData, ridgeRegressionHyperparameters);
-
     % -- Recover dimensions --
     d = size(trainingData.Xtrain, 2);
 
