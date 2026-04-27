@@ -34,7 +34,7 @@ function validateHyperparameterSearchGrid(searchGrid, modelName)
         case 'naiveBayes'
             expectedFieldNames = {'varianceSmoothing'};
         case 'randomForest'
-            expectedFieldNames = {'numTrees', 'minLeafSize', 'numPredictors'};
+            expectedFieldNames = {'numTrees', 'minLeafSize', 'numPredictorsToSample'};
         case 'weightedRidgeRegression'
             expectedFieldNames = {'lambda', 'eta', 'tau'};
         case 'QDA'

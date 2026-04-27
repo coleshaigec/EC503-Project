@@ -58,7 +58,30 @@ function randomForestModel = trainRandomForestModel(trainingData, randomForestHy
     % 18. The final output struct must satisfy validateRandomForestModel exactly.
 
     % -- YOUR IMPLEMENTATION HERE --
+    X = trainingData.X;
+    y = trainingData.y;
+    [~,d] = size(X);
+    numTrees = randomForestHyperparameters.numTrees;
+    minLeafSize = randomForestHyperparameters.minLeafSize;
+    numPredictorsToSample = randomForestHyperparameters.numPredictorsToSample;
+    
+    %making sure is not larger than columns
+    assert(numPredictorsToSample <= d, ...
+    'trainRandomForestModel:NumPredictorsToSampleTooLarge', ...
+    ['numPredictorsToSample must not exceed the number of feature columns. ' ...
+     'Got %d predictors to sample for %d features.'], ...
+    numPredictorsToSample, d);
+    
+    t = templateTree('MinLeafSize', minLeafSize, 'NumVariablesToSample', numPredictorsToSample);
+    ensemble = fitcensemble( X, y, 'Method', 'Bag', 'NumLearningCycles', numTrees, ...
+        'Learners', t);
+    ensemble = compact(ensemble);
+    
     randomForestModel = struct();
+    randomForestModel.ensemble = ensemble;
+    randomForestModel.numTrees = numTrees;
+    randomForestModel.minLeafSize = minLeafSize;
+    randomForestModel.numPredictorsToSample = numPredictorsToSample;
 
     % Output validation - please do not remove
     validateRandomForestModel(randomForestModel, trainingData, randomForestHyperparameters);

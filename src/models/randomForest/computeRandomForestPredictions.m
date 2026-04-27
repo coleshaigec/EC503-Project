@@ -56,8 +56,17 @@ function randomForestResult = computeRandomForestPredictions(dataset, randomFore
     %   randomForestModel.ensemble. Do not silently continue with malformed outputs.
     % 14. The final output struct must satisfy validateRandomForestResult exactly.
 
-    % -- YOUR IMPLEMENTATION HERE --
+    X = dataset.X;
+    ensemble = randomForestModel.ensemble;
+    yHat_raw = predict(ensemble, X);
+    yHat = double(yHat_raw(:));
+    
     randomForestResult = struct();
+    randomForestResult.yHat = yHat;
+    randomForestResult.metadata = struct();
+    randomForestResult.metadata.numTrees = randomForestModel.numTrees;
+    randomForestResult.metadata.minLeafSize = randomForestModel.minLeafSize;
+    randomForestResult.metadata.numPredictorsToSample = randomForestModel.numPredictorsToSample;
 
     % -- Output validation - PLEASE DO NOT REMOVE --
     validateRandomForestResult(randomForestResult, dataset, randomForestModel);
