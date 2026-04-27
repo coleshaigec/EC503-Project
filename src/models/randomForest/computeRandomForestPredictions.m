@@ -60,19 +60,8 @@ function randomForestResult = computeRandomForestPredictions(dataset, randomFore
     X = dataset.X;
     ensemble = randomForestModel.ensemble;
     yHat_raw = predict(ensemble, X);
-
-    %output to double column
-    if iscell(yHat_raw)
-        yHat = str2double(yHat_raw);
-    elseif iscategorical(yHat_raw)
-        yHat = str2double(cellstr(yHat_raw));
-    elseif isstring(yHat_raw)
-        yHat = str2double(cellstr(yHat_raw));
-    else
-        yHat = double(yHat_raw);
-    end
-
-    yHat = yHat(:);
+    yHat = double(yHat_raw(:));
+    
     randomForestResult = struct();
     randomForestResult.yHat = yHat;
     randomForestResult.metadata = struct();
