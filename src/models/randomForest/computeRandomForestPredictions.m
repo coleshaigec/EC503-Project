@@ -59,7 +59,8 @@ function randomForestResult = computeRandomForestPredictions(dataset, randomFore
     X = dataset.X;
     ensemble = randomForestModel.ensemble;
     yHat_raw = predict(ensemble, X);
-    yHat = double(yHat_raw(:));
+    yHat = str2double(yHat_raw);
+    yHat = yHat(:);
     
     randomForestResult = struct();
     randomForestResult.yHat = yHat;

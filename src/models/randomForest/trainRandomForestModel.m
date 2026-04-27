@@ -73,7 +73,7 @@ function randomForestModel = trainRandomForestModel(trainingData, randomForestHy
     numPredictorsToSample, d);
     
     t = templateTree('MinLeafSize', minLeafSize, 'NumVariablesToSample', numPredictorsToSample);
-    ensemble = fitcensemble( X, y, 'Method', 'Bag', 'NumLearningCycles', numTrees, ...
+    ensemble = fitcensemble( X, string(y), 'Method', 'Bag', 'NumLearningCycles', numTrees, ...
         'Learners', t);
     ensemble = compact(ensemble);
     
