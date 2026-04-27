@@ -30,8 +30,16 @@ function ridgeRegressionResult = computeRidgeRegressionPredictions(dataset, ridg
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % -- YOUR IMPLEMENTATION HERE -- %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    X = dataset.X;
+    coeff = ridgeRegressionModel.coeff;
+    bias = ridgeRegressionModel.bias;
+    yHat = X * coeff + bias;
 
     ridgeRegressionResult = struct();
+    ridgeRegressionResult.yHat = yHat;
+    ridgeRegressionResult.metadata = struct();
+    ridgeRegressionResult.metadata.ridgeRegressionModel = ridgeRegressionModel;
    
     % -- Output validation - PLEASE DO NOT REMOVE --
     validateRidgeRegressionResult(ridgeRegressionResult, dataset, ridgeRegressionModel);

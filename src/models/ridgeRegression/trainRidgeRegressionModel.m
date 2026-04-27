@@ -29,8 +29,25 @@ function ridgeRegressionModel = trainRidgeRegressionModel(trainingData, ridgeReg
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % -- YOUR IMPLEMENTATION HERE -- %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    X = trainingData.X;
+    y = trainingData.y;
+    lambda = ridgeRegressionHyperparameters.lambda;
+    [nTrain, d] = size(X);
+
+    muX = mean(X, 1)'; %empirical means
+    muY = mean(y);
+    Xtilde = X - muX'; %mean centered data
+    ytilde = y - muY;
+    Sx = (Xtilde' * Xtilde) / nTrain; %empirical
+    Sxy = (Xtilde' * ytilde) / nTrain;
+    coeff = ((lambda / nTrain) * eye(d) + Sx) \ Sxy; %ridge solution
+    bias = muY - muX' * coeff; %intercept
 
     ridgeRegressionModel = struct();
+    ridgeRegressionModel.coeff = coeff;
+    ridgeRegressionModel.bias = bias;
+    ridgeRegressionModel.lambda = lambda;
    
     % -- Output validation - PLEASE DO NOT REMOVE --
     validateRidgeRegressionModel(ridgeRegressionModel, trainingData, ridgeRegressionHyperparameters);
