@@ -41,18 +41,11 @@ function Xtransformed = applyPCATransform(X, pcaTransform)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % -- YOUR IMPLEMENTATION HERE -- %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    
-
-    
-    
-
+    mu = pcaTransform.mu;
+    coeff = pcaTransform.coeff;
+    Xtransformed = (X-mu) * coeff;
 
     % -- Output validation - PLEASE DO NOT REMOVE --
-    implemented = false; % get rid of this if statement when you're done
-    if implemented
-        validateAppliedPCATransform(Xtransformed, X, pcaTransform);
-    else 
-        Xtransformed = X;
-    end
+    validateAppliedPCATransform(Xtransformed, X, pcaTransform);
+
 end
