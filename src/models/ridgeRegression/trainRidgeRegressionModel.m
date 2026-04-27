@@ -48,8 +48,12 @@ function ridgeRegressionModel = trainRidgeRegressionModel(trainingData, ridgeReg
     ridgeRegressionModel.coeff = coeff;
     ridgeRegressionModel.bias = bias;
     ridgeRegressionModel.lambda = lambda;
+
+    trainingDataForValidation = struct();
+    trainingDataForValidation.Xtrain = trainingData.X;
+    trainingDataForValidation.ytrain = trainingData.y;
    
     % -- Output validation - PLEASE DO NOT REMOVE --
-    validateRidgeRegressionModel(ridgeRegressionModel, trainingData, ridgeRegressionHyperparameters);
+    validateRidgeRegressionModel(ridgeRegressionModel, trainingDataForValidation, ridgeRegressionHyperparameters);
 
 end
