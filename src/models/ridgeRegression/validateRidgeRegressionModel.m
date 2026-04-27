@@ -39,22 +39,22 @@ function validateRidgeRegressionModel(ridgeRegressionModel, trainingData, ridgeR
     d = size(trainingData.Xtrain, 2);
 
     % -- Define attributes --
-    COEFFICIENT_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite', 'double'};
-    SCALAR_DOUBLE_ATTRIBUTES = {'scalar', 'real', 'finite', 'double'};
-    LAMBDA_ATTRIBUTES = {'scalar', 'real', 'finite', 'double', 'nonnegative'};
+    COEFFICIENT_ATTRIBUTES = {'vector', 'real', 'nonempty', 'finite'};
+    SCALAR_DOUBLE_ATTRIBUTES = {'scalar', 'real', 'finite'};
+    LAMBDA_ATTRIBUTES = {'scalar', 'real', 'finite', 'nonnegative'};
 
     % -- Validate coeff --
-    validateattributes(ridgeRegressionModel.coeff, {'double'}, ...
+    validateattributes(ridgeRegressionModel.coeff, {'numeric'}, ...
         COEFFICIENT_ATTRIBUTES, mfilename, 'ridgeRegressionModel.coeff');
     assert(isequal(size(ridgeRegressionModel.coeff), [d, 1]), ...
         'ridgeRegressionModel.coeff must have dimension d x 1.');
 
     % -- Validate bias --
-    validateattributes(ridgeRegressionModel.bias, {'double'}, ...
+    validateattributes(ridgeRegressionModel.bias, {'numeric'}, ...
         SCALAR_DOUBLE_ATTRIBUTES, mfilename, 'ridgeRegressionModel.bias');
 
     % -- Validate lambda --
-    validateattributes(ridgeRegressionModel.lambda, {'double'}, ...
+    validateattributes(ridgeRegressionModel.lambda, {'numeric'}, ...
         LAMBDA_ATTRIBUTES, mfilename, 'ridgeRegressionModel.lambda');
     assert(ridgeRegressionModel.lambda == ridgeRegressionHyperparameters.lambda, ...
         'ridgeRegressionModel.lambda must equal ridgeRegressionHyperparameters.lambda.');
