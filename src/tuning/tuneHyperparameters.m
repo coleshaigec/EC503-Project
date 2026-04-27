@@ -1,4 +1,4 @@
-function tuningResult = tuneHyperparameters(trainData, validationData, modelName, searchGrid, taskType)
+function tuningResult = tuneHyperparameters(trainData, validationData, modelName, searchGrid, taskType, warningHorizon)
     % TUNEHYPERPARAMETERS Runs grid search to tune hyperparameters for specified model
     %
     % AUTHOR: Cole H. Shaigec
@@ -33,7 +33,7 @@ function tuningResult = tuneHyperparameters(trainData, validationData, modelName
     %      .numRuns (double)
     %
     % NOTES
-    %  - runScore is a 75/25 weighted average of macro F1 and accuracy for
+    %  - runScore is a 75/25 weighted average of recall and accuracy for
     %  classification, so the best classifier is the one with the highest
     %  runScore. 
     %  - runScore is RMSE for regression, so the best regressor is the one
@@ -86,7 +86,7 @@ function tuningResult = tuneHyperparameters(trainData, validationData, modelName
             runScore = computeClassificationTuningScore(validationData, trainedModel);
             isCurrentRunBest = runScore > bestRunScore; % runScore to be maximized for classification
         elseif strcmp(taskType, "regression")
-            runScore = computeRegressionTuningScore(validationData, trainedModel);
+            runScore = computeRegressionTuningScore(validationData, trainedModel, taskType, warningHorizon);
             isCurrentRunBest = runScore < bestRunScore; % runScore to be minimized for regression
         end
 

@@ -50,6 +50,4 @@ function policyAnalysisResult = runPolicyAnalysis(yHat, trueRUL, warningHorizon,
     policyAnalysisResult.costModel = costModel;
     policyAnalysisResult.policyMetrics = policyMetrics;
     policyAnalysisResult.policyCosts = policyCostResult;
-
-
 end

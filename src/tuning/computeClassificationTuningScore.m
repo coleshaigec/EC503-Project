@@ -13,11 +13,11 @@ function runScore = computeClassificationTuningScore(validationData, trainedMode
     %  modelName (string)
     %
     % OUTPUTS
-    %  runScore (double)                    - 75/25 weighted average of F1 and accuracy
+    %  runScore (double)                    - 75/25 weighted average of recall and accuracy
     %
     % NOTES
-    %  - 75/25 F1/accuracy weighting is used since CMAPSS dataset is
-    %  inherently skewed, making F1 a more reliable metric
+    %  - 75/25 recall/accuracy weighting is used to reflect economic
+    %  structure of learning problem
     %  - This balance is an approximate heuristic choice based on CMAPSS
     %  EDA rather than some unique optimization calculation
 
@@ -27,8 +27,8 @@ function runScore = computeClassificationTuningScore(validationData, trainedMode
 
     % Compute classifier accuracy
     accuracy = computeAccuracy(yHat, validationData.y);
-    F1 = computeF1(yHat, validationData.y);
+    recall = computeRecall(yHat, validationData.y);
 
     % Return score
-    runScore = 0.75 * F1 + 0.25 * accuracy;
+    runScore = 0.75 * recall + 0.25 * accuracy;
 end

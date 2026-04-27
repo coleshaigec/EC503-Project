@@ -1,4 +1,4 @@
-function runScore = computeRegressionTuningScore(validationData, trainedModel)
+function runScore = computeRegressionTuningScore(validationData, trainedModel, taskType, warningHorizon)
     % COMPUTEREGRESSIONTUNINGSCORE Computes trained classification model performance score for a single tuning run.
     % 
     % INPUTS
@@ -15,10 +15,13 @@ function runScore = computeRegressionTuningScore(validationData, trainedModel)
     % OUTPUTS
     %  runScore (double)                    - RMSE
     
-    % Compute predicted labels
+    % -- Compute predicted labels --
     predictions = computePredictions(validationData, trainedModel);
     yHat = predictions.yHat;
 
-    % Compute RMSE
-    runScore = computeRMSE(yHat, validationData.y);
+    % -- Run policy analysis --
+    policyResult = runPolicyAnalysis(yHat, validationData.y, warningHorizon, taskType);
+
+    % -- Compute run score as total policy cost --
+    runScore = policyResult.policyCosts.totalPolicyCost;
 end
