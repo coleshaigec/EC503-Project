@@ -1,48 +1,80 @@
 function pcaTransform = fitPCATransform(X, pcaSpec)
-    % FITPCATRANSFORM Fits a PCA transform on a feature matrix according to pcaSpec.
+    % FITPCATRANSFORM Fits PCA transform on specified dataset according to pipeline specifications.
     %
-    % AUTHOR: Kelly Falcon
-    %
-    % INPUTS
-    %  X (n x d double) - training feature matrix
-    %
+    % INPUTS: 
+    %  X (n x d double) - feature matrix
+    %  
     %  pcaSpec struct with fields:
-    %      .enabled (logical scalar)
-    %      .selectionMode (string) - 'varianceThreshold' or 'fixedNumComponents'
-    %      .varianceThreshold (double in [0, 1])
-    %      .fixedNumComponents (positive integer)
+    %      .enabled (boolean)
+    %      .selectionMode (string) - either 'varianceThreshold' or 'fixedNumComponents'
+    %      .varianceThreshold (double in [0,1]) - 
+    %      .fixedNumComponents (int > 0) - number of principal components to compute 
     %
-    % OUTPUTS
-    %  pcaTransform struct with fields:
-    %      .mu (1 x d double)                - feature means from training data
-    %      .coeff (d x k double)             - retained principal directions
-    %      .explained (1 x k double)         - explained variance percentages
-    %      .originalDimension (positive int) - original feature dimension d
-    %      .projectedDimension (positive int)- retained dimension k
-    %      .eigenvalues (1 x k double)       - retained PCA eigenvalues
-    %
-    % IMPLEMENTATION REQUIREMENTS AND NOTES
-    %  0. Please do not delete the docstring above these notes.
-    %  1. You may ignore pcaSpec.enabled; this function is only called when PCA is enabled.
-    %  2. Fit PCA using the training matrix X only.
-    %  3. Compute and store the training-data mean in pcaTransform.mu. This
-    %     mean must later be reused unchanged in applyPCATransform.
-    %  4. If selectionMode is 'varianceThreshold', retain the smallest k such
-    %     that the cumulative explained variance is at least the specified threshold.
-    %  5. If selectionMode is 'fixedNumComponents', retain exactly that many components.
-    %  6. Ignore the inactive selection parameter.
-    %  7. coeff must be returned as a d x k matrix whose columns are the retained
-    %     orthonormal principal directions.
-    %  8. This function is performance-critical. Avoid unnecessary recomputation,
-    %     temporary arrays, or repeated passes over large matrices.
-    %  9. Do not store unused large intermediate arrays in pcaTransform.
+    % OUTPUT:
+    %  pcaTransform struct with fields: 
+    %      .mu (1 x d double) - mean vector used for centering dataset
+    %      .coeff (d x k double) - principal directions
+    %      .explained (1 x k) - explained variance percentages
+    %      .originalDimension (int) - original dataset dimension
+    %      .projectedDimension (int) - projected dimension after PCA
+    %      .eigenvalues (1 x k) - eigenvalues associated with PCA transform
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % -- YOUR IMPLEMENTATION HERE -- %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    % size
+    [n,d]=size(X);
+    
+    % data analysis
+    mu=mean(X,1);
+    Xc=X-mu;
+    S=(Xc'*Xc)/n;
+
+    % eigenvals
+    [V,D]=eig(S);
+    eigvals=diag(D);
+    [eigvals_sorted,idx]=sort(eigvals,'descend');  % sorting eigenvals
+    V_sorted=V(:,idx);
+    eigvals_sorted(eigvals_sorted < 0) = 0; % changing possible neg to 0
+    total_var=sum(eigvals_sorted);
+    if total_var == 0
+        explained_all = zeros(size(eigvals_sorted));
+    else
+        explained_all = 100 * eigvals_sorted/total_var;
+    end
+
+    %components being kept
+    if strcmp(pcaSpec.selectionMode, 'fixedNumComponents')
+        k=pcaSpec.fixedNumComponents;
+    elseif strcmp(pcaSpec.selectionMode, 'varianceThreshold')
+        cum_var=cumsum(eigvals_sorted);
+
+        if total_var == 0
+            k = 1;
+        else
+            frac_var=cum_var/total_var;
+            k=find(frac_var >= pcaSpec.varianceThreshold,1,'first');
+        end
+    else
+        error('Unknown PCA selection mode.');
+    end
+
+    % double checking k is valid
+    k=min(k,d);
+    k=max(k,1);
+
+    coeff=V_sorted(:,1:k);
+    explained=explained_all(1:k);
+    eigenvalues=eigvals_sorted(1:k);
+
+    %building output struct
     pcaTransform = struct();
-
+    pcaTransform.mu=mu;
+    pcaTransform.coeff=coeff;
+    pcaTransform.explained=explained';
+    pcaTransform.originalDimension=d;
+    pcaTransform.projectedDimension=k;
+    pcaTransform.eigenvalues=eigenvalues';
+    
+    
     % -- Output validation - PLEASE DO NOT REMOVE --
-    % Uncomment the line below to check your work when you're finished
-    % validatePCATransform(pcaTransform, X); 
+    validatePCATransform(pcaTransform, X);
 end
