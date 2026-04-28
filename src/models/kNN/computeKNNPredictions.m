@@ -1,5 +1,5 @@
 function knnResult = computeKNNPredictions(dataset, knnModel)
-    % COMPUTEKNNPREDICTIONS Computes predictions of k-Nearest Neighbors classification model on dataset.
+    % COMPUTERKNNPREDICTIONS Computes predictions of k-Nearest Neighbors classification model on dataset.
     %
     % AUTHORS: Youwei Chen, Cole H. Shaigec
     %
@@ -36,12 +36,67 @@ function knnResult = computeKNNPredictions(dataset, knnModel)
     % 4. Training-set predictions must exclude the sample itself from its own
     % neighbor set when computing yHatTrain.
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % -- YOUR IMPLEMENTATION HERE -- %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    X = dataset.X;
+    Xtrain = knnModel.Xtrain;
+    ytrain = knnModel.ytrain(:);
+    k = knnModel.k;
+
+    n = size(X, 1);
+    nTrain = size(Xtrain, 1);
+
+    assert(k <= nTrain, ...
+        'computeKNNPredictions:KTooLarge', ...
+        'k must not exceed the number of training samples.');
+
+    isTrainingPrediction = isequal(X, Xtrain);
+
+    if isTrainingPrediction
+        assert(k <= nTrain - 1, ...
+            'computeKNNPredictions:KTooLargeForTrainingPrediction', ...
+            'For training-set predictions with self-exclusion, k must be <= nTrain - 1.');
+    end
+
+    classLabels = unique(ytrain);
+
+    assert(isequal(classLabels, [-1; 1]), ...
+        'computeKNNPredictions:InvalidClassLabels', ...
+        'kNN training labels must be exactly -1 and +1.');
+
+    distanceMatrix = pdist2(X, Xtrain, 'euclidean');
+
+    if isTrainingPrediction
+        selfIndices = 1:nTrain;
+        linearSelfIndices = sub2ind([nTrain, nTrain], selfIndices, selfIndices);
+        distanceMatrix(linearSelfIndices) = inf;
+    end
+
+    [knnDistances, knnIndices] = mink(distanceMatrix, k, 2);
+
+    neighborLabels = ytrain(knnIndices);
+
+    numPositiveNeighbors = sum(neighborLabels == 1, 2);
+    numNegativeNeighbors = sum(neighborLabels == -1, 2);
+
+    yHat = zeros(n, 1);
+    yHat(numPositiveNeighbors > numNegativeNeighbors) = 1;
+    yHat(numNegativeNeighbors > numPositiveNeighbors) = -1;
+
+    tieMask = numPositiveNeighbors == numNegativeNeighbors;
+    numTies = sum(tieMask);
+
+    if numTies > 0
+        randomTieLabels = 2 * randi([0, 1], numTies, 1) - 1;
+        yHat(tieMask) = randomTieLabels;
+    end
 
     knnResult = struct();
-   
+    knnResult.yHat = yHat;
+
+    knnResult.metadata = struct();
+    knnResult.metadata.knnDistances = knnDistances;
+    knnResult.metadata.knnIndices = knnIndices;
+    knnResult.metadata.k = k;
+
     % -- Output validation - PLEASE DO NOT REMOVE --
     validateKNNResult(knnResult, dataset, knnModel);
 

@@ -24,12 +24,22 @@ function knnModel = trainKNNModel(trainingData, knnHyperparameters)
     % is called downstream in the pipeline.
     % All kNN implementation assumptions are documented in that function.
 
-    % -- Construct kNN model struct --
+    Xtrain = trainingData.X;
+    ytrain = trainingData.y(:);
+    k = knnHyperparameters.k;
+
+    nTrain = size(Xtrain, 1);
+
+    assert(k <= nTrain, ...
+        'trainKNNModel:KTooLarge', ...
+        'k must not exceed the number of training samples.');
+
     knnModel = struct();
-    knnModel.Xtrain = trainingData.X;
-    knnModel.ytrain = trainingData.y;
-    knnModel.k = knnHyperparameters.k;
+    knnModel.Xtrain = Xtrain;
+    knnModel.ytrain = ytrain;
+    knnModel.k = k;
 
     % -- Validate output --
     validateKNNModel(knnModel, trainingData, knnHyperparameters);
+
 end
