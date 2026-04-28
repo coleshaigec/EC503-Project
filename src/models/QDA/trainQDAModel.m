@@ -72,7 +72,75 @@ function qdaModel = trainQDAModel(trainingData, qdaHyperparameters)
     % 21. The final output struct must satisfy validateQDAModel exactly.
 
     % -- YOUR IMPLEMENTATION HERE --
+    X = trainingData.X;
+    y = trainingData.y;
+    
+    [nTrain, d] = size(X);
+    
+    lambda = qdaHyperparameters.regularizationStrength;
+    
+    classLabels = unique(trainingData.y);
+    classLabels = classLabels(:);
+    
+    assert(isequal(classLabels, [-1; 1]), ...
+    'trainQDAModel:InvalidClassLabels', ...
+    'QDA training labels must be exactly [-1 and +1].');
+    
+    classPriors = zeros(2, 1);
+    logClassPriors = zeros(2, 1);
+    classMeans = zeros(2, d);
+    classCovariances = cell(2, 1);
+    classCovarianceInverses = cell(2, 1);
+    logDetCovariances = zeros(2, 1);
+    
+    for i = 1:2
+        currentLabel = classLabels(i);
+        classMask = (y == currentLabel);
+        Xclass = X(classMask, :);
+    
+        nClass = size(Xclass, 1);
+    
+        classPriors(i) = nClass / nTrain;
+        logClassPriors(i) = log(classPriors(i));
+    
+        mu = mean(Xclass, 1);
+        classMeans(i, :) = mu;
+    
+        Sigma = cov(Xclass, 1);
+        SigmaReg = Sigma + lambda * eye(d);
+        SigmaReg = (SigmaReg + SigmaReg.') / 2;
+    
+        [R, p] = chol(SigmaReg);
+    
+        if p ~= 0
+            error('trainQDAModel:InvalidCovariance', ...
+                'Regularized covariance matrix is not positive definite.');
+        end
+    
+        SigmaInv = R \ (R' \ eye(d));
+        SigmaInv = (SigmaInv + SigmaInv.') / 2;
+    
+        logDetSigma = 2 * sum(log(diag(R)));
+    
+        if ~all(isfinite(SigmaInv), 'all') || ~isfinite(logDetSigma)
+            error('trainQDAModel:NonfiniteCovarianceQuantity', ...
+                'Covariance inverse or log determinant is not finite.');
+        end
+    
+        classCovariances{i} = SigmaReg;
+        classCovarianceInverses{i} = SigmaInv;
+        logDetCovariances(i) = logDetSigma;
+    end
+    
     qdaModel = struct();
+    qdaModel.classLabels = classLabels;
+    qdaModel.classPriors = classPriors;
+    qdaModel.logClassPriors = logClassPriors;
+    qdaModel.classMeans = classMeans;
+    qdaModel.classCovariances = classCovariances;
+    qdaModel.classCovarianceInverses = classCovarianceInverses;
+    qdaModel.logDetCovariances = logDetCovariances;
+    qdaModel.regularizationStrength = lambda;
 
     % -- Output validation - PLEASE DO NOT REMOVE --
     validateQDAModel(qdaModel, trainingData, qdaHyperparameters);
