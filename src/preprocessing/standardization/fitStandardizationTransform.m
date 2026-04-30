@@ -1,11 +1,11 @@
-function normalizationParameters = fitNormalizationTransform(Xtrain)
-    % FITNORMALIZATIONTRANSFORM Fit z-score normalization parameters on training data.
+function standardizationParameters = fitStandardizationTransform(Xtrain)
+    % FITSTANDARDIZATIONTRANSFORM Fit z-score standardization parameters on training data.
     %
     % INPUT:
     %   Xtrain (n x d double) - training feature matrix
     %
     % OUTPUT:
-    %   normalizationParameters struct with fields:
+    %   standardizationParameters struct with fields:
     %       .mu    (1 x d)
     %       .sigma (1 x d)
 
@@ -22,7 +22,7 @@ function normalizationParameters = fitNormalizationTransform(Xtrain)
     sigma(sigma == 0) = 1;
 
     % --- Populate output struct ---
-    normalizationParameters = struct();
-    normalizationParameters.mu = mu;
-    normalizationParameters.sigma = sigma;
+    standardizationParameters = struct();
+    standardizationParameters.mu = mu;
+    standardizationParameters.sigma = sigma;
 end

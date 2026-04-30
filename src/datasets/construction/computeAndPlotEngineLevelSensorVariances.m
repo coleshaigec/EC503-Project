@@ -21,6 +21,9 @@ function computeAndPlotEngineLevelSensorVariances(cmapssData)
             testVariances(j, :) = var(currentSubset.test.engines(j).sensorReadings, 1);
         end
 
+        assignin('base', sprintf('trainVariances_%i',i), trainVariances); 
+        assignin('base', sprintf('testVariances_%i',i), testVariances); 
+
         figure(); hold on; grid on;
         scatter(1:numSensors, trainVariances, 's', 'MarkerFaceColor','b', 'MarkerEdgeColor','none');
         scatter(1:numSensors, testVariances, '^', 'MarkerFaceColor','r', 'MarkerEdgeColor','none');

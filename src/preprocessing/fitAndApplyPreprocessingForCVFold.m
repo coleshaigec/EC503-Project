@@ -37,9 +37,9 @@ function dataset = fitAndApplyPreprocessingForCVFold(rawDataset, runPlan)
     );
 
     % -- Normalize data --
-    normalizationParameters = fitNormalizationTransform(rawDataset.train.X);
-    dataset.train.X = applyNormalizationTransform(rawDataset.train.X, normalizationParameters);
-    dataset.validation.X = applyNormalizationTransform(rawDataset.validation.X, normalizationParameters);
+    standardizationParameters = fitStandardizationTransform(rawDataset.train.X);
+    dataset.train.X = applyStandardizationTransform(rawDataset.train.X, standardizationParameters);
+    dataset.validation.X = applyStandardizationTransform(rawDataset.validation.X, standardizationParameters);
 
     % -- If PCA is enabled, fit and apply it --
     if runPlan.pcaSpec.enabled
