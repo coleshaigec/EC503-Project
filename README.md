@@ -67,7 +67,6 @@ The project includes implementations or wrappers for several classical machine l
 - Quadratic discriminant analysis
 - k-nearest neighbors
 - Random forest classification
-- Gradient boosting regression
 
 Model interfaces are structured so that training functions return model structs and prediction functions operate on standardized dataset structs.
 
@@ -90,7 +89,7 @@ Classification models are evaluated using warning-horizon-based labels and metri
 - Balanced accuracy
 - Confusion matrix entries
 
-The pipeline also evaluates models through a maintenance decision layer. Predicted RULs or warning labels are converted into maintenance decisions, and those decisions are scored using an operational cost model.
+The pipeline also evaluates models through a maintenance policy analysis layer. Predicted RULs or warning labels are converted into maintenance decisions, and those decisions are scored using an operational cost model.
 
 ## Maintenance Decision Model
 
@@ -108,7 +107,7 @@ Pipeline runs generate experiment summaries and diagnostic outputs, including mo
 
 ## External Analysis Tools
 
-Some figures, plots, and statistical tests used in the accompanying report were produced using separate ad hoc analysis workflows (e.g., lightweight scripts and spreadsheet-based tools). These were used for presentation and exploratory analysis purposes and are not part of the core MATLAB pipeline. The repository is intended to capture the primary modeling and evaluation system rather than all auxiliary analysis artifacts.
+Some figures, plots, and statistical tests used in the accompanying report were produced using separate ad hoc analysis workflows (e.g., lightweight Python scripts and spreadsheet-based tools). These were used for presentation and exploratory analysis purposes and are not part of the core MATLAB pipeline. The repository is intended to capture the primary modeling and evaluation system rather than all auxiliary analysis artifacts.
 
 ## Reproducibility Notes
 
