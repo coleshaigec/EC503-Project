@@ -49,7 +49,9 @@ The project uses MATLAB functions and structs to pass data, model specifications
 
 ## Data
 
-The project uses NASA CMAPSS turbofan engine degradation data.
+The project uses NASA CMAPSS turbofan engine degradation data. At the request of the course instructor, the dataset has been saved within the repository. 
+
+The original NASA CMAPSS dataset may be found at https://data.nasa.gov/dataset/cmapss-jet-engine-simulated-data.
 
 FD001 and FD003 are the primary subsets used in the experiments. FD001 contains a single operating condition and single failure mode, while FD003 contains a single operating condition with multiple failure modes. This makes FD003 a harder prediction problem because the relationship between sensor state and RUL is less uniform.
 
