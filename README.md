@@ -23,11 +23,11 @@ The main project goal is to compare model behavior under different degradation r
 
 To add the project files to the MATLAB path, run:
 
-startup
+```startup```
 
 Open MATLAB from the repository root and run:
 
-main
+```main```
 
 The pipeline is configured directly through MATLAB experiment-specification code.
 
