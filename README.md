@@ -3,6 +3,8 @@ Authors: Cole H. Shaigec, Kelly Falcon, Youwei Chen
 
 This repository contains a MATLAB implementation of an end-to-end machine learning pipeline for predictive maintenance experiments on the NASA CMAPSS turbofan degradation dataset.
 
+It also includes a PDF copy of the final report explaining our findings.
+
 The project evaluates classical machine learning models for remaining useful life (RUL) estimation and maintenance-warning classification. In addition to standard predictive metrics, the pipeline includes a decision-oriented maintenance cost model so that model performance can be evaluated in operational terms rather than only by RMSE, accuracy, or F1 score.
 
 ## Project Scope
